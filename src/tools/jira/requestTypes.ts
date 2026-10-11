@@ -203,9 +203,14 @@ const toRow = (r: any): FormRow => ({
   description: String(r.description ?? ""), sdRequired: !!r.sdRequired, jiraRequired: !!r.jiraRequired, values: r.values ?? {},
 });
 
+/** Read one form source without coercing missing mandatory flags or response shapes. */
+export function readRawRequestTypeFields(client: AtlassianClient, rtId: string, kind: "visible" | "hidden" | "unused"): Promise<any> {
+  return client.get(`${IJ}/${segment(rtId)}/request-type-fields/${kind}`);
+}
+
 async function readForm(client: AtlassianClient, rtId: string): Promise<{ visible: FormRow[]; hidden: FormRow[]; unused: FormRow[] }> {
   const [visible, hidden, unused] = await Promise.all(
-    ["visible", "hidden", "unused"].map((k) => client.get(`${IJ}/${rtId}/request-type-fields/${k}`)),
+    (["visible", "hidden", "unused"] as const).map((k) => readRawRequestTypeFields(client, rtId, k)),
   );
   const rows = (v: any): FormRow[] => (Array.isArray(v) ? v : []).map(toRow);
   return { visible: rows(visible), hidden: rows(hidden), unused: rows(unused) };
@@ -221,6 +226,19 @@ function findField(rows: FormRow[], given: string): FormRow | undefined {
 }
 
 const fieldRowPath = (rtId: string, kind: "visible" | "hidden", id: number | string) => `${IJ}/${rtId}/request-type-fields/${kind}/${id}`;
+
+function rejectJiraRequiredOptional(row: FormRow, required: boolean | undefined): void {
+  if (required === false && row.jiraRequired) {
+    throw new ValidationError(`${row.name} (${row.fieldId}) is required by Jira; required=false cannot make it optional on this portal. Review the shared Jira field configuration separately.`);
+  }
+}
+
+function fieldVerificationState(requestTypeId: string, fieldId: string, row: FormRow | undefined) {
+  return {
+    requestTypeId, fieldId, missing: !row,
+    ...(row ? { sdRequired: row.sdRequired, jiraRequired: row.jiraRequired, required: row.sdRequired || row.jiraRequired } : {}),
+  };
+}
 
 async function formContext(client: AtlassianClient, args: { service_desk: string; request_type: string; dry_run?: boolean }) {
   await requireJsmVersion(client, "Request type form changes");
@@ -434,7 +452,7 @@ export const jiraRequestTypeTools: ToolDef[] = [
       const form = await readForm(c, rt.id!);
       return {
         requestType: { id: rt.id, name: rt.name },
-        visible: form.visible.map((r) => ({ fieldId: r.fieldId, name: r.name, label: r.label, description: r.description || undefined, required: r.sdRequired || r.jiraRequired })),
+        visible: form.visible.map((r) => ({ fieldId: r.fieldId, name: r.name, label: r.label, description: r.description || undefined, sdRequired: r.sdRequired, jiraRequired: r.jiraRequired, required: r.sdRequired || r.jiraRequired })),
         hidden: form.hidden.map((r) => ({ fieldId: r.fieldId, name: r.name, preset: r.values[r.fieldId] ?? [] })),
         ...(args.include_addable
           ? { addable: form.unused.map((r) => ({ fieldId: r.fieldId, name: r.name })) }
@@ -446,7 +464,7 @@ export const jiraRequestTypeTools: ToolDef[] = [
     name: "jira_add_request_type_field",
     product: "jira",
     write: true,
-    description: "Add a field to a request type's form (optionally label, description, required, 1-based position). Already visible there → already-satisfied. Internal JSM API, JSM 11.3.x only.",
+    description: "Add a field to a request type's form (optionally label, description, required, 1-based position). required=false requires both portal and Jira mandatory flags to be false; Jira-required fields are rejected. Already visible there → already-satisfied. Internal JSM API, JSM 11.3.x only.",
     inputShape: { service_desk: sdArg, request_type: rtArg, field: z.coerce.string().min(1), label: z.string().optional(), description: z.string().optional(), required: boolArg.optional(), position: z.coerce.number().int().min(1).optional(), ...dryRunShape },
     async handler({ client }, args) {
       const c = client("jira");
@@ -461,6 +479,7 @@ export const jiraRequestTypeTools: ToolDef[] = [
       if (args.required !== undefined) attrs.sdRequired = args.required;
       const cur = order(form.visible);
       if (visible) {
+        rejectJiraRequiredOptional(visible, args.required);
         const { desired } = placement(cur, visible.fieldId, args.position ?? cur.indexOf(visible.fieldId) + 1);
         const same = Object.entries(attrs).every(([k, v]) => (visible as any)[k] === v) && JSON.stringify(desired) === JSON.stringify(cur);
         if (same) return alreadySatisfied(`Add ${visible.name} to the ${where}`, "it is already on the form with these settings");
@@ -468,12 +487,13 @@ export const jiraRequestTypeTools: ToolDef[] = [
       }
       const add = findField(form.unused, args.field);
       if (!add) throw new ValidationError(`'${args.field}' cannot be added to the ${where}; addable fields: ${form.unused.map((r) => r.name).join(", ")}`);
+      rejectJiraRequiredOptional(add, args.required);
       const { desired, anchor } = placement(cur, add.fieldId, args.position);
       const list: WriteStep[] = [{ method: "POST", path: `${IJ}/${rtId}/request-type-fields`, json: { fields: [add.fieldId] }, label: `add ${add.name}` }];
       if (Object.keys(attrs).length) list.push({ method: "PUT", path: fieldRowPath(rtId, "visible", `{${add.fieldId}}`), json: attrs, label: "settings" });
       if (desired.indexOf(add.fieldId) !== desired.length - 1) list.push({ method: "POST", path: `${fieldRowPath(rtId, "visible", `{${add.fieldId}}`)}/move`, json: anchor === "first" ? { position: "First" } : { after: `{${anchor}}` }, label: "position" });
       const summary = `Add ${add.name} to the ${where}${args.position ? ` at position ${args.position}` : ""}`;
-      const extra = { identity: { op: "add-form-field", requestType: rt.ref, field: add.fieldId, ...attrs, position: args.position ?? null }, state: { present: false, anchor: args.position ? anchor : null } };
+      const extra = { identity: { op: "add-form-field", requestType: rt.ref, field: add.fieldId, ...attrs, position: args.position ?? null }, state: { present: false, anchor: args.position ? anchor : null, ...(args.required === false ? { jiraRequired: add.jiraRequired } : {}) } };
       if (dryRun) return steps(c, true, summary, list, extra, async () => ({ ok: true, result: null }));
       // the new row's id is known only after adding it
       const rows: any[] = (await c.request("POST", list[0].path, { json: list[0].json })) as any[];
@@ -482,16 +502,22 @@ export const jiraRequestTypeTools: ToolDef[] = [
       if (!row.displayed) throw new Verification(`${summary}: Jira added ${add.name} as a hidden field (the portal cannot show it)`, row);
       if (Object.keys(attrs).length) await c.request("PUT", fieldRowPath(rtId, "visible", row.id), { json: attrs });
       const now = order((await readForm(c, rtId)).visible);
+      if (!now.includes(add.fieldId)) {
+        throw new Verification(`${summary}: the added field is missing from the read-back`, fieldVerificationState(rtId, add.fieldId, undefined));
+      }
       if (JSON.stringify(now) !== JSON.stringify(desired)) {
         const visibleRows = (await readForm(c, rtId)).visible;
+        const selected = visibleRows.find((r) => r.fieldId === add.fieldId);
+        if (!selected) throw new Verification(`${summary}: the added field is missing from the read-back`, fieldVerificationState(rtId, add.fieldId, undefined));
         const idOf = (fid: string) => String(visibleRows.find((r) => r.fieldId === fid)!.id);
         const i = desired.indexOf(add.fieldId);
         await c.request("POST", `${fieldRowPath(rtId, "visible", row.id)}/move`, { json: i === 0 ? { position: "First" } : { after: c.url(fieldRowPath(rtId, "visible", idOf(desired[i - 1]))) } });
       }
       const back = await readForm(c, rtId);
       const added = back.visible.find((r) => r.fieldId === add.fieldId);
-      const ok = !!added && JSON.stringify(order(back.visible)) === JSON.stringify(desired) && Object.entries(attrs).every(([k, v]) => (added as any)[k] === v);
-      if (!ok) throw new Verification(`${summary}: the read-back does not show the change`, back.visible);
+      const ok = !!added && JSON.stringify(order(back.visible)) === JSON.stringify(desired) && Object.entries(attrs).every(([k, v]) => (added as any)[k] === v)
+        && (args.required !== false || (!added.sdRequired && !added.jiraRequired));
+      if (!ok) throw new Verification(`${summary}: the read-back does not show the requested field state`, fieldVerificationState(rtId, add.fieldId, added));
       return { dry_run: false, product: c.product, summary, request: { method: "POST", url: c.url(list[0].path), body: list[0].json }, result: { visible: back.visible.map((r) => r.fieldId) } };
     },
   },
@@ -543,13 +569,14 @@ export const jiraRequestTypeTools: ToolDef[] = [
     name: "jira_update_request_type_field",
     product: "jira",
     write: true,
-    description: "Change a visible form field's label, description and/or required flag. Internal JSM API, JSM 11.3.x only.",
+    description: "Change a visible form field's label, description and/or required flag. required=false means optional under both portal and Jira mandatory flags; Jira-required fields are rejected and read-back verifies the effective state. Internal JSM API, JSM 11.3.x only.",
     inputShape: { service_desk: sdArg, request_type: rtArg, field: z.coerce.string().min(1), label: z.string().optional(), description: z.string().optional(), required: boolArg.optional(), ...dryRunShape },
     async handler({ client }, args) {
       const c = client("jira");
       const { rt, form, dryRun, where } = await formContext(c, args as any);
       const row = findField(form.visible, args.field);
       if (!row) throw new ValidationError(`${args.field} is not a visible field of the ${where}`);
+      rejectJiraRequiredOptional(row, args.required);
       const attrs: Record<string, unknown> = {};
       if (args.label !== undefined && args.label !== row.label) attrs.label = args.label;
       if (args.description !== undefined && args.description !== row.description) attrs.description = args.description;
@@ -558,8 +585,14 @@ export const jiraRequestTypeTools: ToolDef[] = [
       const summary = `Update ${row.name} on the ${where}: ${Object.keys(attrs).join(", ")}`;
       if (!Object.keys(attrs).length) return alreadySatisfied(`Update ${row.name} on the ${where}`, "it already has these values");
       return steps(c, dryRun, summary, [{ method: "PUT", path: fieldRowPath(rt.id!, "visible", row.id), json: attrs }],
-        { identity: { op: "update-form-field", requestType: rt.ref, field: row.fieldId, ...attrs }, state: Object.fromEntries(Object.keys(attrs).map((k) => [k, (row as any)[k]])) },
-        async () => { const back = findField((await readForm(c, rt.id!)).visible, row.fieldId); return { ok: !!back && Object.entries(attrs).every(([k, v]) => (back as any)[k] === v), result: back }; });
+        { identity: { op: "update-form-field", requestType: rt.ref, field: row.fieldId, ...attrs }, state: { ...Object.fromEntries(Object.keys(attrs).map((k) => [k, (row as any)[k]])), ...(args.required === false ? { jiraRequired: row.jiraRequired } : {}) } },
+        async () => {
+          const back = findField((await readForm(c, rt.id!)).visible, row.fieldId);
+          const ok = !!back && Object.entries(attrs).every(([k, v]) => (back as any)[k] === v)
+            && (args.required !== false || (!back.sdRequired && !back.jiraRequired));
+          if (!ok) throw new Verification(`${summary}: the read-back does not show the requested field state`, fieldVerificationState(rt.id!, row.fieldId, back));
+          return { ok: true, result: back };
+        });
     },
   },
   {

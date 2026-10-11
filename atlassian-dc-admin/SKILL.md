@@ -53,7 +53,7 @@ only proceeds on their click. You never see or answer that dialog.
 
 Prefer reversible actions (deactivate/disable, archive) over delete. Say "irreversible" before deleting users, groups, fields, issues, versions, filters, pages or spaces.
 Never delete a custom field to undo a partly applied plan: re-run `apply` for the remaining items instead.
-Workflow edits to an active workflow land in its draft: say so, plan `jira_publish_workflow_draft` as a separate change, and say that conditions, validators and post-functions cannot be read or compared over REST.
+Active workflow edits land in its draft; `jira_publish_workflow_draft` is separate. Designer REST cannot read/compare rules; XML export/import: [WORKFLOW_XML.md](WORKFLOW_XML.md).
 ScriptRunner (Jira 10/11, SR 9/10) Script Root files (export, sync, push, pull) stay in local files: never print or summarize their content; warn they may hold credentials. Push deploys live code; see REFERENCE.md for sync.
 Page updates take `if_version`; `StaleVersion` (exit 5) means someone else edited it: re-read, never overwrite blindly.
 
@@ -68,5 +68,6 @@ Page updates take `if_version`; `StaleVersion` (exit 5) means someone else edite
 Errors print `ERROR <type> | message` and a `hint:` line; exit 12 = declined, 13 = cannot ask (see Writes). All exit codes and Codex sandbox notes: [REFERENCE.md](REFERENCE.md).
 
 Jira Assets (objects, schemas, attributes, AQL): read [ASSETS.md](ASSETS.md) before the first `assets_*` call (`list assets`).
-Confluence group space audits, categories and mixed administrator batches: read [SPACE_WORKFLOWS.md](SPACE_WORKFLOWS.md) before preparing the workflow. Honor an already stated batch choice and use its native confirmation checklist.
-Configuration and recipes: [REFERENCE.md](REFERENCE.md) (read only when needed).
+Confluence audits/categories/batches: [SPACE_WORKFLOWS.md](SPACE_WORKFLOWS.md). Honor batch choice and native confirmation.
+Configuration: [REFERENCE.md](REFERENCE.md); form snapshots: [CONFIG_SNAPSHOTS.md](CONFIG_SNAPSHOTS.md).
+Portal form/validator checks without submission: [PORTAL_TESTING.md](PORTAL_TESTING.md).

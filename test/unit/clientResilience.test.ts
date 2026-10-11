@@ -17,6 +17,18 @@ beforeEach(() => {
 afterEach(() => Object.assign(timing, saved));
 
 describe("read retries (2.1)", () => {
+  it("allows guarded mutations to disable every automatic retry", async () => {
+    const { fetch, calls } = fakeFetch(() => ({ status: 429 }));
+    await assert.rejects(client(fetch).request("PUT", "/draft", { json: {}, retry: false } as any));
+    assert.equal(calls.length, 1);
+    assert.deepEqual(waits, []);
+    for (const cause of ["ECONNRESET", "ETIMEDOUT"]) {
+      let attempts = 0;
+      const failing = async () => { attempts++; throw Object.assign(new TypeError("fetch failed"), { cause: { code: cause } }); };
+      await assert.rejects(client(failing).request("PUT", "/draft", { retry: false } as any));
+      assert.equal(attempts, 1);
+    }
+  });
   it("retries a GET after 503 and succeeds", async () => {
     let n = 0;
     const { fetch, calls } = fakeFetch(() => (n++ === 0 ? { status: 503, body: "<html>busy</html>" } : { body: { ok: 1 } }));

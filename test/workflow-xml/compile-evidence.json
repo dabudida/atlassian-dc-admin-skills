@@ -1,0 +1,66 @@
+{
+  "status": "PASS_LOCAL",
+  "live": "NOT_RUN",
+  "jars": [
+    {
+      "path": "org/apache/groovy/groovy/4.0.28/groovy-4.0.28.jar",
+      "sha256": "d77164a44ab994837e61eecead64721bdb1794fa2bc6704ac6fe70cd32ef9dd3"
+    },
+    {
+      "path": "com/atlassian/jira/jira-api/11.3.6/jira-api-11.3.6.jar",
+      "sha256": "03192efd5967d0ec657abe618014d55ee19e96b99d0348da41a2033f99f9157c"
+    },
+    {
+      "path": "com/atlassian/jira/jira-core/11.3.6/jira-core-11.3.6.jar",
+      "sha256": "ee18c67b36dbb831e8950c6ea62bd3b08c8b1048daaf55fcdd13558a710ac133"
+    },
+    {
+      "path": "com/atlassian/jira/osworkflow/11.3.6/osworkflow-11.3.6.jar",
+      "sha256": "04e5d00016cd23c67111cb0f61fd620c5fdda4c24c13ee0e7cea2afb5637e79d"
+    },
+    {
+      "path": "com/onresolve/jira/groovy/groovyrunner/10.11.1/groovyrunner-10.11.1.jar",
+      "sha256": "31b9be61d01863ba9a47fd26a35ef12fb98a3afbe5d65039511058866c617e7f"
+    },
+    {
+      "path": "com/atlassian/beehive/beehive-api/6.1.7/beehive-api-6.1.7.jar",
+      "sha256": "a49e53adf22e23f408765f977a372c614de555b9c47b216eab32c7bc523191ab"
+    },
+    {
+      "path": "jakarta/ws/rs/jakarta.ws.rs-api/3.1.0/jakarta.ws.rs-api-3.1.0.jar",
+      "sha256": "6b3b3628b8b4aedda0d24c3354335e985497d8ef3c510b8f3028e920d5b8663d"
+    },
+    {
+      "path": "com/atlassian/ofbiz/entityengine/4.0.3/entityengine-4.0.3.jar",
+      "sha256": "36d05a95c91dfefae9de92a5165072bbdf57d82f968f271ac1f6da3f6919f85a"
+    },
+    {
+      "path": "com/google/guava/guava/33.4.8-jre/guava-33.4.8-jre.jar",
+      "sha256": "f3d7f57f67fd622f4d468dfdd692b3a5e3909246c28017ac3263405f0fe617ed"
+    },
+    {
+      "path": "org/slf4j/slf4j-api/2.0.17/slf4j-api-2.0.17.jar",
+      "sha256": "7b751d952061954d5abfed7181c1f645d336091b679891591d63329c622eb832"
+    },
+    {
+      "path": "org/apache/groovy/groovy-json/4.0.28/groovy-json-4.0.28.jar",
+      "sha256": "edec45c85ff811f9a9baacdf5b020e34593a0055ac63c92fbf1233c3b2cc9cc6"
+    },
+    {
+      "path": "jakarta/servlet/jakarta.servlet-api/6.1.0/jakarta.servlet-api-6.1.0.jar",
+      "sha256": "8a31f465f3593bf2351531a5c952014eb839da96a605b5825b93dd54714c48c4"
+    },
+    {
+      "path": "com/atlassian/plugins/atlassian-plugins-api/9.1.8/atlassian-plugins-api-9.1.8.jar",
+      "sha256": "a67c85104160adfaf3445b7b933fca403958dd7bc2901b9057c85e5203192624"
+    }
+  ],
+  "nodeSuite": {
+    "tests": 976,
+    "passed": 976,
+    "failed": 0
+  },
+  "java": "Temurin 21.0.8",
+  "deployment": "NOT_RUN",
+  "targetInstanceLinks": "NOT_RUN"
+}

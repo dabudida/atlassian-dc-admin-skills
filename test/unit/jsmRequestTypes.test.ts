@@ -210,6 +210,164 @@ describe("portal visibility and groups (3.2)", () => {
 });
 
 describe("form (4.1, 4.2)", () => {
+  it("reads mandatory-state provenance in field order", async () => {
+    const r = await run("jira_get_request_type_form", { service_desk: "BANK", request_type: 83 }, fakeJsm().responder);
+    assert.ok(r.res.ok, JSON.stringify(r.error));
+    assert.deepEqual(r.value.visible.map((f: any) => [f.fieldId, f.sdRequired, f.jiraRequired, f.required]), [
+      ["summary", true, true, true], ["description", false, false, false],
+      ["priority", false, true, true], ["components", false, false, false],
+    ]);
+  });
+
+  it("rejects optional state before writes or already-satisfied for Jira-required fields", async () => {
+    for (const required of [false, "false"]) {
+      for (const tool of ["jira_update_request_type_field", "jira_add_request_type_field"]) {
+        const r = await run(tool, { service_desk: "BANK", request_type: 83, field: "priority", required, dry_run: false }, fakeJsm({ jsm: "11.3.8" }).responder);
+        assert.equal(r.res.ok, false);
+        assert.equal(r.error.type, "ValidationError");
+        assert.match(r.error.message, /Priority.*required by Jira/i);
+        assert.equal(r.calls.filter((c) => c.method !== "GET").length, 0);
+      }
+    }
+  });
+
+  it("rejects the whole combined optional-state request", async () => {
+    const jsm = fakeJsm();
+    const r = await run("jira_update_request_type_field", { service_desk: "BANK", request_type: 83, field: "summary", required: false, label: "New title", dry_run: false }, jsm.responder);
+    assert.equal(r.res.ok, false);
+    assert.equal(jsm.forms["83"].visible[0].label, "Summary");
+    assert.equal(r.calls.filter((c) => c.method !== "GET").length, 0);
+  });
+
+  it("rejects optional state for a Jira-required addable field", async () => {
+    const jsm = fakeJsm();
+    const responder = (c: Call) => {
+      const reply = jsm.responder(c);
+      if (c.method === "GET" && path(c).endsWith("/unused")) {
+        assert.ok(reply);
+        const row = reply.body.find((f: any) => f.fieldId === "labels");
+        if (row) row.jiraRequired = true;
+      }
+      return reply;
+    };
+    const r = await run("jira_add_request_type_field", { service_desk: "BANK", request_type: 83, field: "labels", required: false, dry_run: false }, responder);
+    assert.equal(r.res.ok, false);
+    assert.equal(r.error.type, "ValidationError");
+    assert.equal(r.calls.filter((c) => c.method !== "GET").length, 0);
+  });
+
+  it("preserves explicit false in preview, PUT and independent read-back", async () => {
+    for (const required of [false, "false"]) {
+      const jsm = fakeJsm({ jsm: "11.3.8" });
+      const row = jsm.forms["83"].visible[1];
+      row.sdRequired = true;
+      const args = { service_desk: "BANK", request_type: 83, field: "description", required };
+      const dry = await run("jira_update_request_type_field", args, jsm.responder);
+      assert.deepEqual(dry.value.request.body, { sdRequired: false });
+      assert.equal(dry.calls.filter((c) => c.method !== "GET").length, 0);
+      const r = await run("jira_update_request_type_field", { ...args, dry_run: false }, jsm.responder);
+      assert.ok(r.res.ok, JSON.stringify(r.error));
+      const put = r.calls.findIndex((c) => c.method === "PUT");
+      assert.deepEqual(r.calls[put].body, { sdRequired: false });
+      assert.ok(r.calls.slice(put + 1).some((c) => c.method === "GET" && path(c).endsWith("/visible")));
+      assert.equal(row.sdRequired, false);
+      assert.equal(row.jiraRequired, false);
+      const again = await run("jira_update_request_type_field", args, jsm.responder);
+      assert.equal(again.value.already_satisfied, true);
+      assert.equal(again.calls.filter((c) => c.method !== "GET").length, 0);
+    }
+  });
+
+  it("preserves mandatory flags on a label-only update", async () => {
+    const jsm = fakeJsm();
+    const r = await run("jira_update_request_type_field", { service_desk: "BANK", request_type: 83, field: "summary", label: "New title", dry_run: false }, jsm.responder);
+    assert.ok(r.res.ok, JSON.stringify(r.error));
+    assert.equal(jsm.forms["83"].visible[0].sdRequired, true);
+    assert.equal(jsm.forms["83"].visible[0].jiraRequired, true);
+  });
+
+  for (const outcome of ["ignored", "jira-required", "missing"]) {
+    it(`verifies optional-state update when read-back is ${outcome}`, async () => {
+      const jsm = fakeJsm({ jsm: "11.3.8" });
+      const row = jsm.forms["83"].visible[1];
+      row.sdRequired = true;
+      const responder = (c: Call) => {
+        const selected = c.method === "PUT" && path(c).endsWith(`/visible/${row.id}`);
+        if (selected && outcome === "ignored") return { body: row };
+        const reply = jsm.responder(c);
+        if (selected && outcome === "jira-required") row.jiraRequired = true;
+        if (selected && outcome === "missing") jsm.forms["83"].visible = jsm.forms["83"].visible.filter((f) => f !== row);
+        return reply;
+      };
+      const r = await run("jira_update_request_type_field", { service_desk: "BANK", request_type: 83, field: "description", required: false, dry_run: false }, responder);
+      assert.equal(r.res.ok, false);
+      assert.equal(r.error.type, "VerificationError");
+      assert.ok(r.error.state, "verification must include the observed field state");
+      assert.equal(r.error.state.fieldId, "description");
+      assert.equal(r.error.state.missing, outcome === "missing");
+      if (outcome !== "missing") assert.equal(r.error.state.required, true);
+    });
+  }
+
+  it("verifies optional state after adding a field", async () => {
+    const jsm = fakeJsm();
+    const responder = (c: Call) => {
+      const reply = jsm.responder(c);
+      if (c.method === "PUT" && /request-type-fields\/visible\/\d+$/.test(path(c))) {
+        jsm.forms["83"].visible.find((f) => f.fieldId === "labels").jiraRequired = true;
+      }
+      return reply;
+    };
+    const r = await run("jira_add_request_type_field", { service_desk: "BANK", request_type: 83, field: "labels", required: false, dry_run: false }, responder);
+    assert.equal(r.res.ok, false);
+    assert.equal(r.error.type, "VerificationError");
+    assert.equal(r.error.state.fieldId, "labels");
+    assert.equal(r.error.state.jiraRequired, true);
+  });
+
+  it("reports an added field disappearing before reordering without a move request", async () => {
+    const jsm = fakeJsm();
+    const responder = (c: Call) => {
+      if (c.method === "POST" && path(c).endsWith("/move")) return { status: 404, body: {} };
+      const reply = jsm.responder(c);
+      if (c.method === "PUT" && /request-type-fields\/visible\/\d+$/.test(path(c))) {
+        jsm.forms["83"].visible = jsm.forms["83"].visible.filter((f) => f.fieldId !== "labels");
+      }
+      return reply;
+    };
+    const r = await run("jira_add_request_type_field", { service_desk: "BANK", request_type: 83, field: "labels", required: false, dry_run: false }, responder);
+    assert.equal(r.res.ok, false);
+    assert.equal(r.error.type, "VerificationError");
+    assert.deepEqual(r.error.state, { requestTypeId: "83", fieldId: "labels", missing: true });
+    assert.equal(r.calls.filter((c) => path(c).endsWith("/move")).length, 0);
+  });
+
+  it("binds optional-state previews to the selected Jira requirement", async () => {
+    const jsm = fakeJsm();
+    jsm.forms["83"].visible[1].sdRequired = true;
+    for (const [tool, field] of [["jira_update_request_type_field", "description"], ["jira_add_request_type_field", "labels"]]) {
+      const r = await run(tool, { service_desk: "BANK", request_type: 83, field, required: false }, jsm.responder);
+      assert.equal(r.value.state.jiraRequired, false);
+    }
+  });
+
+  it("blocks stale optional-state approval but permits unrelated field changes", async () => {
+    for (const blocking of [true, false]) {
+      const jsm = fakeJsm();
+      jsm.forms["83"].visible[1].sdRequired = true;
+      const file = join(mkdtempSync(join(tmpdir(), "optional-plan-")), "plan.json");
+      const args = { service_desk: "BANK", request_type: 83, field: "description", required: false };
+      const dry = await run("jira_update_request_type_field", args, jsm.responder);
+      addResultToPlan(file, "jira_update_request_type_field", args, dry.value);
+      if (blocking) jsm.forms["83"].visible[1].jiraRequired = true;
+      else jsm.forms["83"].visible[3].label = "Unrelated edit";
+      const { ctx, calls } = testContext(jsm.responder);
+      const out = await applyPlan(ctx, readPlan(file), undefined, file);
+      assert.equal(out[0].status, blocking ? "failed" : "done");
+      assert.equal(calls.filter((c) => c.method !== "GET").length, blocking ? 0 : 1);
+    }
+  });
+
   it("counts addable fields without returning them by default", async () => {
     const r = await run("jira_get_request_type_form", { service_desk: "BANK", request_type: "Bank incident" }, fakeJsm().responder);
     assert.ok(r.res.ok, JSON.stringify(r.error));

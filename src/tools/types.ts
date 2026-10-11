@@ -39,5 +39,7 @@ export interface ToolDef {
   narrowing?: string[];
   /** Columns shown when the caller passes no --fields (wide list tools); --fields=+x adds, --fields=all shows all. */
   defaultFields?: string[];
+  /** Nonzero exit code for a successful result that still needs attention (e.g. a local CONFLICT); default 0. */
+  exitCode?: (value: any) => number;
   handler: (ctx: ToolContext, args: Record<string, any>) => Promise<unknown>;
 }

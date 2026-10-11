@@ -1,0 +1,20 @@
+{
+  "evidence": "Local API compilation only; deployment and exact-version live behavior NOT_RUN",
+  "jars": [
+    "org/apache/groovy/groovy/4.0.28/groovy-4.0.28.jar",
+    "com/atlassian/jira/jira-api/11.3.6/jira-api-11.3.6.jar",
+    "com/atlassian/jira/jira-core/11.3.6/jira-core-11.3.6.jar",
+    "com/atlassian/jira/osworkflow/11.3.6/osworkflow-11.3.6.jar",
+    "com/onresolve/jira/groovy/groovyrunner/10.11.1/groovyrunner-10.11.1.jar",
+    "com/atlassian/beehive/beehive-api/6.1.7/beehive-api-6.1.7.jar",
+    "jakarta/ws/rs/jakarta.ws.rs-api/3.1.0/jakarta.ws.rs-api-3.1.0.jar",
+    "com/atlassian/ofbiz/entityengine/4.0.3/entityengine-4.0.3.jar",
+    "com/atlassian/ofbiz/entityengine-share/4.0.3/entityengine-share-4.0.3.jar",
+    "com/google/guava/guava/33.4.8-jre/guava-33.4.8-jre.jar",
+    "org/slf4j/slf4j-api/2.0.17/slf4j-api-2.0.17.jar",
+    "org/apache/groovy/groovy-json/4.0.28/groovy-json-4.0.28.jar",
+    "jakarta/servlet/jakarta.servlet-api/6.1.0/jakarta.servlet-api-6.1.0.jar",
+    "com/atlassian/plugins/atlassian-plugins-api/9.1.8/atlassian-plugins-api-9.1.8.jar",
+    "com/atlassian/crowd/embedded-crowd-api/7.1.5/embedded-crowd-api-7.1.5.jar"
+  ]
+}

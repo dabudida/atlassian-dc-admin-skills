@@ -81,7 +81,7 @@ Compact cells and long text carry cut markers; JSON retains columns but respects
 Assets search defaults to 20 objects and previews 20 attributes; name `attributes` to select them. Custom field options without `context` return counts; with `context`, page via `limit`/`offset`. Audit `raw=true` requires `limit<=50`. Request forms show addable fields only with `include_addable=true`; space discovery audit rows require `include_audit=true`. Comments use storage Markdown and `max_body_chars` (default 2,000). Markdown page writes reject code cut markers: read full storage or a smaller section first. Expanded JSON reads can require `--out`.
 
 <!-- tools:start -->
-301 tools, 163 of them write tools (✎; they also take `dry_run`, default true). Arguments and descriptions: run `describe <tool>`; search by concept with `list <text>`.
+304 tools, 164 of them write tools (✎; they also take `dry_run`, default true). Arguments and descriptions: run `describe <tool>`; search by concept with `list <text>`.
 
 ### Jira admin — system
 
@@ -106,6 +106,10 @@ Assets search defaults to 20 objects and previews 20 attributes; name `attribute
 ### Jira admin — workflows (designer, drafts)
 
 `jira_get_workflow`, `jira_compare_workflows`, `jira_add_workflow_status` ✎, `jira_update_workflow_status` ✎, `jira_remove_workflow_status` ✎, `jira_add_workflow_transition` ✎, `jira_update_workflow_transition` ✎, `jira_remove_workflow_transition` ✎, `jira_add_workflow_global_transition` ✎, `jira_remove_workflow_global_transition` ✎, `jira_publish_workflow_draft` ✎, `jira_discard_workflow_draft` ✎
+
+### Jira admin — workflow XML transfer
+
+`jira_export_workflow_xml`, `jira_import_workflow_xml_draft` ✎
 
 ### Jira admin — project scheme assignment
 
@@ -174,6 +178,10 @@ Assets search defaults to 20 objects and previews 20 attributes; name `attribute
 ### Jira Service Management — request types and forms
 
 `jira_create_request_type` ✎, `jira_update_request_type` ✎, `jira_delete_request_type` ✎, `jira_set_request_type_hidden` ✎, `jira_add_request_type_to_group` ✎, `jira_remove_request_type_from_group` ✎, `jira_move_request_type_in_group` ✎, `jira_get_request_type_form`, `jira_add_request_type_field` ✎, `jira_remove_request_type_field` ✎, `jira_move_request_type_field` ✎, `jira_update_request_type_field` ✎, `jira_hide_request_type_field` ✎, `jira_show_request_type_field` ✎
+
+### Jira configuration — request-form snapshots
+
+`jira_export_config`
 
 ### Jira Service Management — queues
 

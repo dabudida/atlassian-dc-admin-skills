@@ -102,6 +102,8 @@ export type Json = any;
 export type Params = Record<string, string | number | boolean | null | undefined | Array<string | number>>;
 
 export interface RequestOptions {
+  /** Disable all retries for a mutation whose outcome could be ambiguous. */
+  retry?: boolean;
   params?: Params;
   json?: Json;
   /** multipart/form-data body (attachments); the boundary header is set by fetch */
@@ -308,7 +310,7 @@ export class AtlassianClient {
         res = await this.fetchImpl(url, { ...init, signal: AbortSignal.timeout(this.config.timeoutMs) });
       } catch (e) {
         this.limiter.release();
-        if (read && !last && isTransient(e)) {
+        if (opts.retry !== false && read && !last && isTransient(e)) {
           await timing.sleep(backoffMs(attempt));
           continue;
         }
@@ -320,7 +322,7 @@ export class AtlassianClient {
       if (res.status === 429) this.limiter.throttled();
       else if (res.status < 400) this.limiter.succeeded();
       const retryable = res.status === 429 || (read && RETRYABLE_STATUS.has(res.status));
-      if (retryable && !last) {
+      if (opts.retry !== false && retryable && !last) {
         const asked = retryAfterMs(res.headers.get("retry-after"));
         if (asked === undefined || asked <= MAX_RETRY_WAIT_MS) {
           await res.text();

@@ -20,7 +20,7 @@ import { workflowUsage } from "./workflowSchemes.js";
 const WD = "/rest/workflowDesigner/1.0";
 const API = "/rest/api/2";
 const NO_CHECK = { "X-Atlassian-Token": "no-check" };
-const RULES_GAP = "Conditions, validators and post-functions are not readable over REST (only their counts are shown); check them in the Jira UI.";
+const RULES_GAP = "Conditions, validators and post-functions are not readable through the designer REST API (only counts are shown); a separately installed XML adapter supports jira_export_workflow_xml, otherwise inspect the Jira UI.";
 
 export interface WfStatus {
   ref: string;

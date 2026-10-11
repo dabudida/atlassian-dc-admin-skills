@@ -1917,9 +1917,9 @@ var require_dispatcher_base = __commonJS({
       }
       close(callback) {
         if (callback === void 0) {
-          return new Promise((resolve12, reject) => {
+          return new Promise((resolve13, reject) => {
             this.close((err, data) => {
-              return err ? reject(err) : resolve12(data);
+              return err ? reject(err) : resolve13(data);
             });
           });
         }
@@ -1957,12 +1957,12 @@ var require_dispatcher_base = __commonJS({
           err = null;
         }
         if (callback === void 0) {
-          return new Promise((resolve12, reject) => {
+          return new Promise((resolve13, reject) => {
             this.destroy(err, (err2, data) => {
               return err2 ? (
                 /* istanbul ignore next: should never error */
                 reject(err2)
-              ) : resolve12(data);
+              ) : resolve13(data);
             });
           });
         }
@@ -4132,8 +4132,8 @@ var require_util2 = __commonJS({
         return true;
       }
       const strongest = getStrongestMetadata(parsedMetadata);
-      const metadata = filterMetadataListByAlgorithm(parsedMetadata, strongest);
-      for (const item of metadata) {
+      const metadata2 = filterMetadataListByAlgorithm(parsedMetadata, strongest);
+      for (const item of metadata2) {
         const algorithm = item.algo;
         const expectedValue = item.hash;
         let actualValue = crypto.createHash(algorithm).update(bytes).digest("base64");
@@ -4151,10 +4151,10 @@ var require_util2 = __commonJS({
       return false;
     }
     var parseHashWithOptions = /(?<algo>sha256|sha384|sha512)-((?<hash>[A-Za-z0-9+/]+|[A-Za-z0-9_-]+)={0,2}(?:\s|$)( +[!-~]*)?)?/i;
-    function parseMetadata(metadata) {
+    function parseMetadata(metadata2) {
       const result = [];
       let empty = true;
-      for (const token of metadata.split(" ")) {
+      for (const token of metadata2.split(" ")) {
         empty = false;
         const parsedToken = parseHashWithOptions.exec(token);
         if (parsedToken === null || parsedToken.groups === void 0 || parsedToken.groups.algo === void 0) {
@@ -4176,13 +4176,13 @@ var require_util2 = __commonJS({
         return algorithm;
       }
       for (let i = 1; i < metadataList.length; ++i) {
-        const metadata = metadataList[i];
-        if (metadata.algo[3] === "5") {
+        const metadata2 = metadataList[i];
+        if (metadata2.algo[3] === "5") {
           algorithm = "sha512";
           break;
         } else if (algorithm[3] === "3") {
           continue;
-        } else if (metadata.algo[3] === "3") {
+        } else if (metadata2.algo[3] === "3") {
           algorithm = "sha384";
         }
       }
@@ -4229,8 +4229,8 @@ var require_util2 = __commonJS({
     function createDeferredPromise() {
       let res;
       let rej;
-      const promise2 = new Promise((resolve12, reject) => {
-        res = resolve12;
+      const promise2 = new Promise((resolve13, reject) => {
+        res = resolve13;
         rej = reject;
       });
       return { promise: promise2, resolve: res, reject: rej };
@@ -4789,9 +4789,9 @@ var require_formdata = __commonJS({
     var nodeUtil = __require("util");
     var File2 = globalThis.File ?? NativeFile;
     var FormData2 = class _FormData {
-      constructor(form2) {
+      constructor(form3) {
         webidl.util.markAsUncloneable(this);
-        if (form2 !== void 0) {
+        if (form3 !== void 0) {
           throw webidl.errors.conversionFailed({
             prefix: "FormData constructor",
             argument: "Argument 1",
@@ -5227,7 +5227,7 @@ var require_body = __commonJS({
       } else {
         stream = new ReadableStream({
           async pull(controller) {
-            const buffer = typeof source === "string" ? textEncoder.encode(source) : source;
+            const buffer = typeof source2 === "string" ? textEncoder.encode(source2) : source2;
             if (buffer.byteLength) {
               controller.enqueue(buffer);
             }
@@ -5240,19 +5240,19 @@ var require_body = __commonJS({
       }
       assert2(isReadableStreamLike(stream));
       let action = null;
-      let source = null;
+      let source2 = null;
       let length = null;
       let type = null;
       if (typeof object2 === "string") {
-        source = object2;
+        source2 = object2;
         type = "text/plain;charset=UTF-8";
       } else if (object2 instanceof URLSearchParams) {
-        source = object2.toString();
+        source2 = object2.toString();
         type = "application/x-www-form-urlencoded;charset=UTF-8";
       } else if (isArrayBuffer(object2)) {
-        source = new Uint8Array(object2.slice());
+        source2 = new Uint8Array(object2.slice());
       } else if (ArrayBuffer.isView(object2)) {
-        source = new Uint8Array(object2.buffer.slice(object2.byteOffset, object2.byteOffset + object2.byteLength));
+        source2 = new Uint8Array(object2.buffer.slice(object2.byteOffset, object2.byteOffset + object2.byteLength));
       } else if (util.isFormDataLike(object2)) {
         const boundary = `----formdata-undici-0${`${random(1e11)}`.padStart(11, "0")}`;
         const prefix = `--${boundary}\r
@@ -5291,7 +5291,7 @@ Content-Type: ${value.type || "application/octet-stream"}\r
         if (hasUnknownSizeValue) {
           length = null;
         }
-        source = object2;
+        source2 = object2;
         action = async function* () {
           for (const part of blobParts) {
             if (part.stream) {
@@ -5303,7 +5303,7 @@ Content-Type: ${value.type || "application/octet-stream"}\r
         };
         type = `multipart/form-data; boundary=${boundary}`;
       } else if (isBlobLike(object2)) {
-        source = object2;
+        source2 = object2;
         length = object2.size;
         if (object2.type) {
           type = object2.type;
@@ -5319,8 +5319,8 @@ Content-Type: ${value.type || "application/octet-stream"}\r
         }
         stream = object2 instanceof ReadableStream ? object2 : ReadableStreamFrom(object2);
       }
-      if (typeof source === "string" || util.isBuffer(source)) {
-        length = Buffer.byteLength(source);
+      if (typeof source2 === "string" || util.isBuffer(source2)) {
+        length = Buffer.byteLength(source2);
       }
       if (action != null) {
         let iterator;
@@ -5351,7 +5351,7 @@ Content-Type: ${value.type || "application/octet-stream"}\r
           type: "bytes"
         });
       }
-      const body = { stream, source, length };
+      const body = { stream, source: source2, length };
       return [body, type];
     }
     function safelyExtractBody(object2, keepalive = false) {
@@ -5542,7 +5542,7 @@ var require_client_h1 = __commonJS({
       kResume,
       kHTTPContext
     } = require_symbols();
-    var constants2 = require_constants2();
+    var constants3 = require_constants2();
     var EMPTY_BUF = Buffer.alloc(0);
     var FastBuffer = Buffer[Symbol.species];
     var addListener = util.addListener;
@@ -5617,7 +5617,7 @@ var require_client_h1 = __commonJS({
       constructor(client, socket, { exports: exports2 }) {
         assert2(Number.isFinite(client[kMaxHeadersSize]) && client[kMaxHeadersSize] > 0);
         this.llhttp = exports2;
-        this.ptr = this.llhttp.llhttp_alloc(constants2.TYPE.RESPONSE);
+        this.ptr = this.llhttp.llhttp_alloc(constants3.TYPE.RESPONSE);
         this.client = client;
         this.socket = socket;
         this.timeout = null;
@@ -5712,11 +5712,11 @@ var require_client_h1 = __commonJS({
             currentBufferRef = null;
           }
           const offset = llhttp.llhttp_get_error_pos(this.ptr) - currentBufferPtr;
-          if (ret !== constants2.ERROR.OK) {
+          if (ret !== constants3.ERROR.OK) {
             const body = data.subarray(offset);
-            if (ret === constants2.ERROR.PAUSED_UPGRADE) {
+            if (ret === constants3.ERROR.PAUSED_UPGRADE) {
               this.onUpgrade(body);
-            } else if (ret === constants2.ERROR.PAUSED) {
+            } else if (ret === constants3.ERROR.PAUSED) {
               this.paused = true;
               socket.unshift(body);
             } else {
@@ -5739,10 +5739,10 @@ var require_client_h1 = __commonJS({
         } finally {
           currentParser = null;
         }
-        if (ret === constants2.ERROR.OK) {
+        if (ret === constants3.ERROR.OK) {
           return null;
         }
-        if (ret === constants2.ERROR.PAUSED || ret === constants2.ERROR.PAUSED_UPGRADE) {
+        if (ret === constants3.ERROR.PAUSED || ret === constants3.ERROR.PAUSED_UPGRADE) {
           this.paused = true;
           return null;
         }
@@ -5759,7 +5759,7 @@ var require_client_h1 = __commonJS({
           const len = new Uint8Array(llhttp.memory.buffer, ptr).indexOf(0);
           message = "Response does not match the HTTP/1.1 protocol (" + Buffer.from(llhttp.memory.buffer, ptr, len).toString() + ")";
         }
-        return new HTTPParserError(message, constants2.ERROR[ret], data);
+        return new HTTPParserError(message, constants3.ERROR[ret], data);
       }
       destroy() {
         assert2(this.ptr != null);
@@ -5939,7 +5939,7 @@ var require_client_h1 = __commonJS({
           socket[kBlocking] = false;
           client[kResume]();
         }
-        return pause ? constants2.ERROR.PAUSED : 0;
+        return pause ? constants3.ERROR.PAUSED : 0;
       }
       onBody(buf) {
         const { client, socket, statusCode, maxResponseSize } = this;
@@ -5961,7 +5961,7 @@ var require_client_h1 = __commonJS({
         }
         this.bytesRead += buf.length;
         if (request.onData(buf) === false) {
-          return constants2.ERROR.PAUSED;
+          return constants3.ERROR.PAUSED;
         }
       }
       onMessageComplete() {
@@ -5997,13 +5997,13 @@ var require_client_h1 = __commonJS({
         if (socket[kWriting]) {
           assert2(client[kRunning] === 0);
           util.destroy(socket, new InformationalError("reset"));
-          return constants2.ERROR.PAUSED;
+          return constants3.ERROR.PAUSED;
         } else if (!shouldKeepAlive) {
           util.destroy(socket, new InformationalError("reset"));
-          return constants2.ERROR.PAUSED;
+          return constants3.ERROR.PAUSED;
         } else if (socket[kReset] && client[kRunning] === 0) {
           util.destroy(socket, new InformationalError("reset"));
-          return constants2.ERROR.PAUSED;
+          return constants3.ERROR.PAUSED;
         } else if (client[kPipelining] == null || client[kPipelining] === 1) {
           setImmediate(() => client[kResume]());
         } else {
@@ -6482,12 +6482,12 @@ upgrade: ${upgrade}\r
           cb();
         }
       }
-      const waitForDrain = () => new Promise((resolve12, reject) => {
+      const waitForDrain = () => new Promise((resolve13, reject) => {
         assert2(callback === null);
         if (socket[kError]) {
           reject(socket[kError]);
         } else {
-          callback = resolve12;
+          callback = resolve13;
         }
       });
       socket.on("close", onDrain).on("drain", onDrain);
@@ -7159,12 +7159,12 @@ var require_client_h2 = __commonJS({
           cb();
         }
       }
-      const waitForDrain = () => new Promise((resolve12, reject) => {
+      const waitForDrain = () => new Promise((resolve13, reject) => {
         assert2(callback === null);
         if (socket[kError]) {
           reject(socket[kError]);
         } else {
-          callback = resolve12;
+          callback = resolve13;
         }
       });
       h2stream.on("close", onDrain).on("drain", onDrain);
@@ -7642,16 +7642,16 @@ var require_client = __commonJS({
         return this[kNeedDrain] < 2;
       }
       async [kClose]() {
-        return new Promise((resolve12) => {
+        return new Promise((resolve13) => {
           if (this[kSize]) {
-            this[kClosedResolve] = resolve12;
+            this[kClosedResolve] = resolve13;
           } else {
-            resolve12(null);
+            resolve13(null);
           }
         });
       }
       async [kDestroy](err) {
-        return new Promise((resolve12) => {
+        return new Promise((resolve13) => {
           const requests = this[kQueue].splice(this[kPendingIdx]);
           for (let i = 0; i < requests.length; i++) {
             const request = requests[i];
@@ -7662,7 +7662,7 @@ var require_client = __commonJS({
               this[kClosedResolve]();
               this[kClosedResolve] = null;
             }
-            resolve12(null);
+            resolve13(null);
           };
           if (this[kHTTPContext]) {
             this[kHTTPContext].destroy(err, callback);
@@ -7713,7 +7713,7 @@ var require_client = __commonJS({
         });
       }
       try {
-        const socket = await new Promise((resolve12, reject) => {
+        const socket = await new Promise((resolve13, reject) => {
           client[kConnector]({
             host,
             hostname: hostname3,
@@ -7725,7 +7725,7 @@ var require_client = __commonJS({
             if (err) {
               reject(err);
             } else {
-              resolve12(socket2);
+              resolve13(socket2);
             }
           });
         });
@@ -8062,8 +8062,8 @@ var require_pool_base = __commonJS({
         if (this[kQueue].isEmpty()) {
           await Promise.all(this[kClients].map((c) => c.close()));
         } else {
-          await new Promise((resolve12) => {
-            this[kClosedResolve] = resolve12;
+          await new Promise((resolve13) => {
+            this[kClosedResolve] = resolve13;
           });
         }
       }
@@ -9329,7 +9329,7 @@ var require_readable = __commonJS({
         if (this._readableState.closeEmitted) {
           return null;
         }
-        return await new Promise((resolve12, reject) => {
+        return await new Promise((resolve13, reject) => {
           if (this[kContentLength] > limit) {
             this.destroy(new AbortError());
           }
@@ -9342,7 +9342,7 @@ var require_readable = __commonJS({
             if (signal?.aborted) {
               reject(signal.reason ?? new AbortError());
             } else {
-              resolve12(null);
+              resolve13(null);
             }
           }).on("error", noop).on("data", function(chunk) {
             limit -= chunk.length;
@@ -9361,7 +9361,7 @@ var require_readable = __commonJS({
     }
     async function consume(stream, type) {
       assert2(!stream[kConsume]);
-      return new Promise((resolve12, reject) => {
+      return new Promise((resolve13, reject) => {
         if (isUnusable(stream)) {
           const rState = stream._readableState;
           if (rState.destroyed && rState.closeEmitted === false) {
@@ -9378,7 +9378,7 @@ var require_readable = __commonJS({
             stream[kConsume] = {
               type,
               stream,
-              resolve: resolve12,
+              resolve: resolve13,
               reject,
               length: 0,
               body: []
@@ -9448,18 +9448,18 @@ var require_readable = __commonJS({
       return buffer;
     }
     function consumeEnd(consume2) {
-      const { type, body, resolve: resolve12, stream, length } = consume2;
+      const { type, body, resolve: resolve13, stream, length } = consume2;
       try {
         if (type === "text") {
-          resolve12(chunksDecode(body, length));
+          resolve13(chunksDecode(body, length));
         } else if (type === "json") {
-          resolve12(JSON.parse(chunksDecode(body, length)));
+          resolve13(JSON.parse(chunksDecode(body, length)));
         } else if (type === "arrayBuffer") {
-          resolve12(chunksConcat(body, length).buffer);
+          resolve13(chunksConcat(body, length).buffer);
         } else if (type === "blob") {
-          resolve12(new Blob(body, { type: stream[kContentType] }));
+          resolve13(new Blob(body, { type: stream[kContentType] }));
         } else if (type === "bytes") {
-          resolve12(chunksConcat(body, length));
+          resolve13(chunksConcat(body, length));
         }
         consumeFinish(consume2);
       } catch (err) {
@@ -9717,9 +9717,9 @@ var require_api_request = __commonJS({
     };
     function request(opts, callback) {
       if (callback === void 0) {
-        return new Promise((resolve12, reject) => {
+        return new Promise((resolve13, reject) => {
           request.call(this, opts, (err, data) => {
-            return err ? reject(err) : resolve12(data);
+            return err ? reject(err) : resolve13(data);
           });
         });
       }
@@ -9943,9 +9943,9 @@ var require_api_stream = __commonJS({
     };
     function stream(opts, factory, callback) {
       if (callback === void 0) {
-        return new Promise((resolve12, reject) => {
+        return new Promise((resolve13, reject) => {
           stream.call(this, opts, factory, (err, data) => {
-            return err ? reject(err) : resolve12(data);
+            return err ? reject(err) : resolve13(data);
           });
         });
       }
@@ -10230,9 +10230,9 @@ var require_api_upgrade = __commonJS({
     };
     function upgrade(opts, callback) {
       if (callback === void 0) {
-        return new Promise((resolve12, reject) => {
+        return new Promise((resolve13, reject) => {
           upgrade.call(this, opts, (err, data) => {
-            return err ? reject(err) : resolve12(data);
+            return err ? reject(err) : resolve13(data);
           });
         });
       }
@@ -10324,9 +10324,9 @@ var require_api_connect = __commonJS({
     };
     function connect(opts, callback) {
       if (callback === void 0) {
-        return new Promise((resolve12, reject) => {
+        return new Promise((resolve13, reject) => {
           connect.call(this, opts, (err, data) => {
-            return err ? reject(err) : resolve12(data);
+            return err ? reject(err) : resolve13(data);
           });
         });
       }
@@ -14188,7 +14188,7 @@ var require_fetch = __commonJS({
       function dispatch({ body }) {
         const url2 = requestCurrentURL(request);
         const agent = fetchParams.controller.dispatcher;
-        return new Promise((resolve12, reject) => agent.dispatch(
+        return new Promise((resolve13, reject) => agent.dispatch(
           {
             path: url2.pathname + url2.search,
             origin: url2.origin,
@@ -14264,7 +14264,7 @@ var require_fetch = __commonJS({
                 }
               }
               const onError = this.onError.bind(this);
-              resolve12({
+              resolve13({
                 status,
                 statusText,
                 headersList,
@@ -14310,7 +14310,7 @@ var require_fetch = __commonJS({
               for (let i = 0; i < rawHeaders.length; i += 2) {
                 headersList.append(bufferToLowerCasedHeaderName(rawHeaders[i]), rawHeaders[i + 1].toString("latin1"), true);
               }
-              resolve12({
+              resolve13({
                 status,
                 statusText: STATUS_CODES[status],
                 headersList,
@@ -16372,7 +16372,7 @@ var require_events = __commonJS({
         }
         return this.#eventInit.ports;
       }
-      initMessageEvent(type, bubbles = false, cancelable = false, data = null, origin = "", lastEventId = "", source = null, ports = []) {
+      initMessageEvent(type, bubbles = false, cancelable = false, data = null, origin = "", lastEventId = "", source2 = null, ports = []) {
         webidl.brandCheck(this, _MessageEvent);
         webidl.argumentLengthCheck(arguments, 1, "MessageEvent.initMessageEvent");
         return new _MessageEvent(type, {
@@ -16381,7 +16381,7 @@ var require_events = __commonJS({
           data,
           origin,
           lastEventId,
-          source,
+          source: source2,
           ports
         });
       }
@@ -18041,8 +18041,8 @@ var require_util8 = __commonJS({
       return true;
     }
     function delay(ms) {
-      return new Promise((resolve12) => {
-        setTimeout(resolve12, ms).unref();
+      return new Promise((resolve13) => {
+        setTimeout(resolve13, ms).unref();
       });
     }
     module.exports = {
@@ -19060,7 +19060,7 @@ var require_DOMException = __commonJS({
       "INVALID_NODE_TYPE_ERR (24): the supplied node is invalid or has an invalid ancestor for this operation",
       "DATA_CLONE_ERR (25): the object can not be cloned."
     ];
-    var constants2 = {
+    var constants3 = {
       INDEX_SIZE_ERR,
       DOMSTRING_SIZE_ERR: 2,
       // historical
@@ -19099,8 +19099,8 @@ var require_DOMException = __commonJS({
       this.name = names[code];
     }
     DOMException2.prototype.__proto__ = Error.prototype;
-    for (c in constants2) {
-      v = { value: constants2[c] };
+    for (c in constants3) {
+      v = { value: constants3[c] };
       Object.defineProperty(DOMException2, c, v);
       Object.defineProperty(DOMException2.prototype, c, v);
     }
@@ -21780,7 +21780,7 @@ var require_Element = __commonJS({
     var FilteredElementList = require_FilteredElementList();
     var DOMException2 = require_DOMException();
     var DOMTokenList = require_DOMTokenList();
-    var select = require_select();
+    var select2 = require_select();
     var ContainerNode = require_ContainerNode();
     var ChildNode = require_ChildNode();
     var NonDocumentTypeChildNode = require_NonDocumentTypeChildNode();
@@ -22541,7 +22541,7 @@ var require_Element = __commonJS({
         this.className = v;
       } },
       matches: { value: function(selector) {
-        return select.matches(this, selector);
+        return select2.matches(this, selector);
       } },
       closest: { value: function(selector) {
         var el = this;
@@ -22554,10 +22554,10 @@ var require_Element = __commonJS({
         return null;
       } },
       querySelector: { value: function(selector) {
-        return select(selector, this)[0];
+        return select2(selector, this)[0];
       } },
       querySelectorAll: { value: function(selector) {
-        var nodes = select(selector, this);
+        var nodes = select2(selector, this);
         return nodes.item ? nodes : new NodeList(nodes);
       } }
     });
@@ -23085,7 +23085,7 @@ var require_DocumentFragment = __commonJS({
     var NodeList = require_NodeList();
     var ContainerNode = require_ContainerNode();
     var Element = require_Element();
-    var select = require_select();
+    var select2 = require_select();
     var utils = require_utils2();
     function DocumentFragment(doc) {
       ContainerNode.call(this);
@@ -23114,7 +23114,7 @@ var require_DocumentFragment = __commonJS({
         context.isHTML = true;
         context.getElementsByTagName = Element.prototype.getElementsByTagName;
         context.nextElement = Object.getOwnPropertyDescriptor(Element.prototype, "firstElementChild").get;
-        var nodes = select(selector, context);
+        var nodes = select2(selector, context);
         return nodes.item ? nodes : new NodeList(nodes);
       } },
       // Utility methods
@@ -24473,10 +24473,10 @@ var require_defineElement = __commonJS({
       });
       return c;
     };
-    function EventHandlerBuilder(body, document, form2, element) {
+    function EventHandlerBuilder(body, document, form3, element) {
       this.body = body;
       this.document = document;
-      this.form = form2;
+      this.form = form3;
       this.element = element;
     }
     EventHandlerBuilder.prototype.build = function() {
@@ -24485,8 +24485,8 @@ var require_defineElement = __commonJS({
     };
     function EventHandlerChangeHandler(elt, name, oldval, newval) {
       var doc = elt.ownerDocument || /* @__PURE__ */ Object.create(null);
-      var form2 = elt.form || /* @__PURE__ */ Object.create(null);
-      elt[name] = new EventHandlerBuilder(newval, doc, form2, elt).build();
+      var form3 = elt.form || /* @__PURE__ */ Object.create(null);
+      elt[name] = new EventHandlerBuilder(newval, doc, form3, elt).build();
     }
     function addEventHandlers(c, eventHandlerTypes) {
       var p = c.prototype;
@@ -26229,7 +26229,7 @@ var require_Document = __commonJS({
     var NodeIterator = require_NodeIterator();
     var NodeFilter = require_NodeFilter();
     var URL2 = require_URL();
-    var select = require_select();
+    var select2 = require_select();
     var events = require_events2();
     var xml = require_xmlnames();
     var html = require_htmlelts();
@@ -26790,10 +26790,10 @@ var require_Document = __commonJS({
         return this._templateDocCache;
       } },
       querySelector: { value: function(selector) {
-        return select(selector, this)[0];
+        return select2(selector, this)[0];
       } },
       querySelectorAll: { value: function(selector) {
-        var nodes = select(selector, this);
+        var nodes = select2(selector, this);
         return nodes.item ? nodes : new NodeList(nodes);
       } }
     });
@@ -35495,7 +35495,7 @@ var require_lib = __commonJS({
 // src/cli.ts
 import { appendFileSync, existsSync as existsSync7, mkdirSync as mkdirSync3, readFileSync as readFileSync9, writeFileSync as writeFileSync5 } from "fs";
 import { spawnSync as spawnSync2 } from "child_process";
-import { dirname as dirname4, resolve as resolve11 } from "path";
+import { dirname as dirname4, resolve as resolve12 } from "path";
 
 // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/classic/external.js
 var external_exports = {};
@@ -36205,10 +36205,10 @@ function cached(getter) {
 function nullish(input2) {
   return input2 === null || input2 === void 0;
 }
-function cleanRegex(source) {
-  const start = source.startsWith("^") ? 1 : 0;
-  const end = source.endsWith("$") ? source.length - 1 : source.length;
-  return source.slice(start, end);
+function cleanRegex(source2) {
+  const start = source2.startsWith("^") ? 1 : 0;
+  const end = source2.endsWith("$") ? source2.length - 1 : source2.length;
+  return source2.slice(start, end);
 }
 function floatSafeRemainder(val, step) {
   const ratio = val / step;
@@ -36276,28 +36276,28 @@ function putProp(target, key, value) {
   else
     target[key] = value;
 }
-function mirrorShape(target, source, keys, wrap) {
-  const raw = sourceShape(source);
+function mirrorShape(target, source2, keys, wrap) {
+  const raw = sourceShape(source2);
   for (const key of keys) {
     const desc2 = Object.getOwnPropertyDescriptor(raw, key);
     if (!desc2.enumerable)
       continue;
     if (desc2.get) {
       deferProp(target, key, () => {
-        const value = source._zod.def.shape[key];
+        const value = source2._zod.def.shape[key];
         return wrap ? wrap(value, key) : value;
       });
     } else
       putProp(target, key, wrap ? wrap(desc2.value, key) : desc2.value);
   }
 }
-function mirrorProps(target, source) {
-  for (const key of Reflect.ownKeys(source)) {
-    const desc2 = Object.getOwnPropertyDescriptor(source, key);
+function mirrorProps(target, source2) {
+  for (const key of Reflect.ownKeys(source2)) {
+    const desc2 = Object.getOwnPropertyDescriptor(source2, key);
     if (!desc2.enumerable)
       continue;
     if (desc2.get)
-      deferProp(target, key, () => source[key]);
+      deferProp(target, key, () => source2[key]);
     else
       putProp(target, key, desc2.value);
   }
@@ -37510,8 +37510,8 @@ var creditCard = /^\d(?:[ -]?\d){11,18}$/;
 var currencyCode = /^(?:AED|AFN|ALL|AMD|AOA|ARS|AUD|AWG|AZN|BAM|BBD|BDT|BHD|BIF|BMD|BND|BOB|BOV|BRL|BSD|BTN|BWP|BYN|BZD|CAD|CDF|CHE|CHF|CHW|CLF|CLP|CNY|COP|COU|CRC|CUP|CVE|CZK|DJF|DKK|DOP|DZD|EGP|ERN|ETB|EUR|FJD|FKP|GBP|GEL|GHS|GIP|GMD|GNF|GTQ|GYD|HKD|HNL|HTG|HUF|IDR|ILS|INR|IQD|IRR|ISK|JMD|JOD|JPY|KES|KGS|KHR|KMF|KPW|KRW|KWD|KYD|KZT|LAK|LBP|LKR|LRD|LSL|LYD|MAD|MDL|MGA|MKD|MMK|MNT|MOP|MRU|MUR|MVR|MWK|MXN|MXV|MYR|MZN|NAD|NGN|NIO|NOK|NPR|NZD|OMR|PAB|PEN|PGK|PHP|PKR|PLN|PYG|QAR|RON|RSD|RUB|RWF|SAR|SBD|SCR|SDG|SEK|SGD|SHP|SLE|SOS|SRD|SSP|STN|SVC|SYP|SZL|THB|TJS|TMT|TND|TOP|TRY|TTD|TWD|TZS|UAH|UGX|USD|USN|UYI|UYU|UYW|UZS|VED|VES|VND|VUV|WST|XAD|XAF|XAG|XAU|XBA|XBB|XBC|XBD|XCD|XCG|XDR|XOF|XPD|XPF|XPT|XSU|XTS|XUA|XXX|YER|ZAR|ZMW|ZWG)$/;
 var iban = /^[A-Z]{2}(?!00|01|99)\d{2}[A-Z0-9]{11,30}$/;
 var dateSource = `(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))`;
-function anchor(source) {
-  return new RegExp(`^${source}$`);
+function anchor(source2) {
+  return new RegExp(`^${source2}$`);
 }
 var date = /* @__PURE__ */ anchor(dateSource);
 function timeSource(args) {
@@ -40334,11 +40334,11 @@ var $ZodTemplateLiteral = /* @__PURE__ */ $constructor("$ZodTemplateLiteral", (i
   const regexParts = [];
   for (const part of def.parts) {
     if (typeof part === "object" && part !== null) {
-      const source = partPattern(part);
-      if (!source) {
+      const source2 = partPattern(part);
+      if (!source2) {
         throw new Error(`Invalid template literal part, no pattern found: ${[...part._zod.traits].shift()}`);
       }
-      regexParts.push(cleanRegex(source));
+      regexParts.push(cleanRegex(source2));
     } else if (part === null || primitiveTypes.has(typeof part)) {
       regexParts.push(escapeRegex(`${part}`));
     } else {
@@ -40523,7 +40523,7 @@ var recursive = /* @__PURE__ */ new WeakMap();
 var NONE = 0;
 var ASSUMED = 1;
 var PROVEN = 2;
-function isRecursive(inst, stack, resolve12) {
+function isRecursive(inst, stack, resolve13) {
   const cached3 = recursive.get(inst);
   if (cached3 !== void 0)
     return cached3 ? PROVEN : NONE;
@@ -40533,7 +40533,7 @@ function isRecursive(inst, stack, resolve12) {
   let result = NONE;
   const check2 = (child) => {
     if (result !== PROVEN && child?._zod) {
-      const answer = isRecursive(child, stack, resolve12);
+      const answer = isRecursive(child, stack, resolve13);
       if (answer > result)
         result = answer;
     }
@@ -40544,7 +40544,7 @@ function isRecursive(inst, stack, resolve12) {
       const desc2 = Object.getOwnPropertyDescriptor(sh, key);
       if (spread && !desc2.enumerable)
         continue;
-      const child = desc2.get ? ASSUMED : desc2.value?._zod ? isRecursive(desc2.value, stack, resolve12) : NONE;
+      const child = desc2.get ? ASSUMED : desc2.value?._zod ? isRecursive(desc2.value, stack, resolve13) : NONE;
       if (child > answer)
         answer = child;
     }
@@ -40608,7 +40608,7 @@ function isRecursive(inst, stack, resolve12) {
       break;
     // `$ZodLazy` caches its inner on the def, so a resolved edge is followed exactly
     case "lazy": {
-      const inner = def._cachedInner ?? (resolve12 ? inst._zod.innerType : void 0);
+      const inner = def._cachedInner ?? (resolve13 ? inst._zod.innerType : void 0);
       merge2(inner ? isRecursive(inner, stack, false) : ASSUMED);
       break;
     }
@@ -48464,9 +48464,9 @@ function withParser(schema, parser) {
     installCompiledUserMethods(clone2, schema, parser);
   return clone2;
 }
-function installCompiledUserMethods(target, source, parser) {
+function installCompiledUserMethods(target, source2, parser) {
   const targetAny = target;
-  const sourceAny = source;
+  const sourceAny = source2;
   if (typeof sourceAny.safeParse === "function") {
     const originalSafeParse = sourceAny.safeParse;
     targetAny.safeParse = (data, params) => {
@@ -50685,8 +50685,8 @@ function _overwrite(tx) {
   });
 }
 // @__NO_SIDE_EFFECTS__
-function _normalize(form2) {
-  return /* @__PURE__ */ _overwrite((input2) => input2.normalize(form2));
+function _normalize(form3) {
+  return /* @__PURE__ */ _overwrite((input2) => input2.normalize(form3));
 }
 // @__NO_SIDE_EFFECTS__
 function _trim() {
@@ -50976,12 +50976,12 @@ function describe(description) {
   return ch;
 }
 // @__NO_SIDE_EFFECTS__
-function meta(metadata) {
+function meta(metadata2) {
   const ch = new $ZodCheck({ check: "meta" });
   ch._zod.onattach = [
     (inst) => {
       const existing = globalRegistry.get(inst) ?? {};
-      globalRegistry.add(inst, { ...existing, ...metadata });
+      globalRegistry.add(inst, { ...existing, ...metadata2 });
     }
   ];
   ch._zod.check = () => {
@@ -51061,10 +51061,10 @@ function _stringFormat(Class2, format, fnOrRegex, _params = {}) {
 
 // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/core/to-json-schema.js
 function assignProps(target, ...sources) {
-  for (const source of sources) {
-    for (const key of Reflect.ownKeys(source)) {
-      if (Object.prototype.propertyIsEnumerable.call(source, key)) {
-        assignProp(target, key, source[key]);
+  for (const source2 of sources) {
+    for (const key of Reflect.ownKeys(source2)) {
+      if (Object.prototype.propertyIsEnumerable.call(source2, key)) {
+        assignProp(target, key, source2[key]);
       }
     }
   }
@@ -55811,7 +55811,7 @@ function declined(message = "The user did not approve the change") {
 // src/plan.ts
 import { createHash as createHash2 } from "crypto";
 import { existsSync as existsSync5, readFileSync as readFileSync7, renameSync, writeFileSync as writeFileSync3 } from "fs";
-import { resolve as resolve9 } from "path";
+import { resolve as resolve10 } from "path";
 
 // src/client.ts
 var import_undici = __toESM(require_undici(), 1);
@@ -56022,7 +56022,7 @@ var RequestLimiter = class {
       this.active++;
       return;
     }
-    await new Promise((resolve12) => this.waiting.push(resolve12));
+    await new Promise((resolve13) => this.waiting.push(resolve13));
   }
   release() {
     const next2 = this.active <= this.limit ? this.waiting.shift() : void 0;
@@ -56108,7 +56108,7 @@ var AtlassianClient = class _AtlassianClient {
         res = await this.fetchImpl(url2, { ...init, signal: AbortSignal.timeout(this.config.timeoutMs) });
       } catch (e) {
         this.limiter.release();
-        if (read && !last && isTransient(e)) {
+        if (opts.retry !== false && read && !last && isTransient(e)) {
           await timing.sleep(backoffMs(attempt));
           continue;
         }
@@ -56120,7 +56120,7 @@ var AtlassianClient = class _AtlassianClient {
       if (res.status === 429) this.limiter.throttled();
       else if (res.status < 400) this.limiter.succeeded();
       const retryable = res.status === 429 || read && RETRYABLE_STATUS.has(res.status);
-      if (retryable && !last) {
+      if (opts.retry !== false && retryable && !last) {
         const asked = retryAfterMs(res.headers.get("retry-after"));
         if (asked === void 0 || asked <= MAX_RETRY_WAIT_MS) {
           await res.text();
@@ -56317,15 +56317,15 @@ async function guardedWrite(client, args, req) {
       note: "Nothing was changed. Confirm with the user, then re-run with dry_run=false."
     };
   }
-  let form2;
+  let form3;
   if (fileList) {
-    form2 = new FormData();
-    for (const f of fileList) form2.append(f.field, new Blob([readFileSync3(f.path)]), f.name);
+    form3 = new FormData();
+    for (const f of fileList) form3.append(f.field, new Blob([readFileSync3(f.path)]), f.name);
   }
   const result = await client.request(req.method, req.path, {
     params: req.params,
-    json: form2 ? void 0 : req.json,
-    form: form2,
+    json: form3 ? void 0 : req.json,
+    form: form3,
     urlencoded: req.urlencoded,
     body: req.body,
     contentType: req.contentType,
@@ -57422,10 +57422,10 @@ var jiraSchemeTools = [
       const byId = new Map((Array.isArray(allTypes) ? allTypes : []).map((t) => [String(t.id), t]));
       const types = Array.isArray(allTypes) ? allTypes : [];
       const dryRun = args.dry_run !== false;
-      const resolve12 = (given) => resolveIssueType(c, given, { within: types, allowPending: dryRun });
+      const resolve13 = (given) => resolveIssueType(c, given, { within: types, allowPending: dryRun });
       const refs = [];
-      for (const given of args.issue_types) refs.push(await resolve12(given));
-      const defaultRef = args.default_issue_type !== void 0 ? await resolve12(args.default_issue_type) : void 0;
+      for (const given of args.issue_types) refs.push(await resolve13(given));
+      const defaultRef = args.default_issue_type !== void 0 ? await resolve13(args.default_issue_type) : void 0;
       const idOf = (r) => r.id ?? issueTypePlaceholder(r.name);
       const requestedIds = refs.map(idOf);
       const defaultId = defaultRef ? idOf(defaultRef) : void 0;
@@ -57832,15 +57832,15 @@ var jiraWorkflowSchemeTools = [
       const { client } = ctx;
       if (args.copy_from_scheme_id !== void 0) args.copy_from_scheme_id = await resolveSchemeRef(ctx, client("jira"), args.copy_from_scheme_id, false);
       const c = client("jira");
-      const source = args.copy_from_scheme_id !== void 0 ? await getWorkflowScheme(c, args.copy_from_scheme_id) : void 0;
+      const source2 = args.copy_from_scheme_id !== void 0 ? await getWorkflowScheme(c, args.copy_from_scheme_id) : void 0;
       const json2 = { name: args.name };
-      const description = args.description ?? source?.description;
+      const description = args.description ?? source2?.description;
       if (description) json2.description = description;
-      const defaultWorkflow = args.default_workflow ?? source?.defaultWorkflow;
+      const defaultWorkflow = args.default_workflow ?? source2?.defaultWorkflow;
       if (defaultWorkflow) json2.defaultWorkflow = defaultWorkflow;
-      const mappings = { ...source?.issueTypeMappings ?? {}, ...args.issue_type_mappings ?? {} };
+      const mappings = { ...source2?.issueTypeMappings ?? {}, ...args.issue_type_mappings ?? {} };
       if (Object.keys(mappings).length) json2.issueTypeMappings = mappings;
-      const from = source ? ` as a copy of '${source.name}'` : "";
+      const from = source2 ? ` as a copy of '${source2.name}'` : "";
       const summary = `Create workflow scheme '${args.name}'${from} (default ${defaultWorkflow ?? "jira"}, ${Object.keys(mappings).length} mappings)`;
       const scan = await cachedSchemeScan(c);
       const same2 = scan.schemes.find((x2) => x2.id !== null && x2.name === args.name);
@@ -58556,7 +58556,7 @@ var jiraScreenTools = [
 var WD = "/rest/workflowDesigner/1.0";
 var API7 = "/rest/api/2";
 var NO_CHECK = { "X-Atlassian-Token": "no-check" };
-var RULES_GAP = "Conditions, validators and post-functions are not readable over REST (only their counts are shown); check them in the Jira UI.";
+var RULES_GAP = "Conditions, validators and post-functions are not readable through the designer REST API (only counts are shown); a separately installed XML adapter supports jira_export_workflow_xml, otherwise inspect the Jira UI.";
 function ruleCounts(options) {
   const out = {};
   for (const o of options ?? []) {
@@ -58710,8 +58710,8 @@ function findTransition(model, given, filter, from) {
   const v = String(given).trim();
   let hits = model.transitions.filter((t) => !t.initial && filter(t) && (String(t.actionId) === v || t.name.toLowerCase() === v.toLowerCase()));
   if (from !== void 0) {
-    const source = requireStatus(model, from).name;
-    hits = hits.filter((t) => t.source === source);
+    const source2 = requireStatus(model, from).name;
+    hits = hits.filter((t) => t.source === source2);
   }
   const ids = new Set(hits.map((t) => `${t.actionId}:${t.source}`));
   if (ids.size > 1) {
@@ -59237,6 +59237,833 @@ var jiraWorkflowTools = [
   }
 ];
 
+// src/tools/jira/workflowXml.ts
+import { lstat as lstat2, open as open2, mkdtemp, rename as rename2, rm, writeFile as writeFile2 } from "fs/promises";
+import { constants as constants2 } from "fs";
+import { join as join3, resolve as resolve4 } from "path";
+
+// src/tools/jira/scriptRoot.ts
+import { createHash, randomBytes } from "crypto";
+import { copyFile, lstat, mkdir, readFile, realpath, rename, stat, unlink, writeFile } from "fs/promises";
+import { constants } from "fs";
+import { basename as basename2, dirname as dirname2, join as join2, relative, resolve as resolve3, sep } from "path";
+
+// src/tools/jira/scriptrunner.ts
+var SR = "/rest/scriptrunner/latest";
+var SJ = "/rest/scriptrunner-jira/latest";
+var PLUGIN_KEY = "com.onresolve.jira.groovy.groovyrunner";
+var SUPPORT_MATRIX = [
+  // Script Editor reads and PUT/read-back checked on this pair; broader ranges are allowed by policy.
+  { jira: "11.3.7", scriptrunner: "10.14.0", verified: "2026-10-07", operations: ["script-root-read", "script-root-write"] },
+  ...["10.x", "11.x"].flatMap((jira) => ["9.x", "10.x"].map((scriptrunner) => ({
+    jira,
+    scriptrunner,
+    operations: ["script-root-read", "script-root-write"]
+  })))
+];
+function matchesVersion(version2, range) {
+  if (!range.endsWith(".x")) return version2 === range;
+  const match = /^(\d+)\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?$/.exec(version2);
+  return !!match && `${match[1]}.x` === range;
+}
+function supportEntry(jira, scriptrunner) {
+  return SUPPORT_MATRIX.find((m) => matchesVersion(jira, m.jira) && matchesVersion(scriptrunner, m.scriptrunner));
+}
+async function requireScriptRunnerOperation(client, operation, label) {
+  const v = await requireScriptRunner(client);
+  const entry = supportEntry(v.jira, v.scriptrunner);
+  if (!entry?.operations.includes(operation)) {
+    throw new UnsupportedError(
+      `${label} is not verified for Jira ${v.jira} + ScriptRunner ${v.scriptrunner}; its internal API needs a verification for this pair first`,
+      { observedJira: v.jira, observedScriptRunner: v.scriptrunner, operation }
+    );
+  }
+  return v;
+}
+async function isScriptRunnerOperationVerified(client, operation) {
+  const v = await requireScriptRunner(client);
+  return !!supportEntry(v.jira, v.scriptrunner)?.operations.includes(operation);
+}
+var discovered = /* @__PURE__ */ new WeakMap();
+function requireScriptRunner(client) {
+  let p = discovered.get(client);
+  if (!p) {
+    p = (async () => {
+      const jira = await jiraVersion(client);
+      let plugin;
+      try {
+        plugin = await client.get(`/rest/plugins/1.0/${PLUGIN_KEY}-key`, void 0, "application/vnd.atl.plugins.plugin+json");
+      } catch (e) {
+        if (isHttpStatusError(e) && e.status === 404) throw new UnsupportedError("ScriptRunner is not installed on this Jira");
+        throw e;
+      }
+      if (typeof plugin?.version !== "string" || typeof plugin?.enabled !== "boolean") {
+        throw new ValidationError("ScriptRunner discovery returned no version or state; refusing to call its resources");
+      }
+      if (!plugin.enabled) throw new UnsupportedError(`ScriptRunner ${plugin.version} is installed but disabled`);
+      const ok = supportEntry(jira, plugin.version);
+      if (!ok) {
+        const pairs = SUPPORT_MATRIX.map((m) => `Jira ${m.jira} + ScriptRunner ${m.scriptrunner}`).join(", ");
+        throw new UnsupportedError(
+          `Jira ${jira} + ScriptRunner ${plugin.version} is outside the allowed version ranges (allowed: ${pairs})`,
+          { observedJira: jira, observedScriptRunner: plugin.version }
+        );
+      }
+      return { jira, scriptrunner: plugin.version };
+    })();
+    discovered.set(client, p);
+    p.catch(() => discovered.delete(client));
+  }
+  return p;
+}
+var SENSITIVE = /script|source|code|class_?name|classname|condition|do_?what|sql|password|secret|token|credential|jdbc|datasourceuser|parameters|pooloverrides|poolpropertyoverrides|configuration_script/i;
+function redact(value) {
+  if (Array.isArray(value)) return value.map(redact);
+  if (value && typeof value === "object") {
+    return Object.fromEntries(Object.entries(value).filter(([k2]) => !SENSITIVE.test(k2)).map(([k2, v]) => [k2, redact(v)]));
+  }
+  return value;
+}
+var shortKind = (c) => typeof c === "string" ? c.split(".").pop() : void 0;
+var iso = (ms) => typeof ms === "number" ? new Date(ms).toISOString() : null;
+var TYPES = {
+  job: {
+    base: `${SR}/scheduled-jobs`,
+    label: "scheduled job",
+    name: (r) => r.name,
+    view: (r) => ({ id: r.id, name: r.name, kind: shortKind(r["canned-script"]), schedule: [r.scheduleType, r.FIELD_INTERVAL].filter(Boolean).join(" "), runAs: r.FIELD_USER_ID ?? null, disabled: !!r.disabled, nextRun: iso(r.nextRunTime), notes: r.FIELD_NOTES ?? "" }),
+    writable: { disabled: "disabled", notes: "FIELD_NOTES" }
+  },
+  listener: {
+    base: `${SJ}/listeners`,
+    label: "listener",
+    name: (r) => r.name,
+    view: (r) => ({ id: r.id, name: r.name, kind: shortKind(r["canned-script"]), events: r.friendlyEventNames ?? "", projects: (r.relatedProjects ?? []).map((p) => p.key ?? p).join(",") || (r.projects ?? []).join(","), notes: r.FIELD_LISTENER_NOTES ?? r.FIELD_NOTES ?? "" }),
+    writable: { notes: "FIELD_LISTENER_NOTES" }
+  },
+  field: {
+    base: `${SJ}/scriptfields`,
+    label: "script field",
+    name: (r) => r.name,
+    view: (r) => ({ id: r.id, name: r.name, kind: shortKind(r["canned-script"]), description: r.desc ?? "", customFieldId: r.customFieldId ? `customfield_${r.customFieldId}` : null, searcher: r.searcherName ?? null, allProjects: !!r.isAllProjects }),
+    writable: {},
+    readOnlyReason: "script fields have neither an enabled flag nor a notes field"
+  },
+  fragment: {
+    base: `${SR}/fragments`,
+    label: "UI fragment",
+    name: (r) => r.name,
+    view: (r) => ({ id: r.id, name: r.name, type: r.type, location: r.locationName ?? r.FIELD_LOCATION ?? null, key: r.FIELD_KEY ?? null, section: r.FIELD_SECTION || null, weight: r.FIELD_WEIGHT ?? null, label: r.FIELD_MENU_LABEL ?? null, link: r.FIELD_LINK_DESTINATION ?? null, disabled: !!r.disabled, notes: r.FIELD_NOTES ?? "" }),
+    writable: { disabled: "disabled", notes: "FIELD_NOTES" }
+  },
+  endpoint: {
+    base: `${SR}/custom/customadmin`,
+    label: "REST endpoint",
+    name: (r) => r.resourcePath ?? r.id,
+    view: (r) => ({ id: r.id, name: r.resourcePath ?? r.id, methods: (r.endpoints ?? []).map((e) => `${e.method ?? "?"} ${e.name ?? ""}`.trim()).join(", "), groups: [...new Set((r.endpoints ?? []).flatMap((e) => e.groups ?? []))].join(","), disabled: !!r.disabled, notes: r.FIELD_NOTES ?? "" }),
+    writable: { disabled: "disabled", notes: "FIELD_NOTES" }
+  },
+  resource: {
+    base: `${SR}/resources`,
+    label: "resource",
+    name: (r) => r.poolName ?? r.id,
+    view: (r) => ({ id: r.id, name: r.poolName ?? r.id, kind: shortKind(r["canned-script"]), driver: r.driverClassName ?? null, readOnly: !!r.readOnly, disabled: !!r.disabled }),
+    writable: {},
+    readOnlyReason: "a resource's stored item carries the data source password, which sending it back could overwrite"
+  },
+  registry: {
+    base: `${SR}/scriptSearch`,
+    label: "script file",
+    name: (r) => r.filename,
+    view: (r) => ({ name: r.filename, path: r.filepath, type: r.filetype }),
+    writable: {},
+    readOnlyReason: "the script registry is a read-only file list"
+  }
+};
+var UNSUPPORTED = {
+  "mail-handler": "ScriptRunner exposes only an endpoint that runs a mail handler, not its configuration",
+  behaviour: "ScriptRunner exposes only Behaviours' runtime resources through REST, not their configuration"
+};
+var typeArg = external_exports.enum([...Object.keys(TYPES), ...Object.keys(UNSUPPORTED)]);
+function typeOf(name) {
+  if (UNSUPPORTED[name]) throw new UnsupportedError(`${name}: ${UNSUPPORTED[name]}`);
+  return TYPES[name];
+}
+async function listRaw(client, t) {
+  const data = await client.get(t.base);
+  return Array.isArray(data) ? data : [];
+}
+function pick3(t, items, given) {
+  const v = String(given).trim();
+  const byId = items.find((x2) => String(x2.id) === v);
+  if (byId) return byId;
+  const byName = items.filter((x2) => String(t.name(x2)).toLowerCase() === v.toLowerCase());
+  if (byName.length > 1) throw new ValidationError(`Several ${t.label}s are named '${v}'; pass the id`);
+  if (!byName.length) throw new ValidationError(`No ${t.label} '${v}'`);
+  return byName[0];
+}
+var VOLATILE = /* @__PURE__ */ new Set(["version", "nextRunTime", "lastModifiedDate", "modifiedByAvatar", "modifiedByDisplayName", "modifiedByUserKey"]);
+function changedKeys(a, b, ignore) {
+  const keys = /* @__PURE__ */ new Set([...Object.keys(a ?? {}), ...Object.keys(b ?? {})]);
+  return [...keys].filter((k2) => !ignore.has(k2) && JSON.stringify(a?.[k2] ?? null) !== JSON.stringify(b?.[k2] ?? null)).sort();
+}
+var desc = "Unofficial ScriptRunner endpoints, allowed on Jira 10.x/11.x with ScriptRunner 9.x/10.x; broader version ranges are not runtime-verified (see REFERENCE.md).";
+var jiraScriptRunnerTools = [
+  {
+    name: "jira_list_scriptrunner_items",
+    product: "jira",
+    description: "ScriptRunner items of one type: job, listener, field, fragment, endpoint (REST endpoints), resource, registry (script files). Metadata only: scripts, code references, SQL and credentials are never returned. mail-handler and behaviour answer unsupported. " + desc,
+    inputShape: { type: typeArg, ...pageShape(100) },
+    async handler({ client }, args) {
+      const c = client("jira");
+      const t = typeOf(args.type);
+      await requireScriptRunner(c);
+      const items = (await listRaw(c, t)).map((r) => redact(t.view(r)));
+      return paginate(items, args, 100);
+    }
+  },
+  {
+    name: "jira_get_scriptrunner_item",
+    product: "jira",
+    description: "One ScriptRunner item (by id or exact name) with its allowlisted metadata; scripts, SQL and credentials are never returned. " + desc,
+    inputShape: { type: typeArg, item: external_exports.coerce.string().min(1) },
+    async handler({ client }, args) {
+      const c = client("jira");
+      const t = typeOf(args.type);
+      await requireScriptRunner(c);
+      return redact(t.view(pick3(t, await listRaw(c, t), args.item)));
+    }
+  },
+  {
+    name: "jira_update_scriptrunner_item",
+    product: "jira",
+    write: true,
+    description: "Enable/disable a ScriptRunner job, fragment or REST endpoint (disabled=true|false) and/or change the notes of a job, listener, fragment or REST endpoint. The stored item is sent back with only that key changed and read back; any other change (script, code, schedule...) is refused or reported as a verification error. Nothing is run. " + desc,
+    inputShape: { type: typeArg, item: external_exports.coerce.string().min(1), disabled: boolArg.optional(), notes: external_exports.string().optional(), ...dryRunShape },
+    async handler({ client }, args) {
+      const c = client("jira");
+      const t = typeOf(args.type);
+      if (t.readOnlyReason) throw new UnsupportedError(`${t.label} changes are not offered: ${t.readOnlyReason}`);
+      const wanted = {};
+      if (args.disabled !== void 0) {
+        if (!t.writable.disabled) throw new ValidationError(`A ${t.label} has no enabled/disabled flag; only notes can change`);
+        wanted[t.writable.disabled] = args.disabled;
+      }
+      if (args.notes !== void 0) wanted[t.writable.notes] = args.notes;
+      if (!Object.keys(wanted).length) throw new ValidationError("Pass disabled and/or notes");
+      await requireScriptRunner(c);
+      const stored = pick3(t, await listRaw(c, t), args.item);
+      const canned = stored["canned-script"];
+      if (typeof canned !== "string" || !stored.id) throw new ValidationError(`The stored ${t.label} has no id or canned-script; refusing to save it`);
+      const change = Object.fromEntries(Object.entries(wanted).filter(([k2, v]) => stored[k2] !== v).map(([k2, v]) => [k2 === t.writable.disabled ? "disabled" : "notes", { from: stored[k2] ?? null, to: v }]));
+      const label = `${t.label} '${t.name(stored)}' (${stored.id})`;
+      if (!Object.keys(change).length) return alreadySatisfied(`Update ${label}`, "it already has these values");
+      const body = { ...stored, ...wanted };
+      const unexpected = changedKeys(stored, body, new Set(Object.keys(wanted)));
+      if (unexpected.length) throw new ValidationError(`Refusing to send changes to ${unexpected.join(", ")}`);
+      const path = `${t.base}/${encodeURIComponent(canned)}`;
+      const summary = `Update ${label}: ${Object.entries(change).map(([k2, v]) => `${k2} ${JSON.stringify(v.from)} \u2192 ${JSON.stringify(v.to)}`).join(", ")}`;
+      const request = { method: "POST", url: c.url(path), body: "(the stored item with only the keys above changed; not shown, it contains scripts)" };
+      if (args.dry_run !== false) {
+        return {
+          dry_run: true,
+          product: c.product,
+          summary,
+          request,
+          change,
+          identity: { op: "update-scriptrunner-item", type: args.type, item: args.item, ...wanted },
+          state: { version: stored.version, values: Object.fromEntries(Object.keys(wanted).map((k2) => [k2, stored[k2] ?? null])) },
+          note: "Nothing was changed. Confirm with the user, then re-run with dry_run=false."
+        };
+      }
+      await c.request("POST", path, { json: body });
+      const back = pick3(t, await listRaw(c, t), String(stored.id));
+      const drift = changedKeys(body, back, VOLATILE);
+      if (drift.length) {
+        throw new VerificationError(`${summary}: after saving, ScriptRunner stores other values for ${drift.join(", ")}`, { keys: drift });
+      }
+      return { dry_run: false, product: c.product, summary, request, result: redact(t.view(back)) };
+    }
+  }
+];
+
+// src/tools/jira/scriptRoot.ts
+var SR2 = "/rest/scriptrunner/latest";
+var OPERATION = "script-root-read";
+var LABEL = "Reading ScriptRunner Script Root files";
+var DEFAULT_MAX_FILES = 500;
+var MAX_FILES_CAP = 5e3;
+var DEFAULT_MAX_BYTES = 20 * 1024 * 1024;
+var MAX_BYTES_CAP = 200 * 1024 * 1024;
+var MANIFEST_NAME = "scriptrunner-export-manifest.json";
+var SECRETS_NOTE = "Restored scripts may contain credentials, SQL and internal URLs: review them before committing or sharing.";
+var ScriptReadError = class extends Error {
+  constructor(message) {
+    super(message);
+    this.name = "ScriptReadError";
+  }
+};
+async function loadScriptRoots(client) {
+  const data = await client.get(`${SR2}/idea/scriptroots`, { showDirectories: true, groovyFilesOnly: false });
+  const roots = Array.isArray(data) ? data : Array.isArray(data?.result) ? data.result : [];
+  if (!roots.length) throw new ValidationError("ScriptRunner reported no Script Root");
+  return roots.map((r) => {
+    if (typeof r?.info?.rootPath !== "string" || typeof r?.files !== "object" || r.files === null) {
+      throw new ValidationError("ScriptRunner's Script Root tree has an unexpected shape; refusing to read files");
+    }
+    const entries = /* @__PURE__ */ new Map();
+    for (const [rel, meta3] of Object.entries(r.files)) entries.set(rel, Boolean(meta3?.isFile));
+    return { rootPath: r.info.rootPath, defaultRoot: Boolean(r.info.defaultRoot), entries };
+  });
+}
+async function readScriptFile(client, rootPath, relativePath) {
+  let data;
+  try {
+    data = await client.get(`${SR2}/idea/file`, { filePath: relativePath, rootPath });
+  } catch (e) {
+    if (isHttpStatusError(e)) throw new ScriptReadError(`HTTP ${e.status}`);
+    throw new ScriptReadError(e?.name || "read error");
+  }
+  const b64 = data?.content ?? data?.result?.content;
+  if (typeof b64 !== "string" || !/^[A-Za-z0-9+/\r\n]*={0,2}\s*$/.test(b64)) throw new ScriptReadError("unexpected response shape");
+  return Buffer.from(b64, "base64");
+}
+async function downloadFiles(client, rootPath, files, maxBytes, root2, verb) {
+  const downloaded = /* @__PURE__ */ new Map();
+  const readErrors = /* @__PURE__ */ new Map();
+  let total = 0;
+  for (const path of files) {
+    try {
+      const bytes = await readScriptFile(client, rootPath, path);
+      total += bytes.length;
+      if (total > maxBytes) {
+        throw new ValidationError(
+          `'${root2}' is larger than max_total_bytes=${maxBytes} (passed after ${downloaded.size + 1} of ${files.length} files); nothing was written. ${verb} a subfolder or raise max_total_bytes (max ${MAX_BYTES_CAP})`
+        );
+      }
+      downloaded.set(path, bytes);
+    } catch (e) {
+      if (!(e instanceof ScriptReadError)) throw e;
+      readErrors.set(path, e.message);
+    }
+  }
+  return { downloaded, readErrors, total };
+}
+function validateRelative(value, label) {
+  const v = String(value ?? "");
+  if (!v.trim()) throw new ValidationError(`${label} is empty`);
+  if (v.includes("\0")) throw new ValidationError(`${label} contains a NUL character`);
+  if (v.includes("\\")) throw new ValidationError(`${label} must use '/' separators`);
+  if (v.startsWith("/") || /^[A-Za-z]:/.test(v)) throw new ValidationError(`${label} must be relative to the Script Root, not absolute`);
+  const segments = v.replace(/\/+$/, "").split("/");
+  for (const s of segments) {
+    if (s === "..") throw new ValidationError(`${label} must not contain '..'`);
+    if (s === "." || s === "") throw new ValidationError(`${label} must not contain empty or '.' segments`);
+  }
+  return segments.join("/");
+}
+var isUnder = (child, parent) => child === parent || child.startsWith(parent.endsWith(sep) ? parent : parent + sep);
+var projectRelative = (path) => relative(process.cwd(), path).split(sep).join("/") || ".";
+async function realAncestor(p) {
+  for (let cur = p; ; cur = dirname2(cur)) {
+    try {
+      return await realpath(cur);
+    } catch {
+      if (dirname2(cur) === cur) return cur;
+    }
+  }
+}
+async function localTarget(outputDir, relative3) {
+  const rel = validateRelative(relative3, "server path");
+  const base = resolve3(outputDir);
+  const target = resolve3(base, ...rel.split("/"));
+  if (!isUnder(target, base)) throw new ValidationError("server path leaves output_dir");
+  const baseStat = await stat(base).catch(() => void 0);
+  if (!baseStat?.isDirectory()) throw new ValidationError(`output_dir does not exist or is not a directory: ${outputDir}`);
+  const realBase = await realpath(base);
+  if (!isUnder(await realAncestor(dirname2(target)), realBase)) throw new ValidationError("a symbolic link would redirect the write outside output_dir");
+  return target;
+}
+async function ensureLocalDirectory(outputDir, relative3) {
+  const target = await localTarget(outputDir, relative3);
+  let existing;
+  try {
+    existing = await lstat(target);
+  } catch {
+    existing = void 0;
+  }
+  if (existing && !existing.isDirectory()) throw new ValidationError("the local directory path exists and is not a directory");
+  const outcome = existing ? "ALREADY-SATISFIED" : "CREATED";
+  if (!existing) await mkdir(target, { recursive: true });
+  const realBase = await realpath(resolve3(outputDir));
+  if (!isUnder(await realpath(target), realBase)) throw new ValidationError("a symbolic link would redirect the directory outside output_dir");
+  return { target, outcome };
+}
+var sha256 = (b) => createHash("sha256").update(b).digest("hex");
+async function atomicWrite(target, bytes) {
+  await mkdir(dirname2(target), { recursive: true });
+  const tmp = join2(dirname2(target), `.${basename2(target)}.${process.pid}.${randomBytes(4).toString("hex")}.tmp`);
+  try {
+    await writeFile(tmp, bytes, { flag: "wx" });
+    await rename(tmp, target);
+  } catch (e) {
+    await unlink(tmp).catch(() => void 0);
+    throw e;
+  }
+}
+async function writeLocal(target, bytes, overwrite) {
+  let existing;
+  try {
+    existing = await lstat(target);
+  } catch {
+    existing = void 0;
+  }
+  if (!existing) {
+    await atomicWrite(target, bytes);
+    return { outcome: "WRITTEN" };
+  }
+  if (!existing.isFile()) throw new ValidationError("the local path exists and is not a regular file");
+  if (sha256(await readFile(target)) === sha256(bytes)) return { outcome: "ALREADY-SATISFIED" };
+  if (!overwrite) return { outcome: "CONFLICT" };
+  const backup = `${target}.bak-${(/* @__PURE__ */ new Date()).toISOString().replace(/[:.]/g, "-")}`;
+  await copyFile(target, backup, constants.COPYFILE_EXCL);
+  await atomicWrite(target, bytes);
+  return { outcome: "REPLACED", backup };
+}
+function pickRoots(roots, scriptRoot) {
+  if (scriptRoot === void 0) return roots;
+  const hit = roots.filter((r) => r.rootPath === scriptRoot);
+  if (!hit.length) throw new ValidationError(`No Script Root '${scriptRoot}'; roots: ${roots.map((r) => r.rootPath).join(", ")}`);
+  return hit;
+}
+var hasDescendants = (r, dir) => [...r.entries.keys()].some((k2) => k2.startsWith(`${dir}/`));
+function single(matches, what) {
+  if (matches.length > 1) {
+    throw new ValidationError(`${what} exists in several Script Roots (${matches.map((r) => r.rootPath).join(", ")}); pass script_root`);
+  }
+  return matches[0];
+}
+function findFile(roots, path, scriptRoot) {
+  const candidates = pickRoots(roots, scriptRoot);
+  const asFile = candidates.filter((r) => r.entries.get(path) === true);
+  if (asFile.length) return single(asFile, `'${path}'`);
+  if (candidates.some((r) => r.entries.get(path) === false || hasDescendants(r, path))) throw new ValidationError(`'${path}' is a directory, not a file`);
+  throw new ValidationError(`No file '${path}' in the Script Root`);
+}
+function selectFolder(roots, root2, scriptRoot) {
+  const candidates = pickRoots(roots, scriptRoot);
+  if (candidates.some((r) => r.entries.get(root2) === true)) throw new ValidationError(`'${root2}' is a file; use jira_get_scriptrunner_script`);
+  const withFolder = candidates.filter((r) => r.entries.get(root2) === false || hasDescendants(r, root2));
+  if (!withFolder.length) throw new ValidationError(`No folder '${root2}' in the Script Root`);
+  const tree = single(withFolder, `Folder '${root2}'`);
+  const files = [...tree.entries].filter(([k2, isFile]) => isFile && k2.startsWith(`${root2}/`)).map(([k2]) => k2).sort();
+  const directories = [...tree.entries].filter(([k2, isFile]) => !isFile && k2.startsWith(`${root2}/`)).map(([k2]) => k2).sort();
+  return { tree, files, directories };
+}
+var scriptRootArg = external_exports.string().min(1).optional().describe("Server Script Root path, when the path exists in several roots");
+var jiraScriptRootTools = [
+  {
+    name: "jira_get_scriptrunner_script",
+    product: "jira",
+    description: "Copy one ScriptRunner Script Root file (path relative to the Script Root) to the local file `out`, byte for byte. Returns only path, size, SHA-256 and outcome (WRITTEN, ALREADY-SATISFIED, CONFLICT); the content is never shown. Read-only toward Jira.",
+    inputShape: {
+      path: external_exports.string().min(1).describe("File path relative to the Script Root, e.g. project-a/jobs/close.groovy"),
+      out: external_exports.string().min(1).describe("Local file to write (required)"),
+      script_root: scriptRootArg
+    },
+    async handler({ client }, args) {
+      const path = validateRelative(args.path, "path");
+      const c = client("jira");
+      await requireScriptRunnerOperation(c, OPERATION, LABEL);
+      const tree = findFile(await loadScriptRoots(c), path, args.script_root);
+      const bytes = await readScriptFile(c, tree.rootPath, path).catch((e) => {
+        throw new ValidationError(`Reading '${path}' failed: ${e.message}`);
+      });
+      const out = resolve3(args.out);
+      const { outcome } = await writeLocal(out, bytes, false);
+      return {
+        path,
+        scriptRoot: tree.rootPath,
+        out,
+        size: bytes.length,
+        sha256: sha256(bytes),
+        outcome,
+        ...outcome === "CONFLICT" ? { hint: "The local file differs and was kept; use jira_export_scriptrunner_scripts overwrite=true to replace it with a backup" } : {},
+        note: SECRETS_NOTE
+      };
+    }
+  },
+  {
+    name: "jira_export_scriptrunner_scripts",
+    product: "jira",
+    description: "Restore a ScriptRunner Script Root folder to a local directory: every file under `root`, with its nested folders, including empty registry folders, byte for byte. Existing identical files \u2192 ALREADY-SATISFIED; different ones \u2192 CONFLICT (kept) unless overwrite=true, which backs them up first. Writes a manifest (path, size, SHA-256, outcome); content is never shown. Read-only toward Jira.",
+    inputShape: {
+      root: external_exports.string().min(1).describe("Folder relative to the Script Root, e.g. project-a"),
+      output_dir: external_exports.string().min(1).describe("Local directory; the folder's contents are recreated inside it"),
+      overwrite: boolArg.optional().describe("Default false. true replaces differing local files after a .bak-<timestamp> backup"),
+      manifest: external_exports.string().min(1).optional().describe(`Manifest file (default <output_dir>/${MANIFEST_NAME})`),
+      script_root: scriptRootArg,
+      max_files: external_exports.coerce.number().int().min(1).max(MAX_FILES_CAP).optional().describe(`Default ${DEFAULT_MAX_FILES}, max ${MAX_FILES_CAP}`),
+      max_total_bytes: external_exports.coerce.number().int().min(1).max(MAX_BYTES_CAP).optional().describe(`Default ${DEFAULT_MAX_BYTES}, max ${MAX_BYTES_CAP}. Over it, the export writes nothing`)
+    },
+    async handler({ client }, args) {
+      const root2 = validateRelative(args.root, "root");
+      const maxFiles = args.max_files ?? DEFAULT_MAX_FILES;
+      const maxBytes = args.max_total_bytes ?? DEFAULT_MAX_BYTES;
+      const c = client("jira");
+      await requireScriptRunnerOperation(c, OPERATION, LABEL);
+      const { tree, files, directories } = selectFolder(await loadScriptRoots(c), root2, args.script_root);
+      if (files.length > maxFiles) {
+        throw new ValidationError(`'${root2}' has ${files.length} files, more than max_files=${maxFiles}; export a subfolder or raise max_files (max ${MAX_FILES_CAP})`);
+      }
+      const outputDir = resolve3(args.output_dir);
+      const { downloaded, readErrors, total } = await downloadFiles(c, tree.rootPath, files, maxBytes, root2, "Export");
+      await mkdir(outputDir, { recursive: true });
+      const directoryEntries = [];
+      for (const path of directories) {
+        const entry = { path };
+        directoryEntries.push(entry);
+        try {
+          const { target, outcome } = await ensureLocalDirectory(outputDir, path.slice(root2.length + 1));
+          Object.assign(entry, { local: projectRelative(target), outcome });
+        } catch (e) {
+          const err = e;
+          Object.assign(entry, { outcome: "FAILED", error: e instanceof ValidationError ? err.message : err.code ?? err.name });
+        }
+      }
+      const entries = [];
+      for (const path of files) {
+        const entry = { path };
+        entries.push(entry);
+        const bytes = downloaded.get(path);
+        if (!bytes) {
+          Object.assign(entry, { outcome: "FAILED", error: readErrors.get(path) });
+          continue;
+        }
+        try {
+          const local = await localTarget(outputDir, path.slice(root2.length + 1));
+          entry.local = projectRelative(local);
+          const written = await writeLocal(local, bytes, Boolean(args.overwrite));
+          if (written.backup) written.backup = projectRelative(written.backup);
+          Object.assign(entry, { size: bytes.length, sha256: sha256(bytes), ...written });
+        } catch (e) {
+          const err = e;
+          Object.assign(entry, { outcome: "FAILED", error: e instanceof ValidationError ? err.message : err.code ?? err.name });
+        }
+      }
+      const counts = {};
+      for (const e of entries) counts[String(e.outcome)] = (counts[String(e.outcome)] ?? 0) + 1;
+      const directoryCounts = {};
+      for (const e of directoryEntries) directoryCounts[String(e.outcome)] = (directoryCounts[String(e.outcome)] ?? 0) + 1;
+      const manifestPath = resolve3(args.manifest ?? join2(outputDir, MANIFEST_NAME));
+      const manifest = {
+        exportedAt: (/* @__PURE__ */ new Date()).toISOString(),
+        scriptRoot: tree.rootPath,
+        root: root2,
+        outputDir: projectRelative(outputDir),
+        overwrite: Boolean(args.overwrite),
+        limits: { maxFiles, maxTotalBytes: maxBytes },
+        counts,
+        directoryCounts,
+        directories: directoryEntries,
+        files: entries
+      };
+      await atomicWrite(manifestPath, Buffer.from(JSON.stringify(manifest, null, 2) + "\n"));
+      const pick4 = (o) => entries.filter((e) => e.outcome === o).map((e) => o === "FAILED" ? `${e.path} (${e.error})` : String(e.path));
+      return {
+        root: root2,
+        scriptRoot: tree.rootPath,
+        outputDir,
+        manifest: manifestPath,
+        directories: directories.length,
+        directoryCounts,
+        files: files.length,
+        bytes: total,
+        counts,
+        conflicts: pick4("CONFLICT").slice(0, 20),
+        failed: pick4("FAILED").slice(0, 20),
+        note: SECRETS_NOTE
+      };
+    }
+  }
+];
+
+// src/tools/jira/workflowXml.ts
+var ROUTE = "/rest/scriptrunner/latest/custom/";
+var HASH = external_exports.string().regex(/^[a-f0-9]{64}$/);
+var metadataSchema = external_exports.object({
+  protocol: external_exports.literal(1),
+  jiraVersion: external_exports.string().regex(/^11\.3\./),
+  scriptRunnerVersion: external_exports.string().regex(/^10\./),
+  workflow: external_exports.string().min(1).max(255),
+  active: external_exports.boolean(),
+  system: external_exports.boolean(),
+  liveHash: HASH,
+  draftHash: HASH.nullable(),
+  draftNormalizedHash: HASH.nullable(),
+  usage: external_exports.object({ total: external_exports.number().int().nonnegative(), projectIds: external_exports.array(external_exports.string().regex(/^\d+$/)).max(100), truncated: external_exports.boolean() })
+});
+var manifestSchema = external_exports.object({
+  schemaVersion: external_exports.literal(1),
+  source: external_exports.string(),
+  workflow: external_exports.string(),
+  mode: external_exports.enum(["live", "draft"]),
+  protocol: external_exports.literal(1),
+  jiraVersion: external_exports.string(),
+  scriptRunnerVersion: external_exports.string(),
+  liveHash: HASH,
+  draftHash: HASH.nullable(),
+  exportedXmlHash: HASH
+});
+var approved = /* @__PURE__ */ new WeakMap();
+var limitShape = { max_xml_bytes: external_exports.number().int().min(1).max(20 * 1024 * 1024).default(5 * 1024 * 1024) };
+var workflowShape = { workflow: external_exports.string().min(1).max(255).describe("Exact workflow name") };
+function source(client) {
+  const u = new URL(client.url("/"));
+  u.username = "";
+  u.password = "";
+  u.search = "";
+  u.hash = "";
+  return u.toString().replace(/\/$/, "");
+}
+var link = (client, workflow) => ({ url: client.url("/secure/admin/workflows/ViewWorkflowSteps.jspa", { workflowName: workflow }), verified: false });
+var REASONS = /* @__PURE__ */ new Set([
+  "Workflow XML exceeds byte limit",
+  "Invalid workflow descriptor or unavailable secure parser",
+  "Bundled workflow grammar unavailable",
+  "External XML resolution refused",
+  "Expected workflow root",
+  "Unknown workflow status reference",
+  "Unknown workflow screen reference",
+  "Invalid adapter protocol or request identity",
+  "Exact workflow not found",
+  "Only an active non-system workflow can receive a draft",
+  "Invalid workflow selection",
+  "Requested draft does not exist",
+  "Workflow fingerprints changed; preview again",
+  "Draft verification failed; reread before retry",
+  "Request exceeds byte limit",
+  "Expected object",
+  "Invalid protocol",
+  "Administrator permission required",
+  "Unsupported adapter pair",
+  "Invalid workflow request or descriptor",
+  "Workflow state conflict; reread before retry",
+  "Adapter operation failed; reread before retry"
+]);
+var REASON_PATTERNS = [
+  /^Invalid XML at line \d{1,9}, column \d{1,9}$/,
+  /^Workflow XML does not match Jira's workflow grammar at line \d{1,9}, column \d{1,9}$/,
+  /^Draft persistence failed; draftCreated=(true|false); reread before retry$/
+];
+function adapterReason(body) {
+  let reason;
+  try {
+    reason = JSON.parse(body)?.error;
+  } catch {
+    return void 0;
+  }
+  return typeof reason === "string" && (REASONS.has(reason) || REASON_PATTERNS.some((p) => p.test(reason))) ? reason : void 0;
+}
+async function call(client, method, route, opts = {}) {
+  try {
+    return await client.request(method, ROUTE + route, opts);
+  } catch (e) {
+    const reason = e instanceof HttpStatusError ? adapterReason(e.body) : void 0;
+    if (e instanceof HttpStatusError && e.status === 501 && reason === "Unsupported adapter pair") throw new UnsupportedError("Workflow XML adapter does not support this Jira/ScriptRunner version pair");
+    if (e instanceof HttpStatusError && [404, 405, 501].includes(e.status)) throw new UnsupportedError("Workflow XML adapter unavailable; see WORKFLOW_XML.md for separate installation");
+    if (e instanceof HttpStatusError) throw new HttpStatusError(e.status, reason ? JSON.stringify({ message: reason }) : "", `Workflow XML adapter ${route}`, method);
+    throw new VerificationError(method === "PUT" ? "Draft mutation outcome is indeterminate; reread before a new approved attempt" : "Workflow XML adapter read/validation failed");
+  }
+}
+function metadata(data, workflow) {
+  const parsed = metadataSchema.safeParse(data);
+  if (!parsed.success || parsed.data.workflow !== workflow) throw new UnsupportedError("Unrecognized workflow XML adapter contract or product pair");
+  return parsed.data;
+}
+async function bytesFromFile(path, cap) {
+  let file2;
+  try {
+    const stat3 = await lstat2(path);
+    if (!stat3.isFile() || stat3.size > cap) throw new ValidationError("Local XML/manifest must be a regular file within the byte limit");
+    file2 = await open2(path, constants2.O_RDONLY | constants2.O_NOFOLLOW);
+    const before = await file2.stat();
+    if (!before.isFile() || before.size > cap || before.ino !== stat3.ino || before.dev !== stat3.dev) throw new ValidationError("Local XML/manifest changed while opening");
+    const bytes = await file2.readFile();
+    const after = await file2.stat();
+    if (bytes.length > cap || after.size !== before.size || after.mtimeMs !== before.mtimeMs) throw new ValidationError("Local XML/manifest changed while reading");
+    return bytes;
+  } catch (e) {
+    if (e instanceof ValidationError) throw e;
+    throw new ValidationError("Cannot read local XML/manifest as a regular file");
+  } finally {
+    await file2?.close();
+  }
+}
+async function publishPair(output3, relative3, xml, manifest, overwrite) {
+  const target = await localTarget(output3, relative3);
+  let existing;
+  try {
+    existing = await lstat2(target);
+  } catch (e) {
+    if (e.code !== "ENOENT") throw e;
+  }
+  if (existing) {
+    if (!existing.isDirectory()) throw new ValidationError("Export generation is not a regular directory");
+    const oldXml = await bytesFromFile(join3(target, "workflow.xml"), 20 * 1024 * 1024);
+    const oldManifest = await bytesFromFile(join3(target, "manifest.json"), 64 * 1024);
+    if (sha256(oldXml) === sha256(xml) && sha256(oldManifest) === sha256(manifest)) return { outcome: "ALREADY-SATISFIED", target };
+    if (!overwrite) return { outcome: "CONFLICT", target };
+  }
+  const stage = await mkdtemp(join3(resolve4(output3), ".workflow-stage-"));
+  let backup;
+  try {
+    await writeFile2(join3(stage, "workflow.xml"), xml, { flag: "wx" });
+    await writeFile2(join3(stage, "manifest.json"), manifest, { flag: "wx" });
+    if (existing) {
+      backup = `${target}.bak-${Date.now()}-${sha256(manifest).slice(0, 12)}`;
+      try {
+        await lstat2(backup);
+        throw new ValidationError("Export backup already exists");
+      } catch (e) {
+        if (e.code !== "ENOENT") throw e;
+      }
+      await rename2(target, backup);
+    }
+    try {
+      await rename2(stage, target);
+    } catch (e) {
+      if (backup) await rename2(backup, target);
+      throw e;
+    }
+    return { outcome: existing ? "REPLACED" : "WRITTEN", target, ...backup ? { backup } : {} };
+  } finally {
+    await rm(stage, { recursive: true, force: true });
+  }
+}
+var jiraWorkflowXmlTools = [{
+  name: "jira_export_workflow_xml",
+  product: "jira",
+  description: "Export exactly one complete live/draft workflow XML and provenance manifest to a local generation. Requires a separately installed workflow XML adapter; never creates drafts.",
+  inputShape: { ...workflowShape, ...limitShape, output_dir: external_exports.string().min(1).describe("Existing output directory"), mode: external_exports.enum(["live", "draft"]).default("live"), overwrite: external_exports.boolean().default(false) },
+  handler: async (ctx, args) => {
+    const client = ctx.client("jira");
+    const data = await call(client, "GET", "jiraWorkflowXml", { params: { protocol: 1, workflow: args.workflow, mode: args.mode, include_xml: true } });
+    const info = metadata(data, args.workflow);
+    if (typeof data.xml !== "string" || data.mode !== args.mode) throw new ValidationError("Requested workflow descriptor is unavailable");
+    const xml = Buffer.from(data.xml, "utf8");
+    if (xml.length > args.max_xml_bytes) throw new ValidationError("Workflow XML exceeds byte limit");
+    const hash2 = sha256(xml);
+    if (hash2 !== (args.mode === "live" ? info.liveHash : info.draftHash)) throw new VerificationError("Export descriptor fingerprint mismatch");
+    const manifest = {
+      schemaVersion: 1,
+      source: source(client),
+      workflow: info.workflow,
+      mode: args.mode,
+      protocol: info.protocol,
+      jiraVersion: info.jiraVersion,
+      scriptRunnerVersion: info.scriptRunnerVersion,
+      liveHash: info.liveHash,
+      draftHash: info.draftHash,
+      exportedXmlHash: hash2
+    };
+    const encoded = Buffer.from(JSON.stringify(manifest, null, 2) + "\n");
+    if (encoded.length > 64 * 1024) throw new ValidationError("Workflow manifest exceeds byte limit");
+    const relative3 = `workflow-${sha256(Buffer.from(`${manifest.source}
+${args.workflow}
+${args.mode}`)).slice(0, 24)}`;
+    const written = await publishPair(args.output_dir, relative3, xml, encoded, args.overwrite);
+    const counts = external_exports.object({ steps: external_exports.number().int().nonnegative(), initialActions: external_exports.number().int().nonnegative(), globalActions: external_exports.number().int().nonnegative() }).safeParse(data.counts);
+    return {
+      ...written,
+      xml_file: join3(written.target, "workflow.xml"),
+      manifest_file: join3(written.target, "manifest.json"),
+      xmlHash: hash2,
+      manifestHash: sha256(encoded),
+      bytes: xml.length,
+      workflow: info.workflow,
+      mode: args.mode,
+      ...counts.success ? { counts: counts.data } : {},
+      admin: link(client, info.workflow)
+    };
+  }
+}, {
+  name: "jira_import_workflow_xml_draft",
+  product: "jira",
+  write: true,
+  invalidates: [],
+  description: "Preview/confirm edited local XML into the draft of its source workflow. Manifest required; binds file and live/draft hashes. Never publishes. Adapter installation is separate.",
+  inputShape: { ...workflowShape, ...limitShape, ...dryRunShape, xml_file: external_exports.string().min(1), manifest_file: external_exports.string().min(1) },
+  handler: async (ctx, args) => {
+    const client = ctx.client("jira");
+    const [xml, manifestBytes] = await Promise.all([bytesFromFile(args.xml_file, args.max_xml_bytes), bytesFromFile(args.manifest_file, 64 * 1024)]);
+    let xmlText;
+    try {
+      xmlText = new TextDecoder("utf-8", { fatal: true }).decode(xml);
+    } catch {
+      throw new ValidationError("Workflow XML must be valid UTF-8");
+    }
+    let parsed;
+    try {
+      parsed = manifestSchema.safeParse(JSON.parse(manifestBytes.toString("utf8")));
+    } catch {
+      throw new ValidationError("Malformed workflow provenance manifest");
+    }
+    if (!parsed.success) throw new ValidationError("Invalid workflow provenance manifest");
+    const manifest = parsed.data;
+    if (manifest.source !== source(client) || manifest.workflow !== args.workflow) throw new ValidationError("Manifest source/workflow differs from the import target");
+    metadata(await call(client, "GET", "jiraWorkflowXml", { params: { protocol: 1, workflow: args.workflow } }), args.workflow);
+    const validation = await call(client, "POST", "jiraWorkflowXmlValidate", { json: { protocol: 1, workflow: args.workflow, xml: xmlText } });
+    const info = metadata(validation, args.workflow);
+    if (!info.active || info.system || !HASH.safeParse(validation.desiredNormalizedHash).success) throw new ValidationError("Only validated active non-system workflow drafts can be imported");
+    const desiredHash = validation.desiredNormalizedHash;
+    const identity2 = { workflow: args.workflow, source: manifest.source, xmlHash: sha256(xml), manifestHash: sha256(manifestBytes), desiredHash };
+    const state = { liveHash: info.liveHash, draftHash: info.draftHash, usage: info.usage };
+    const fingerprint = JSON.stringify({ identity: identity2, state });
+    const key = JSON.stringify([args.workflow, resolve4(args.xml_file), resolve4(args.manifest_file)]);
+    const request = { method: "PUT", url: client.url(ROUTE + "jiraWorkflowXmlDraft"), body: { xml: "<local XML withheld>", ...identity2, expectedLiveHash: info.liveHash, expectedDraftHash: info.draftHash } };
+    const common = { product: "jira", summary: `${info.draftHash ? "Replace" : "Create"} draft XML of '${args.workflow}'`, identity: identity2, state, request, affected: info.usage, admin: link(client, args.workflow) };
+    if (info.draftNormalizedHash === desiredHash) return { ...common, already_satisfied: true, reason: "Desired draft descriptor already holds" };
+    let cache = approved.get(client);
+    if (!cache) {
+      cache = /* @__PURE__ */ new Map();
+      approved.set(client, cache);
+    }
+    if (args.dry_run !== false) {
+      cache.set(key, fingerprint);
+      return { ...common, dry_run: true, note: "Validation executed no scripts and created no draft. Requires exclusive draft editing window; publishing is separate." };
+    }
+    if (cache.get(key) !== fingerprint) throw new VerificationError("Approved file/provenance/workflow state changed or no matching preview exists; preview again");
+    const [currentXml, currentManifest] = await Promise.all([bytesFromFile(args.xml_file, args.max_xml_bytes), bytesFromFile(args.manifest_file, 64 * 1024)]);
+    if (sha256(currentXml) !== identity2.xmlHash || sha256(currentManifest) !== identity2.manifestHash) throw new VerificationError("Approved XML/manifest changed during validation; preview again");
+    cache.delete(key);
+    try {
+      await call(client, "PUT", "jiraWorkflowXmlDraft", { retry: false, json: { protocol: 1, workflow: args.workflow, xml: xmlText, expectedLiveHash: info.liveHash, expectedDraftHash: info.draftHash } });
+    } catch (e) {
+      let observation;
+      try {
+        const observed = metadata(await call(client, "GET", "jiraWorkflowXml", { params: { protocol: 1, workflow: args.workflow } }), args.workflow);
+        observation = {
+          available: true,
+          liveHash: observed.liveHash,
+          draftHash: observed.draftHash,
+          draftNormalizedHash: observed.draftNormalizedHash,
+          draftCreatedObserved: info.draftHash === null && observed.draftHash !== null
+        };
+      } catch {
+        observation = { available: false, reason: "Read-back unavailable" };
+      }
+      throw new VerificationError(
+        "Draft mutation failed or its outcome is indeterminate; reread before a new approved attempt",
+        { ...e instanceof HttpStatusError ? { httpStatus: e.status, ...errorDetail(e.body) ? { reason: errorDetail(e.body) } : {} } : {}, observation }
+      );
+    }
+    const after = metadata(await call(client, "GET", "jiraWorkflowXml", { params: { protocol: 1, workflow: args.workflow } }), args.workflow);
+    if (after.liveHash !== info.liveHash || after.draftNormalizedHash !== desiredHash) throw new VerificationError("Draft read-back mismatch or live descriptor changed; reread before retry", { liveHash: after.liveHash, draftHash: after.draftHash });
+    return { ...common, dry_run: false, result: { verified: true, liveHash: after.liveHash, draftHash: after.draftHash, draftNormalizedHash: after.draftNormalizedHash } };
+  }
+}];
+
 // src/tools/jira/projectSchemes.ts
 var API8 = "/rest/api/2";
 var SCHEME_TYPES = ["workflow", "issue_type", "issue_type_screen", "field_configuration", "notification"];
@@ -59313,7 +60140,7 @@ var jiraProjectSchemeTools = [
       const type = args.scheme_type;
       const proj = await project(c, args.project_key);
       const summary = `Assign ${type.replace(/_/g, " ")} scheme ${args.scheme_id} to project ${proj.key}`;
-      const identity = { op: "assign-project-scheme", project: proj.key, type, scheme: args.scheme_id };
+      const identity2 = { op: "assign-project-scheme", project: proj.key, type, scheme: args.scheme_id };
       if (type === "issue_type") {
         const scheme = await c.get(`${API8}/issuetypescheme/${args.scheme_id}`, { expand: "issueTypes" });
         if ((await issueTypeSchemeProjects(c, args.scheme_id)).includes(proj.key)) {
@@ -59327,12 +60154,12 @@ var jiraProjectSchemeTools = [
             summary,
             reason: `${foreign} issues of ${proj.key} have issue types that '${scheme?.name ?? args.scheme_id}' lacks, so Jira would migrate them; this tool never migrates issues`,
             editUrl: `${ADMIN_PAGES.issue_type}?projectId=${proj.id}`,
-            identity,
+            identity: identity2,
             state: { foreign }
           });
         }
         const req = { method: "POST", path: `${API8}/issuetypescheme/${args.scheme_id}/associations`, json: { idsOrKeys: [proj.key] }, summary };
-        if (args.dry_run !== false) return { ...await guardedWrite(c, args, req), target: { id: args.scheme_id, name: scheme?.name }, identity, state: { assigned: false } };
+        if (args.dry_run !== false) return { ...await guardedWrite(c, args, req), target: { id: args.scheme_id, name: scheme?.name }, identity: identity2, state: { assigned: false } };
         const result = await guardedWrite(c, args, req);
         const now = await issueTypeSchemeProjects(c, args.scheme_id);
         if (!now.includes(proj.key)) throw new VerificationError(`${summary}: the scheme's projects do not include ${proj.key} afterwards`, { projects: now });
@@ -59346,7 +60173,7 @@ var jiraProjectSchemeTools = [
         const target = await c.get(`${API8}/notificationscheme/${args.scheme_id}`);
         const req = { method: "PUT", path: `${API8}/project/${seg(proj.key)}`, json: { notificationScheme: args.scheme_id }, summary };
         if (args.dry_run !== false) {
-          return { ...await guardedWrite(c, args, req), before: current ?? null, after: { id: args.scheme_id, name: target?.name }, identity, state: { current: current?.id ?? null } };
+          return { ...await guardedWrite(c, args, req), before: current ?? null, after: { id: args.scheme_id, name: target?.name }, identity: identity2, state: { current: current?.id ?? null } };
         }
         const result = await guardedWrite(c, args, req);
         const back = await currentScheme(c, type, proj);
@@ -59358,7 +60185,7 @@ var jiraProjectSchemeTools = [
         summary,
         reason: WEBSUDO + (verifiable ? "" : "; Jira offers no REST read of a project's field configuration scheme, so a re-run cannot verify it"),
         editUrl: `${ADMIN_PAGES[type]}?projectId=${proj.id}`,
-        identity,
+        identity: identity2,
         state: { current: current?.id ?? null },
         extra: { before: current ?? null }
       });
@@ -60056,9 +60883,9 @@ function fieldLabel2(f) {
   return f.id && f.name && f.name !== f.id ? `${f.name} (${f.id})` : f.name ?? f.id ?? "?";
 }
 var stateFor = (field, state) => typeof field.ref === "string" ? state : void 0;
-async function contextWrite(client, args, field, req, identity, state, check2) {
+async function contextWrite(client, args, field, req, identity2, state, check2) {
   const dry = await guardedWrite(client, { dry_run: true }, req);
-  if (args.dry_run !== false) return { ...dry, identity, state: stateFor(field, state) };
+  if (args.dry_run !== false) return { ...dry, identity: identity2, state: stateFor(field, state) };
   await client.request(req.method, req.path, { json: req.json });
   const after = await readContexts(client, field.id);
   if (!check2(after)) throw new VerificationError(`The contexts of ${fieldLabel2(field)} do not show the change`, { contexts: after });
@@ -60208,7 +61035,7 @@ var jiraCustomFieldTools = [
       if (args.all_issue_types) Object.assign(changes, { allIssueTypes: true, issueTypes: [] });
       if (args.issue_types?.length) Object.assign(changes, { allIssueTypes: false, issueTypes: [...new Set(args.issue_types)].sort() });
       if (!Object.keys(changes).length) throw new ValidationError("Nothing to change: pass name, description, global, project_ids, issue_types or all_issue_types");
-      const identity = { op: "update-context", field: field.ref, context: args.context_id, ...changes };
+      const identity2 = { op: "update-context", field: field.ref, context: args.context_id, ...changes };
       if (!field.id) {
         return {
           ...await guardedWrite(c, { dry_run: true }, {
@@ -60217,7 +61044,7 @@ var jiraCustomFieldTools = [
             json: changes,
             summary: `Update context ${args.context_id} of ${fieldLabel2(field)} (created earlier in the plan): ${Object.keys(changes).join(", ")}`
           }),
-          identity
+          identity: identity2
         };
       }
       const contexts = await readContexts(c, field.id);
@@ -60234,7 +61061,7 @@ var jiraCustomFieldTools = [
         args,
         field,
         { method: "PUT", path: `${INTERNAL}/field/${seg(field.id)}/context/${id2}`, json: contextBody(wanted), summary },
-        identity,
+        identity2,
         stored,
         (after) => after.some((x2) => x2.id === id2 && JSON.stringify(contextBody(x2)) === JSON.stringify(contextBody(wanted)))
       );
@@ -60475,7 +61302,7 @@ var jiraFieldOptionTools = [
       manualOptionSteps([], target.filter((t) => t.id === void 0));
       const dryRun = args.dry_run !== false;
       const field = await resolveField(c, args.field, { allowPending: dryRun });
-      const identity = { op: "set-options", field: field.ref, context: args.context ?? "default", options: target };
+      const identity2 = { op: "set-options", field: field.ref, context: args.context ?? "default", options: target };
       const disabledNote = (opts) => {
         const off = opts.filter((t) => t.disabled).map((t) => `'${t.value}'`);
         return off.length ? `${off.join(", ")} cannot be created disabled; disable ${off.length === 1 ? "it" : "them"} in the UI afterwards` : void 0;
@@ -60489,7 +61316,7 @@ var jiraFieldOptionTools = [
             summary: `Set options of ${field.name} (created earlier in the plan): ${target.map((t) => t.value).join(", ")}`
           }),
           warning: disabledNote(target),
-          identity
+          identity: identity2
         };
       }
       requireOptionType(field);
@@ -60525,7 +61352,7 @@ var jiraFieldOptionTools = [
           after,
           kept: plan.kept,
           warning: plan.kept.length ? `kept (not in the target list): ${plan.kept.join(", ")}` : void 0,
-          identity,
+          identity: identity2,
           state: stateFor2(field, stored)
         };
       }
@@ -60535,7 +61362,7 @@ var jiraFieldOptionTools = [
         json: { options: target.map((t) => ({ name: t.value })), issueContext: pair },
         summary: `Set options of ${label}: ${target.map((t) => t.value).join(", ")}`
       };
-      if (dryRun) return { ...await guardedWrite(c, args, req), before, after, warning: disabledNote(target), identity, state: stateFor2(field, stored) };
+      if (dryRun) return { ...await guardedWrite(c, args, req), before, after, warning: disabledNote(target), identity: identity2, state: stateFor2(field, stored) };
       await c.request(req.method, req.path, { json: req.json });
       const back = await readOptions(c, field.id, pair);
       if (JSON.stringify(back.map((o) => o.value)) !== JSON.stringify(target.map((t) => t.value))) {
@@ -60563,8 +61390,8 @@ function defaultConfig(client) {
   let p = defaults.get(client);
   if (!p) {
     p = readConfig(client, -1, { maxResults: 1 }).then((d) => {
-      const link = d?.fields?.[0]?.actions?.edit?.url;
-      const id2 = link ? Number(new URL(link).searchParams.get("id")) : void 0;
+      const link2 = d?.fields?.[0]?.actions?.edit?.url;
+      const id2 = link2 ? Number(new URL(link2).searchParams.get("id")) : void 0;
       return { name: String(d?.configName ?? ""), editId: Number.isFinite(id2) ? id2 : void 0 };
     });
     defaults.set(client, p);
@@ -62087,9 +62914,9 @@ var Tn = R.lex;
 // node_modules/.pnpm/turndown@7.2.4/node_modules/turndown/lib/turndown.es.js
 function extend2(destination) {
   for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i];
-    for (var key in source) {
-      if (Object.prototype.hasOwnProperty.call(source, key)) destination[key] = source[key];
+    var source2 = arguments[i];
+    for (var key in source2) {
+      if (Object.prototype.hasOwnProperty.call(source2, key)) destination[key] = source2[key];
     }
   }
   return destination;
@@ -62693,14 +63520,14 @@ function process2(parentNode) {
     } else if (node2.nodeType === 1) {
       replacement = replacementForNode.call(self, node2);
     }
-    return join2(output3, replacement);
+    return join4(output3, replacement);
   }, "");
 }
 function postProcess(output3) {
   var self = this;
   this.rules.forEach(function(rule) {
     if (typeof rule.append === "function") {
-      output3 = join2(output3, rule.append(self.options));
+      output3 = join4(output3, rule.append(self.options));
     }
   });
   return output3.replace(/^[\t\r\n]+/, "").replace(/[\t\r\n\s]+$/, "");
@@ -62712,7 +63539,7 @@ function replacementForNode(node2) {
   if (whitespace.leading || whitespace.trailing) content = content.trim();
   return whitespace.leading + rule.replacement(content, node2, this.options) + whitespace.trailing;
 }
-function join2(output3, replacement) {
+function join4(output3, replacement) {
   var s1 = trimTrailingNewlines(output3);
   var s2 = trimLeadingNewlines(replacement);
   var nls = Math.max(output3.length - s1.length, replacement.length - s2.length);
@@ -63240,9 +64067,9 @@ ${body.map((r) => `| ${r.join(" | ")} |`).join("\n")}
   return td;
 }
 function prepareStorage(storage, codeBodies) {
-  return storage.replace(/(<ac:plain-text-body>)\s*<!\[CDATA\[([\s\S]*?)\]\]>\s*(<\/ac:plain-text-body>)/g, (_m, open2, body, close) => {
+  return storage.replace(/(<ac:plain-text-body>)\s*<!\[CDATA\[([\s\S]*?)\]\]>\s*(<\/ac:plain-text-body>)/g, (_m, open3, body, close) => {
     codeBodies.push(body);
-    return `${open2}@@PTB${codeBodies.length - 1}@@${close}`;
+    return `${open3}@@PTB${codeBodies.length - 1}@@${close}`;
   }).replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, (_m, body) => escapeXml(body)).replace(/<((?:ac|ri):[\w-]+)(\s[^<>]*?)?\s*\/>/g, (_m, tag, attrs = "") => `<${tag}${attrs}></${tag}>`).replace(/<(ac:image|ac:link|ri:user)(\s[^<>]*)?>/g, `$&${ZWSP}`);
 }
 var ZWSP = "\u200B";
@@ -64631,7 +65458,7 @@ async function changeDetailView(client, board, dryRun, plan) {
   const view2 = await readDetailView(client, board);
   if (!view2.canEdit) throw new PermissionError(`This account cannot edit board ${board} (not a board administrator)`);
   const current = view2.rows.map((r) => r.fieldId);
-  const { target, identity, state } = plan(view2);
+  const { target, identity: identity2, state } = plan(view2);
   if (new Set(target).size !== target.length) throw new ValidationError("A field appears more than once in the target list");
   const nameOf = (id2) => [...view2.rows, ...view2.available].find((f) => f.fieldId === id2)?.name ?? id2;
   const summary = `Detail View of board ${board}: ${current.map(nameOf).join(", ")} \u2192 ${target.map(nameOf).join(", ")}`;
@@ -64654,7 +65481,7 @@ async function changeDetailView(client, board, dryRun, plan) {
       followUps: steps2.slice(1),
       before: current.map(nameOf),
       after: target.map(nameOf),
-      identity: { ...identity, board },
+      identity: { ...identity2, board },
       state,
       note: "Nothing was changed. Confirm with the user, then re-run with dry_run=false."
     };
@@ -64974,9 +65801,9 @@ var jiraWorklogTools = [
 
 // src/tools/jira/attachments.ts
 import { mkdirSync, writeFileSync } from "fs";
-import { basename as basename2, extname, resolve as resolve3, sep } from "path";
-var DEFAULT_MAX_BYTES = 50 * 1024 * 1024;
-var DEFAULT_MAX_FILES = 50;
+import { basename as basename3, extname, resolve as resolve5, sep as sep2 } from "path";
+var DEFAULT_MAX_BYTES2 = 50 * 1024 * 1024;
+var DEFAULT_MAX_FILES2 = 50;
 var IMAGE_MIME = /* @__PURE__ */ new Set(["image/png", "image/jpeg", "image/gif", "image/webp", "image/svg+xml", "image/bmp"]);
 var AMBIGUOUS_MIME = /* @__PURE__ */ new Set(["", "application/octet-stream", "application/binary", "multipart/form-data"]);
 var IMAGE_EXT = /* @__PURE__ */ new Set([".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg", ".bmp"]);
@@ -64986,14 +65813,14 @@ function isImageAttachment(a) {
   return AMBIGUOUS_MIME.has(mime) && IMAGE_EXT.has(extname(String(a.filename ?? "")).toLowerCase());
 }
 function safeFileName(name, fallback) {
-  const cleaned = basename2(String(name ?? "").replace(/\\/g, "/")).replace(/[\x00-\x1f<>:"|?*]/g, "_").replace(/^\.+/, "_").trim();
+  const cleaned = basename3(String(name ?? "").replace(/\\/g, "/")).replace(/[\x00-\x1f<>:"|?*]/g, "_").replace(/^\.+/, "_").trim();
   return cleaned || fallback;
 }
-async function downloadAll(client, issueKey2, outputDir, filter, maxBytes, maxFiles = DEFAULT_MAX_FILES) {
+async function downloadAll(client, issueKey2, outputDir, filter, maxBytes, maxFiles = DEFAULT_MAX_FILES2) {
   const issue2 = await client.get(`${API13}/issue/${seg(issueKey2)}`, { fields: "attachment" });
   const matching = (issue2?.fields?.attachment ?? []).filter(filter);
   const attachments = matching.slice(0, maxFiles);
-  const dir = resolve3(outputDir);
+  const dir = resolve5(outputDir);
   mkdirSync(dir, { recursive: true });
   const files = [];
   for (const a of attachments) {
@@ -65003,8 +65830,8 @@ async function downloadAll(client, issueKey2, outputDir, filter, maxBytes, maxFi
     } else if ((a.size ?? 0) > maxBytes) {
       entry.skipped = `larger than max_bytes (${maxBytes})`;
     } else {
-      const target = resolve3(dir, `${a.id}_${safeFileName(a.filename, `attachment-${a.id}`)}`);
-      if (!target.startsWith(dir + sep)) {
+      const target = resolve5(dir, `${a.id}_${safeFileName(a.filename, `attachment-${a.id}`)}`);
+      if (!target.startsWith(dir + sep2)) {
         entry.skipped = "unsafe file name";
       } else {
         try {
@@ -65033,8 +65860,8 @@ var downloadShape = {
   output_dir: external_exports.string().describe("Local directory to save into (created if missing)"),
   attachment_ids: listArg.optional().describe("Only these attachment ids"),
   name_contains: external_exports.string().optional(),
-  max_bytes: external_exports.coerce.number().int().min(1).optional().describe(`Skip larger files (default ${DEFAULT_MAX_BYTES})`),
-  max_files: external_exports.coerce.number().int().min(1).max(MAX_PAGE).optional().describe(`Download at most this many files (default ${DEFAULT_MAX_FILES})`)
+  max_bytes: external_exports.coerce.number().int().min(1).optional().describe(`Skip larger files (default ${DEFAULT_MAX_BYTES2})`),
+  max_files: external_exports.coerce.number().int().min(1).max(MAX_PAGE).optional().describe(`Download at most this many files (default ${DEFAULT_MAX_FILES2})`)
 };
 var jiraAttachmentTools = [
   {
@@ -65066,8 +65893,8 @@ var jiraAttachmentTools = [
         args.issue_key,
         args.output_dir,
         (a) => (ids.size === 0 || ids.has(String(a.id))) && contains(a.filename, args.name_contains),
-        args.max_bytes ?? DEFAULT_MAX_BYTES,
-        args.max_files ?? DEFAULT_MAX_FILES
+        args.max_bytes ?? DEFAULT_MAX_BYTES2,
+        args.max_files ?? DEFAULT_MAX_FILES2
       );
     }
   },
@@ -65083,8 +65910,8 @@ var jiraAttachmentTools = [
         args.issue_key,
         args.output_dir,
         (a) => isImageAttachment(a) && (ids.size === 0 || ids.has(String(a.id))) && contains(a.filename, args.name_contains),
-        args.max_bytes ?? DEFAULT_MAX_BYTES,
-        args.max_files ?? DEFAULT_MAX_FILES
+        args.max_bytes ?? DEFAULT_MAX_BYTES2,
+        args.max_files ?? DEFAULT_MAX_FILES2
       );
     }
   },
@@ -65101,7 +65928,7 @@ var jiraAttachmentTools = [
         method: "POST",
         path: `${API13}/issue/${seg(args.issue_key)}/attachments`,
         files: { field: "file", paths: args.paths },
-        summary: `Attach ${args.paths.map((p) => basename2(p)).join(", ")} to ${args.issue_key}`
+        summary: `Attach ${args.paths.map((p) => basename3(p)).join(", ")} to ${args.issue_key}`
       });
       if (!res.dry_run && Array.isArray(res.result)) {
         res.result = res.result.map((a) => ({ id: a.id, name: a.filename, bytes: a.size }));
@@ -65590,7 +66417,7 @@ var jiraInsightTools = [
 
 // src/tools/jira/servicedesk.ts
 import { readFileSync as readFileSync4 } from "fs";
-import { basename as basename3, resolve as resolve4 } from "path";
+import { basename as basename4, resolve as resolve6 } from "path";
 var SD = "/rest/servicedeskapi";
 var OPT_IN = { "X-ExperimentalApi": "opt-in" };
 var PAGE_MAX = 50;
@@ -65847,9 +66674,9 @@ var jiraServiceDeskTools = [
       const warnings = [];
       if (files.length && key) {
         try {
-          const form2 = new FormData();
-          for (const p of files) form2.append("file", new Blob([readFileSync4(resolve4(p))]), basename3(p));
-          const tmp = await c.request("POST", `${SD}/servicedesk/${seg(sdId)}/attachTemporaryFile`, { form: form2, headers: OPT_IN });
+          const form3 = new FormData();
+          for (const p of files) form3.append("file", new Blob([readFileSync4(resolve6(p))]), basename4(p));
+          const tmp = await c.request("POST", `${SD}/servicedesk/${seg(sdId)}/attachTemporaryFile`, { form: form3, headers: OPT_IN });
           const ids = (tmp?.temporaryAttachments ?? []).map((t) => t.temporaryAttachmentId);
           await c.request("POST", `${SD}/request/${seg(key)}/attachment`, {
             json: { temporaryAttachmentIds: ids, public: args.attachments_public ?? true },
@@ -65981,9 +66808,12 @@ var toRow = (r) => ({
   jiraRequired: !!r.jiraRequired,
   values: r.values ?? {}
 });
+function readRawRequestTypeFields(client, rtId, kind) {
+  return client.get(`${IJ}/${seg(rtId)}/request-type-fields/${kind}`);
+}
 async function readForm(client, rtId) {
   const [visible, hidden, unused] = await Promise.all(
-    ["visible", "hidden", "unused"].map((k2) => client.get(`${IJ}/${rtId}/request-type-fields/${k2}`))
+    ["visible", "hidden", "unused"].map((k2) => readRawRequestTypeFields(client, rtId, k2))
   );
   const rows2 = (v) => (Array.isArray(v) ? v : []).map(toRow);
   return { visible: rows2(visible), hidden: rows2(hidden), unused: rows2(unused) };
@@ -65997,12 +66827,25 @@ function findField(rows2, given) {
   return byName[0];
 }
 var fieldRowPath = (rtId, kind, id2) => `${IJ}/${rtId}/request-type-fields/${kind}/${id2}`;
+function rejectJiraRequiredOptional(row, required2) {
+  if (required2 === false && row.jiraRequired) {
+    throw new ValidationError(`${row.name} (${row.fieldId}) is required by Jira; required=false cannot make it optional on this portal. Review the shared Jira field configuration separately.`);
+  }
+}
+function fieldVerificationState(requestTypeId, fieldId, row) {
+  return {
+    requestTypeId,
+    fieldId,
+    missing: !row,
+    ...row ? { sdRequired: row.sdRequired, jiraRequired: row.jiraRequired, required: row.sdRequired || row.jiraRequired } : {}
+  };
+}
 async function formContext(client, args) {
   await requireJsmVersion(client, "Request type form changes");
   const sd = await resolveServiceDesk(client, args.service_desk);
   const rt2 = await resolveRequestType(client, sd, args.request_type);
-  const form2 = await readForm(client, rt2.id);
-  return { sd, rt: rt2, form: form2, dryRun: args.dry_run !== false, where: `form of '${rt2.name}' (${sd.projectKey})` };
+  const form3 = await readForm(client, rt2.id);
+  return { sd, rt: rt2, form: form3, dryRun: args.dry_run !== false, where: `form of '${rt2.name}' (${sd.projectKey})` };
 }
 var order = (rows2) => rows2.map((r) => r.fieldId);
 var jiraRequestTypeTools = [
@@ -66229,12 +67072,12 @@ var jiraRequestTypeTools = [
       const c = client("jira");
       const sd = await resolveServiceDesk(c, args.service_desk);
       const rt2 = await resolveRequestType(c, sd, args.request_type);
-      const form2 = await readForm(c, rt2.id);
+      const form3 = await readForm(c, rt2.id);
       return {
         requestType: { id: rt2.id, name: rt2.name },
-        visible: form2.visible.map((r) => ({ fieldId: r.fieldId, name: r.name, label: r.label, description: r.description || void 0, required: r.sdRequired || r.jiraRequired })),
-        hidden: form2.hidden.map((r) => ({ fieldId: r.fieldId, name: r.name, preset: r.values[r.fieldId] ?? [] })),
-        ...args.include_addable ? { addable: form2.unused.map((r) => ({ fieldId: r.fieldId, name: r.name })) } : { addableCount: form2.unused.length, hint: "include_addable=true lists the fields that can be added" }
+        visible: form3.visible.map((r) => ({ fieldId: r.fieldId, name: r.name, label: r.label, description: r.description || void 0, sdRequired: r.sdRequired, jiraRequired: r.jiraRequired, required: r.sdRequired || r.jiraRequired })),
+        hidden: form3.hidden.map((r) => ({ fieldId: r.fieldId, name: r.name, preset: r.values[r.fieldId] ?? [] })),
+        ...args.include_addable ? { addable: form3.unused.map((r) => ({ fieldId: r.fieldId, name: r.name })) } : { addableCount: form3.unused.length, hint: "include_addable=true lists the fields that can be added" }
       };
     }
   },
@@ -66242,34 +67085,36 @@ var jiraRequestTypeTools = [
     name: "jira_add_request_type_field",
     product: "jira",
     write: true,
-    description: "Add a field to a request type's form (optionally label, description, required, 1-based position). Already visible there \u2192 already-satisfied. Internal JSM API, JSM 11.3.x only.",
+    description: "Add a field to a request type's form (optionally label, description, required, 1-based position). required=false requires both portal and Jira mandatory flags to be false; Jira-required fields are rejected. Already visible there \u2192 already-satisfied. Internal JSM API, JSM 11.3.x only.",
     inputShape: { service_desk: sdArg, request_type: rtArg, field: external_exports.coerce.string().min(1), label: external_exports.string().optional(), description: external_exports.string().optional(), required: boolArg.optional(), position: external_exports.coerce.number().int().min(1).optional(), ...dryRunShape },
     async handler({ client }, args) {
       const c = client("jira");
-      const { rt: rt2, form: form2, dryRun, where } = await formContext(c, args);
+      const { rt: rt2, form: form3, dryRun, where } = await formContext(c, args);
       const rtId = rt2.id;
-      const visible = findField(form2.visible, args.field);
-      const hidden = findField(form2.hidden, args.field);
+      const visible = findField(form3.visible, args.field);
+      const hidden = findField(form3.hidden, args.field);
       if (hidden) throw new ValidationError(`${hidden.name} is a hidden field of this form; use jira_show_request_type_field`);
       const attrs = {};
       if (args.label !== void 0) attrs.label = args.label;
       if (args.description !== void 0) attrs.description = args.description;
       if (args.required !== void 0) attrs.sdRequired = args.required;
-      const cur = order(form2.visible);
+      const cur = order(form3.visible);
       if (visible) {
+        rejectJiraRequiredOptional(visible, args.required);
         const { desired: desired2 } = placement(cur, visible.fieldId, args.position ?? cur.indexOf(visible.fieldId) + 1);
         const same2 = Object.entries(attrs).every(([k2, v]) => visible[k2] === v) && JSON.stringify(desired2) === JSON.stringify(cur);
         if (same2) return alreadySatisfied(`Add ${visible.name} to the ${where}`, "it is already on the form with these settings");
         throw new ValidationError(`${visible.name} is already on the form; use jira_update_request_type_field or jira_move_request_type_field`);
       }
-      const add = findField(form2.unused, args.field);
-      if (!add) throw new ValidationError(`'${args.field}' cannot be added to the ${where}; addable fields: ${form2.unused.map((r) => r.name).join(", ")}`);
+      const add = findField(form3.unused, args.field);
+      if (!add) throw new ValidationError(`'${args.field}' cannot be added to the ${where}; addable fields: ${form3.unused.map((r) => r.name).join(", ")}`);
+      rejectJiraRequiredOptional(add, args.required);
       const { desired, anchor: anchor2 } = placement(cur, add.fieldId, args.position);
       const list = [{ method: "POST", path: `${IJ}/${rtId}/request-type-fields`, json: { fields: [add.fieldId] }, label: `add ${add.name}` }];
       if (Object.keys(attrs).length) list.push({ method: "PUT", path: fieldRowPath(rtId, "visible", `{${add.fieldId}}`), json: attrs, label: "settings" });
       if (desired.indexOf(add.fieldId) !== desired.length - 1) list.push({ method: "POST", path: `${fieldRowPath(rtId, "visible", `{${add.fieldId}}`)}/move`, json: anchor2 === "first" ? { position: "First" } : { after: `{${anchor2}}` }, label: "position" });
       const summary = `Add ${add.name} to the ${where}${args.position ? ` at position ${args.position}` : ""}`;
-      const extra = { identity: { op: "add-form-field", requestType: rt2.ref, field: add.fieldId, ...attrs, position: args.position ?? null }, state: { present: false, anchor: args.position ? anchor2 : null } };
+      const extra = { identity: { op: "add-form-field", requestType: rt2.ref, field: add.fieldId, ...attrs, position: args.position ?? null }, state: { present: false, anchor: args.position ? anchor2 : null, ...args.required === false ? { jiraRequired: add.jiraRequired } : {} } };
       if (dryRun) return steps(c, true, summary, list, extra, async () => ({ ok: true, result: null }));
       const rows2 = await c.request("POST", list[0].path, { json: list[0].json });
       const row = (rows2 ?? []).find((r) => r.fieldId === add.fieldId);
@@ -66277,16 +67122,21 @@ var jiraRequestTypeTools = [
       if (!row.displayed) throw new VerificationError(`${summary}: Jira added ${add.name} as a hidden field (the portal cannot show it)`, row);
       if (Object.keys(attrs).length) await c.request("PUT", fieldRowPath(rtId, "visible", row.id), { json: attrs });
       const now = order((await readForm(c, rtId)).visible);
+      if (!now.includes(add.fieldId)) {
+        throw new VerificationError(`${summary}: the added field is missing from the read-back`, fieldVerificationState(rtId, add.fieldId, void 0));
+      }
       if (JSON.stringify(now) !== JSON.stringify(desired)) {
         const visibleRows = (await readForm(c, rtId)).visible;
+        const selected = visibleRows.find((r) => r.fieldId === add.fieldId);
+        if (!selected) throw new VerificationError(`${summary}: the added field is missing from the read-back`, fieldVerificationState(rtId, add.fieldId, void 0));
         const idOf = (fid) => String(visibleRows.find((r) => r.fieldId === fid).id);
         const i = desired.indexOf(add.fieldId);
         await c.request("POST", `${fieldRowPath(rtId, "visible", row.id)}/move`, { json: i === 0 ? { position: "First" } : { after: c.url(fieldRowPath(rtId, "visible", idOf(desired[i - 1]))) } });
       }
       const back = await readForm(c, rtId);
       const added = back.visible.find((r) => r.fieldId === add.fieldId);
-      const ok = !!added && JSON.stringify(order(back.visible)) === JSON.stringify(desired) && Object.entries(attrs).every(([k2, v]) => added[k2] === v);
-      if (!ok) throw new VerificationError(`${summary}: the read-back does not show the change`, back.visible);
+      const ok = !!added && JSON.stringify(order(back.visible)) === JSON.stringify(desired) && Object.entries(attrs).every(([k2, v]) => added[k2] === v) && (args.required !== false || !added.sdRequired && !added.jiraRequired);
+      if (!ok) throw new VerificationError(`${summary}: the read-back does not show the requested field state`, fieldVerificationState(rtId, add.fieldId, added));
       return { dry_run: false, product: c.product, summary, request: { method: "POST", url: c.url(list[0].path), body: list[0].json }, result: { visible: back.visible.map((r) => r.fieldId) } };
     }
   },
@@ -66298,9 +67148,9 @@ var jiraRequestTypeTools = [
     inputShape: { service_desk: sdArg, request_type: rtArg, field: external_exports.coerce.string().min(1), ...dryRunShape },
     async handler({ client }, args) {
       const c = client("jira");
-      const { rt: rt2, form: form2, dryRun, where } = await formContext(c, args);
-      const v = findField(form2.visible, args.field);
-      const h2 = v ? void 0 : findField(form2.hidden, args.field);
+      const { rt: rt2, form: form3, dryRun, where } = await formContext(c, args);
+      const v = findField(form3.visible, args.field);
+      const h2 = v ? void 0 : findField(form3.hidden, args.field);
       const row = v ?? h2;
       if (!row) return alreadySatisfied(`Remove ${args.field} from the ${where}`, "it is not on the form");
       return steps(
@@ -66325,16 +67175,16 @@ var jiraRequestTypeTools = [
     async handler({ client }, args) {
       if (args.position === void 0 === (args.after === void 0)) throw new ValidationError("Pass exactly one of position or after");
       const c = client("jira");
-      const { rt: rt2, form: form2, dryRun, where } = await formContext(c, args);
-      const row = findField(form2.visible, args.field);
+      const { rt: rt2, form: form3, dryRun, where } = await formContext(c, args);
+      const row = findField(form3.visible, args.field);
       if (!row) throw new ValidationError(`${args.field} is not a visible field of the ${where}`);
-      const after = args.after !== void 0 ? findField(form2.visible, args.after) : void 0;
+      const after = args.after !== void 0 ? findField(form3.visible, args.after) : void 0;
       if (args.after !== void 0 && !after) throw new ValidationError(`${args.after} is not a visible field of the ${where}`);
-      const cur = order(form2.visible);
+      const cur = order(form3.visible);
       const { desired, anchor: anchor2 } = placement(cur, row.fieldId, args.position, after?.fieldId);
       const target = after ? `after ${after.name}` : `position ${args.position}`;
       if (JSON.stringify(desired) === JSON.stringify(cur)) return alreadySatisfied(`Move ${row.name} on the ${where} to ${target}`, "it is already there");
-      const idOf = (fid) => String(form2.visible.find((r) => r.fieldId === fid).id);
+      const idOf = (fid) => String(form3.visible.find((r) => r.fieldId === fid).id);
       return steps(
         c,
         dryRun,
@@ -66352,13 +67202,14 @@ var jiraRequestTypeTools = [
     name: "jira_update_request_type_field",
     product: "jira",
     write: true,
-    description: "Change a visible form field's label, description and/or required flag. Internal JSM API, JSM 11.3.x only.",
+    description: "Change a visible form field's label, description and/or required flag. required=false means optional under both portal and Jira mandatory flags; Jira-required fields are rejected and read-back verifies the effective state. Internal JSM API, JSM 11.3.x only.",
     inputShape: { service_desk: sdArg, request_type: rtArg, field: external_exports.coerce.string().min(1), label: external_exports.string().optional(), description: external_exports.string().optional(), required: boolArg.optional(), ...dryRunShape },
     async handler({ client }, args) {
       const c = client("jira");
-      const { rt: rt2, form: form2, dryRun, where } = await formContext(c, args);
-      const row = findField(form2.visible, args.field);
+      const { rt: rt2, form: form3, dryRun, where } = await formContext(c, args);
+      const row = findField(form3.visible, args.field);
       if (!row) throw new ValidationError(`${args.field} is not a visible field of the ${where}`);
+      rejectJiraRequiredOptional(row, args.required);
       const attrs = {};
       if (args.label !== void 0 && args.label !== row.label) attrs.label = args.label;
       if (args.description !== void 0 && args.description !== row.description) attrs.description = args.description;
@@ -66371,10 +67222,12 @@ var jiraRequestTypeTools = [
         dryRun,
         summary,
         [{ method: "PUT", path: fieldRowPath(rt2.id, "visible", row.id), json: attrs }],
-        { identity: { op: "update-form-field", requestType: rt2.ref, field: row.fieldId, ...attrs }, state: Object.fromEntries(Object.keys(attrs).map((k2) => [k2, row[k2]])) },
+        { identity: { op: "update-form-field", requestType: rt2.ref, field: row.fieldId, ...attrs }, state: { ...Object.fromEntries(Object.keys(attrs).map((k2) => [k2, row[k2]])), ...args.required === false ? { jiraRequired: row.jiraRequired } : {} } },
         async () => {
           const back = findField((await readForm(c, rt2.id)).visible, row.fieldId);
-          return { ok: !!back && Object.entries(attrs).every(([k2, v]) => back[k2] === v), result: back };
+          const ok = !!back && Object.entries(attrs).every(([k2, v]) => back[k2] === v) && (args.required !== false || !back.sdRequired && !back.jiraRequired);
+          if (!ok) throw new VerificationError(`${summary}: the read-back does not show the requested field state`, fieldVerificationState(rt2.id, row.fieldId, back));
+          return { ok: true, result: back };
         }
       );
     }
@@ -66387,14 +67240,14 @@ var jiraRequestTypeTools = [
     inputShape: { service_desk: sdArg, request_type: rtArg, field: external_exports.coerce.string().min(1), preset: external_exports.string().optional(), ...dryRunShape },
     async handler({ client }, args) {
       const c = client("jira");
-      const { rt: rt2, form: form2, dryRun, where } = await formContext(c, args);
+      const { rt: rt2, form: form3, dryRun, where } = await formContext(c, args);
       const preset = args.preset !== void 0 ? String(args.preset).split(",").map((s) => s.trim()).filter(Boolean) : void 0;
-      const hiddenRow = findField(form2.hidden, args.field);
+      const hiddenRow = findField(form3.hidden, args.field);
       if (hiddenRow) {
         const stored = hiddenRow.values[hiddenRow.fieldId] ?? [];
         if (!preset || JSON.stringify(stored) === JSON.stringify(preset)) return alreadySatisfied(`Hide ${hiddenRow.name} on the ${where}`, "it is already hidden with this preset");
       }
-      const row = hiddenRow ?? findField(form2.visible, args.field);
+      const row = hiddenRow ?? findField(form3.visible, args.field);
       if (!row) throw new ValidationError(`${args.field} is not on the ${where}`);
       if (row.jiraRequired && !preset?.length && !row.values[row.fieldId]?.length) {
         throw new ValidationError(`${row.name} is required by Jira; hiding it needs a preset value, or creating requests fails`);
@@ -66427,9 +67280,9 @@ var jiraRequestTypeTools = [
     inputShape: { service_desk: sdArg, request_type: rtArg, field: external_exports.coerce.string().min(1), ...dryRunShape },
     async handler({ client }, args) {
       const c = client("jira");
-      const { rt: rt2, form: form2, dryRun, where } = await formContext(c, args);
-      if (findField(form2.visible, args.field)) return alreadySatisfied(`Show ${args.field} on the ${where}`, "it is already visible");
-      const row = findField(form2.hidden, args.field);
+      const { rt: rt2, form: form3, dryRun, where } = await formContext(c, args);
+      if (findField(form3.visible, args.field)) return alreadySatisfied(`Show ${args.field} on the ${where}`, "it is already visible");
+      const row = findField(form3.hidden, args.field);
       if (!row) throw new ValidationError(`${args.field} is not on the ${where}`);
       return steps(
         c,
@@ -66442,6 +67295,188 @@ var jiraRequestTypeTools = [
     }
   }
 ];
+
+// src/tools/jira/configSnapshot.ts
+var flag = (value) => typeof value === "boolean" ? value : null;
+var numericId2 = (value) => typeof value === "string" || typeof value === "number" ? /^\d+$/.test(String(value)) ? String(value) : null : null;
+async function safeRead(label, read) {
+  try {
+    return await read();
+  } catch (e) {
+    if (e instanceof HttpStatusError) throw new HttpStatusError(e.status, "", label);
+    if (e instanceof UnsupportedError) throw e;
+    if (e instanceof ValidationError) throw e;
+    throw new ValidationError(`${label}: read failed (${e instanceof Error ? e.name : "unknown error"})`);
+  }
+}
+async function optionalRead(label, read) {
+  try {
+    return { source: { status: "COMPLETE" }, data: await safeRead(label, read) };
+  } catch (e) {
+    if (e instanceof UnsupportedError || e instanceof HttpStatusError && [404, 405, 501].includes(e.status)) {
+      return { source: { status: "UNAVAILABLE", reason: e instanceof HttpStatusError ? `HTTP ${e.status}` : "Unsupported" } };
+    }
+    throw e;
+  }
+}
+function identity(raw, hidden) {
+  const id2 = numericId2(raw?.id);
+  if (!id2 || typeof raw?.name !== "string" || !raw.name.trim()) throw new ValidationError("Malformed request-type identity in inventory");
+  return { id: id2, name: raw.name, issueTypeId: numericId2(raw.issueTypeId ?? raw.issueType?.id), portalVisibility: hidden ? "HIDDEN" : "VISIBLE" };
+}
+async function inventory(client, sd, cap, warn) {
+  const types = /* @__PURE__ */ new Map();
+  for (let start = 0; ; ) {
+    const page = await safeRead("public request-type inventory", () => sdGet(client, `/servicedesk/${sd.id}/requesttype`, { start, limit: 50 }));
+    if (!Array.isArray(page?.values) || typeof page.isLastPage !== "boolean") throw new ValidationError("Malformed public request-type inventory");
+    for (const raw of page.values) {
+      const row = identity(raw, false);
+      if (types.has(row.id)) throw new ValidationError(`Non-progressing request-type inventory at id ${row.id}`);
+      types.set(row.id, row);
+      if (types.size > cap) throw new ValidationError(`Request-type budget exceeded (${cap}); raise max_request_types (up to 1000)`);
+    }
+    if (page.isLastPage) break;
+    if (!page.values.length) throw new ValidationError("Non-progressing empty request-type inventory page");
+    start += page.values.length;
+  }
+  const hidden = await optionalRead("hidden request-type inventory", () => client.get(`/rest/servicedesk/1/servicedesk/${sd.projectId}/request-type-groups/hidden/request-types`));
+  if (hidden.source.status === "COMPLETE") {
+    if (!Array.isArray(hidden.data)) throw new ValidationError("Malformed hidden request-type inventory");
+    const seen = /* @__PURE__ */ new Set();
+    for (const raw of hidden.data) {
+      const row = identity(raw, true);
+      if (seen.has(row.id)) throw new ValidationError(`Duplicate hidden request-type identity ${row.id}`);
+      seen.add(row.id);
+      const previous = types.get(row.id);
+      if (previous) {
+        previous.portalVisibility = "HIDDEN";
+        if (previous.name !== row.name || previous.issueTypeId && row.issueTypeId && previous.issueTypeId !== row.issueTypeId) {
+          warn({ requestTypeId: row.id, reason: "Conflicting inventory identity" });
+          hidden.source.status = "PARTIAL";
+        }
+        previous.issueTypeId ??= row.issueTypeId;
+      } else types.set(row.id, row);
+      if (types.size > cap) throw new ValidationError(`Request-type budget exceeded (${cap}); raise max_request_types (up to 1000)`);
+    }
+  } else {
+    for (const row of types.values()) row.portalVisibility = "UNKNOWN";
+  }
+  return { types: [...types.values()], sources: { public: { status: "COMPLETE" }, hidden: hidden.source } };
+}
+function select(types, given) {
+  if (!given) return types;
+  const selected = /* @__PURE__ */ new Map();
+  for (const value of given) {
+    const byId = types.find((t) => t.id === value);
+    const hits = byId ? [byId] : types.filter((t) => t.name === value);
+    if (hits.length !== 1) throw new ValidationError(hits.length ? "Request-type selection is ambiguous; pass a stable id" : "Requested request type not found in inventory");
+    selected.set(hits[0].id, hits[0]);
+  }
+  return [...selected.values()];
+}
+async function form2(client, rt2, presets, warn) {
+  const sources = {};
+  const fields = {};
+  for (const kind of ["visible", "hidden"]) {
+    const result = await optionalRead(`request type ${rt2.id} ${kind} fields`, () => readRawRequestTypeFields(client, rt2.id, kind));
+    const data = result.data;
+    if (result.source.status === "COMPLETE" && (!Array.isArray(data) || data.some((r) => typeof r?.fieldId !== "string" || !r.fieldId || !numericId2(r.id)))) {
+      result.source = { status: "UNAVAILABLE", reason: "Malformed form source" };
+    }
+    sources[kind] = result.source;
+    fields[kind] = [];
+    if (result.source.status !== "COMPLETE") {
+      warn({ requestTypeId: rt2.id, reason: `${kind}: ${result.source.reason}` });
+      continue;
+    }
+    fields[kind] = data.map((r, i) => {
+      const sdRequired = flag(r.sdRequired), jiraRequired = flag(r.jiraRequired);
+      if (sdRequired === null || jiraRequired === null) {
+        result.source.status = "PARTIAL";
+        warn({ requestTypeId: rt2.id, fieldId: r.fieldId, reason: "Unknown mandatory flag" });
+      }
+      return {
+        rowId: String(r.id),
+        fieldId: r.fieldId,
+        name: String(r.jiraName ?? r.label ?? r.fieldId),
+        label: String(r.label ?? ""),
+        description: String(r.description ?? ""),
+        visibility: kind === "visible" ? "VISIBLE" : "HIDDEN",
+        position: i + 1,
+        sdRequired,
+        jiraRequired,
+        required: sdRequired === true || jiraRequired === true ? true : sdRequired === false && jiraRequired === false ? false : null,
+        ...kind === "hidden" ? presets ? { presetOmitted: false, values: r.values ?? {} } : { presetOmitted: true } : {}
+      };
+    });
+  }
+  const statuses = Object.values(sources).map((s) => s.status);
+  const status = statuses.every((s) => s === "COMPLETE") ? "COMPLETE" : statuses.every((s) => s === "UNAVAILABLE") ? "UNAVAILABLE" : "PARTIAL";
+  return { status, sources, ...fields };
+}
+var jiraConfigSnapshotTools = [{
+  name: "jira_export_config",
+  product: "jira",
+  description: "Export ordered JSM request-type forms for one service desk to a local Jira-config JSON snapshot. GET-only; explicit coverage and unknown flags. Other configuration areas are not captured.",
+  inputShape: {
+    service_desk: external_exports.coerce.string().min(1).describe("Service desk id or project key"),
+    output_dir: external_exports.string().min(1).describe("Existing local output directory"),
+    request_types: external_exports.array(external_exports.coerce.string().min(1)).min(1).max(1e3).optional().describe("Request type ids or exact names; default all inventoried types"),
+    include_presets: external_exports.boolean().default(false).describe("Include sensitive hidden preset values in the local artifact only"),
+    overwrite: external_exports.boolean().default(false).describe("Back up and replace a conflicting local artifact"),
+    max_request_types: external_exports.number().int().min(1).max(1e3).default(100),
+    max_total_bytes: external_exports.number().int().min(1).max(200 * 1024 * 1024).default(20 * 1024 * 1024)
+  },
+  exitCode: (value) => value?.outcome === "CONFLICT" ? EXIT.CONFLICT : EXIT.OK,
+  handler: async (ctx, args) => {
+    const client = ctx.client("jira");
+    const start = (/* @__PURE__ */ new Date()).toISOString();
+    const version2 = await safeRead("JSM version", () => requireJsmVersion(client, "Request-form snapshots"));
+    const jira = await safeRead("Jira version", () => jiraVersion(client));
+    const sd = await safeRead("service desk identity", () => resolveServiceDesk(client, args.service_desk));
+    if (!numericId2(sd.id) || !numericId2(sd.projectId)) throw new ValidationError("Malformed service desk identity");
+    const diagnostics = [];
+    let diagnosticTotal = 0;
+    const warn = (d) => {
+      diagnosticTotal++;
+      if (diagnostics.length < 50) diagnostics.push(d);
+    };
+    const discovered2 = await inventory(client, sd, args.max_request_types, warn);
+    const chosen = select(discovered2.types, args.request_types);
+    const requestTypes = [];
+    for (const rt2 of chosen) requestTypes.push({ ...rt2, form: await form2(client, rt2, args.include_presets, warn) });
+    const counts = { complete: 0, partial: 0, unavailable: 0 };
+    for (const rt2 of requestTypes) counts[rt2.form.status.toLowerCase()]++;
+    const coverage = {
+      status: Object.values(discovered2.sources).every((s) => s.status === "COMPLETE") && counts.partial === 0 && counts.unavailable === 0 ? "COMPLETE" : "PARTIAL",
+      inventory: discovered2.sources,
+      inventoried: discovered2.types.length,
+      selected: chosen.length,
+      forms: counts
+    };
+    const url2 = new URL(client.url(SD));
+    url2.username = "";
+    url2.password = "";
+    url2.search = "";
+    url2.hash = "";
+    url2.pathname = url2.pathname.replace(/\/rest\/servicedeskapi\/?$/, "").replace(/\/$/, "");
+    const snapshot = {
+      schemaVersion: 1,
+      source: { baseUrl: url2.toString().replace(/\/$/, ""), jiraVersion: jira, jsmVersion: version2 },
+      capture: { start, end: (/* @__PURE__ */ new Date()).toISOString(), atomic: false },
+      scope: { serviceDeskId: sd.id, projectId: sd.projectId, projectKey: sd.projectKey, components: ["request-type-forms"], selection: args.request_types ?? "ALL_INVENTORIED", note: "Other Jira configuration areas are not captured" },
+      coverage,
+      components: { requestTypeForms: { requestTypes } },
+      diagnostics: { total: diagnosticTotal, items: diagnostics }
+    };
+    const bytes = Buffer.from(JSON.stringify(snapshot, null, 2) + "\n", "utf8");
+    if (bytes.length > args.max_total_bytes) throw new ValidationError(`Snapshot byte budget exceeded (${args.max_total_bytes}); select fewer request_types or raise max_total_bytes (up to 209715200)`);
+    const relativePath = `jira-config-${sd.id}.json`;
+    const target = await localTarget(args.output_dir, relativePath);
+    const written = await writeLocal(target, bytes, args.overwrite);
+    return { ...written, path: target, relativePath, sha256: sha256(bytes), bytes: bytes.length, capture: snapshot.capture, coverage, diagnostics: { total: diagnosticTotal, items: diagnostics } };
+  }
+}];
 
 // src/tools/jira/sla.ts
 var IJ2 = "/rest/servicedesk/1/servicedesk";
@@ -66657,8 +67692,8 @@ var jiraSlaTools = [
       if (existing && shapeOf(existing) === shapeOf(body)) return alreadySatisfied(summary, `SLA ${existing.id} '${existing.name}' already has these settings`);
       if (existing) throw new ValidationError(`SLA ${existing.id} '${existing.name}' already exists with other settings; use jira_update_sla`);
       const req = { method: "POST", path: `${IJ2}/agent/${sd.projectKey}/sla/metrics`, json: body, summary };
-      const identity = { op: "create-sla", sd: sd.id, name: args.name, start: args.start, pause: args.pause ?? [], stop: args.stop, goals: args.goals, customerVisible: !!args.customer_visible };
-      if (dryRun) return { ...await guardedWrite(c, args, req), identity };
+      const identity2 = { op: "create-sla", sd: sd.id, name: args.name, start: args.start, pause: args.pause ?? [], stop: args.stop, goals: args.goals, customerVisible: !!args.customer_visible };
+      if (dryRun) return { ...await guardedWrite(c, args, req), identity: identity2 };
       await c.request("POST", req.path, { json: body });
       const back = (await metrics(c, sd)).find((m) => sameName(m.name, args.name));
       if (!back || shapeOf(back) !== shapeOf(body)) throw new VerificationError(`${summary}: the SLA does not read back as created`, back);
@@ -66698,9 +67733,9 @@ var jiraSlaTools = [
       if (shapeOf(body) === shapeOf(stored)) return alreadySatisfied(summary, "it already has these settings");
       const recalc = !!(args.start || args.pause || args.stop || args.goals);
       const req = { method: "PUT", path: `${IJ2}/agent/${sd.projectKey}/sla/metrics/${stored.id}`, json: body, summary };
-      const identity = { op: "update-sla", sd: sd.id, sla: args.sla, name: args.name, start: args.start, pause: args.pause, stop: args.stop, goals: args.goals, customerVisible: args.customer_visible };
+      const identity2 = { op: "update-sla", sd: sd.id, sla: args.sla, name: args.name, start: args.start, pause: args.pause, stop: args.stop, goals: args.goals, customerVisible: args.customer_visible };
       if (args.dry_run !== false) {
-        return { ...await guardedWrite(c, args, req), before: goalSummary(stored.config.goals, refs), after: goalSummary(body.config.goals, refs), warning: recalc ? RECALC : void 0, identity, state: shapeOf(stored) };
+        return { ...await guardedWrite(c, args, req), before: goalSummary(stored.config.goals, refs), after: goalSummary(body.config.goals, refs), warning: recalc ? RECALC : void 0, identity: identity2, state: shapeOf(stored) };
       }
       await c.request("PUT", req.path, { json: body });
       const back = pickMetric(await metrics(c, sd), String(stored.id));
@@ -66747,8 +67782,8 @@ var jiraSlaTools = [
         throw new ValidationError(`Calendar '${existing.name}' already exists with other settings; use jira_update_sla_calendar`);
       }
       const req = { method: "POST", path: `${IJ2}/${sd.id}/sla/calendars`, json: body, summary };
-      const identity = { op: "create-calendar", sd: sd.id, ...body };
-      if (args.dry_run !== false) return { ...await guardedWrite(c, args, req), identity };
+      const identity2 = { op: "create-calendar", sd: sd.id, ...body };
+      if (args.dry_run !== false) return { ...await guardedWrite(c, args, req), identity: identity2 };
       await c.request("POST", req.path, { json: body });
       const back = (await calendarDetails(c, sd)).find((x2) => x2.name === args.name);
       if (!back) throw new VerificationError(`${summary}: the calendar is not listed after creation`);
@@ -66926,551 +67961,9 @@ var jiraQueueTools = [
   }
 ];
 
-// src/tools/jira/scriptrunner.ts
-var SR = "/rest/scriptrunner/latest";
-var SJ = "/rest/scriptrunner-jira/latest";
-var PLUGIN_KEY = "com.onresolve.jira.groovy.groovyrunner";
-var SUPPORT_MATRIX = [
-  // Script Editor reads and PUT/read-back checked on this pair; broader ranges are allowed by policy.
-  { jira: "11.3.7", scriptrunner: "10.14.0", verified: "2026-10-07", operations: ["script-root-read", "script-root-write"] },
-  ...["10.x", "11.x"].flatMap((jira) => ["9.x", "10.x"].map((scriptrunner) => ({
-    jira,
-    scriptrunner,
-    operations: ["script-root-read", "script-root-write"]
-  })))
-];
-function matchesVersion(version2, range) {
-  if (!range.endsWith(".x")) return version2 === range;
-  const match = /^(\d+)\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?$/.exec(version2);
-  return !!match && `${match[1]}.x` === range;
-}
-function supportEntry(jira, scriptrunner) {
-  return SUPPORT_MATRIX.find((m) => matchesVersion(jira, m.jira) && matchesVersion(scriptrunner, m.scriptrunner));
-}
-async function requireScriptRunnerOperation(client, operation, label) {
-  const v = await requireScriptRunner(client);
-  const entry = supportEntry(v.jira, v.scriptrunner);
-  if (!entry?.operations.includes(operation)) {
-    throw new UnsupportedError(
-      `${label} is not verified for Jira ${v.jira} + ScriptRunner ${v.scriptrunner}; its internal API needs a verification for this pair first`,
-      { observedJira: v.jira, observedScriptRunner: v.scriptrunner, operation }
-    );
-  }
-  return v;
-}
-async function isScriptRunnerOperationVerified(client, operation) {
-  const v = await requireScriptRunner(client);
-  return !!supportEntry(v.jira, v.scriptrunner)?.operations.includes(operation);
-}
-var discovered = /* @__PURE__ */ new WeakMap();
-function requireScriptRunner(client) {
-  let p = discovered.get(client);
-  if (!p) {
-    p = (async () => {
-      const jira = await jiraVersion(client);
-      let plugin;
-      try {
-        plugin = await client.get(`/rest/plugins/1.0/${PLUGIN_KEY}-key`, void 0, "application/vnd.atl.plugins.plugin+json");
-      } catch (e) {
-        if (isHttpStatusError(e) && e.status === 404) throw new UnsupportedError("ScriptRunner is not installed on this Jira");
-        throw e;
-      }
-      if (typeof plugin?.version !== "string" || typeof plugin?.enabled !== "boolean") {
-        throw new ValidationError("ScriptRunner discovery returned no version or state; refusing to call its resources");
-      }
-      if (!plugin.enabled) throw new UnsupportedError(`ScriptRunner ${plugin.version} is installed but disabled`);
-      const ok = supportEntry(jira, plugin.version);
-      if (!ok) {
-        const pairs = SUPPORT_MATRIX.map((m) => `Jira ${m.jira} + ScriptRunner ${m.scriptrunner}`).join(", ");
-        throw new UnsupportedError(
-          `Jira ${jira} + ScriptRunner ${plugin.version} is outside the allowed version ranges (allowed: ${pairs})`,
-          { observedJira: jira, observedScriptRunner: plugin.version }
-        );
-      }
-      return { jira, scriptrunner: plugin.version };
-    })();
-    discovered.set(client, p);
-    p.catch(() => discovered.delete(client));
-  }
-  return p;
-}
-var SENSITIVE = /script|source|code|class_?name|classname|condition|do_?what|sql|password|secret|token|credential|jdbc|datasourceuser|parameters|pooloverrides|poolpropertyoverrides|configuration_script/i;
-function redact(value) {
-  if (Array.isArray(value)) return value.map(redact);
-  if (value && typeof value === "object") {
-    return Object.fromEntries(Object.entries(value).filter(([k2]) => !SENSITIVE.test(k2)).map(([k2, v]) => [k2, redact(v)]));
-  }
-  return value;
-}
-var shortKind = (c) => typeof c === "string" ? c.split(".").pop() : void 0;
-var iso = (ms) => typeof ms === "number" ? new Date(ms).toISOString() : null;
-var TYPES = {
-  job: {
-    base: `${SR}/scheduled-jobs`,
-    label: "scheduled job",
-    name: (r) => r.name,
-    view: (r) => ({ id: r.id, name: r.name, kind: shortKind(r["canned-script"]), schedule: [r.scheduleType, r.FIELD_INTERVAL].filter(Boolean).join(" "), runAs: r.FIELD_USER_ID ?? null, disabled: !!r.disabled, nextRun: iso(r.nextRunTime), notes: r.FIELD_NOTES ?? "" }),
-    writable: { disabled: "disabled", notes: "FIELD_NOTES" }
-  },
-  listener: {
-    base: `${SJ}/listeners`,
-    label: "listener",
-    name: (r) => r.name,
-    view: (r) => ({ id: r.id, name: r.name, kind: shortKind(r["canned-script"]), events: r.friendlyEventNames ?? "", projects: (r.relatedProjects ?? []).map((p) => p.key ?? p).join(",") || (r.projects ?? []).join(","), notes: r.FIELD_LISTENER_NOTES ?? r.FIELD_NOTES ?? "" }),
-    writable: { notes: "FIELD_LISTENER_NOTES" }
-  },
-  field: {
-    base: `${SJ}/scriptfields`,
-    label: "script field",
-    name: (r) => r.name,
-    view: (r) => ({ id: r.id, name: r.name, kind: shortKind(r["canned-script"]), description: r.desc ?? "", customFieldId: r.customFieldId ? `customfield_${r.customFieldId}` : null, searcher: r.searcherName ?? null, allProjects: !!r.isAllProjects }),
-    writable: {},
-    readOnlyReason: "script fields have neither an enabled flag nor a notes field"
-  },
-  fragment: {
-    base: `${SR}/fragments`,
-    label: "UI fragment",
-    name: (r) => r.name,
-    view: (r) => ({ id: r.id, name: r.name, type: r.type, location: r.locationName ?? r.FIELD_LOCATION ?? null, key: r.FIELD_KEY ?? null, section: r.FIELD_SECTION || null, weight: r.FIELD_WEIGHT ?? null, label: r.FIELD_MENU_LABEL ?? null, link: r.FIELD_LINK_DESTINATION ?? null, disabled: !!r.disabled, notes: r.FIELD_NOTES ?? "" }),
-    writable: { disabled: "disabled", notes: "FIELD_NOTES" }
-  },
-  endpoint: {
-    base: `${SR}/custom/customadmin`,
-    label: "REST endpoint",
-    name: (r) => r.resourcePath ?? r.id,
-    view: (r) => ({ id: r.id, name: r.resourcePath ?? r.id, methods: (r.endpoints ?? []).map((e) => `${e.method ?? "?"} ${e.name ?? ""}`.trim()).join(", "), groups: [...new Set((r.endpoints ?? []).flatMap((e) => e.groups ?? []))].join(","), disabled: !!r.disabled, notes: r.FIELD_NOTES ?? "" }),
-    writable: { disabled: "disabled", notes: "FIELD_NOTES" }
-  },
-  resource: {
-    base: `${SR}/resources`,
-    label: "resource",
-    name: (r) => r.poolName ?? r.id,
-    view: (r) => ({ id: r.id, name: r.poolName ?? r.id, kind: shortKind(r["canned-script"]), driver: r.driverClassName ?? null, readOnly: !!r.readOnly, disabled: !!r.disabled }),
-    writable: {},
-    readOnlyReason: "a resource's stored item carries the data source password, which sending it back could overwrite"
-  },
-  registry: {
-    base: `${SR}/scriptSearch`,
-    label: "script file",
-    name: (r) => r.filename,
-    view: (r) => ({ name: r.filename, path: r.filepath, type: r.filetype }),
-    writable: {},
-    readOnlyReason: "the script registry is a read-only file list"
-  }
-};
-var UNSUPPORTED = {
-  "mail-handler": "ScriptRunner exposes only an endpoint that runs a mail handler, not its configuration",
-  behaviour: "ScriptRunner exposes only Behaviours' runtime resources through REST, not their configuration"
-};
-var typeArg = external_exports.enum([...Object.keys(TYPES), ...Object.keys(UNSUPPORTED)]);
-function typeOf(name) {
-  if (UNSUPPORTED[name]) throw new UnsupportedError(`${name}: ${UNSUPPORTED[name]}`);
-  return TYPES[name];
-}
-async function listRaw(client, t) {
-  const data = await client.get(t.base);
-  return Array.isArray(data) ? data : [];
-}
-function pick3(t, items, given) {
-  const v = String(given).trim();
-  const byId = items.find((x2) => String(x2.id) === v);
-  if (byId) return byId;
-  const byName = items.filter((x2) => String(t.name(x2)).toLowerCase() === v.toLowerCase());
-  if (byName.length > 1) throw new ValidationError(`Several ${t.label}s are named '${v}'; pass the id`);
-  if (!byName.length) throw new ValidationError(`No ${t.label} '${v}'`);
-  return byName[0];
-}
-var VOLATILE = /* @__PURE__ */ new Set(["version", "nextRunTime", "lastModifiedDate", "modifiedByAvatar", "modifiedByDisplayName", "modifiedByUserKey"]);
-function changedKeys(a, b, ignore) {
-  const keys = /* @__PURE__ */ new Set([...Object.keys(a ?? {}), ...Object.keys(b ?? {})]);
-  return [...keys].filter((k2) => !ignore.has(k2) && JSON.stringify(a?.[k2] ?? null) !== JSON.stringify(b?.[k2] ?? null)).sort();
-}
-var desc = "Unofficial ScriptRunner endpoints, allowed on Jira 10.x/11.x with ScriptRunner 9.x/10.x; broader version ranges are not runtime-verified (see REFERENCE.md).";
-var jiraScriptRunnerTools = [
-  {
-    name: "jira_list_scriptrunner_items",
-    product: "jira",
-    description: "ScriptRunner items of one type: job, listener, field, fragment, endpoint (REST endpoints), resource, registry (script files). Metadata only: scripts, code references, SQL and credentials are never returned. mail-handler and behaviour answer unsupported. " + desc,
-    inputShape: { type: typeArg, ...pageShape(100) },
-    async handler({ client }, args) {
-      const c = client("jira");
-      const t = typeOf(args.type);
-      await requireScriptRunner(c);
-      const items = (await listRaw(c, t)).map((r) => redact(t.view(r)));
-      return paginate(items, args, 100);
-    }
-  },
-  {
-    name: "jira_get_scriptrunner_item",
-    product: "jira",
-    description: "One ScriptRunner item (by id or exact name) with its allowlisted metadata; scripts, SQL and credentials are never returned. " + desc,
-    inputShape: { type: typeArg, item: external_exports.coerce.string().min(1) },
-    async handler({ client }, args) {
-      const c = client("jira");
-      const t = typeOf(args.type);
-      await requireScriptRunner(c);
-      return redact(t.view(pick3(t, await listRaw(c, t), args.item)));
-    }
-  },
-  {
-    name: "jira_update_scriptrunner_item",
-    product: "jira",
-    write: true,
-    description: "Enable/disable a ScriptRunner job, fragment or REST endpoint (disabled=true|false) and/or change the notes of a job, listener, fragment or REST endpoint. The stored item is sent back with only that key changed and read back; any other change (script, code, schedule...) is refused or reported as a verification error. Nothing is run. " + desc,
-    inputShape: { type: typeArg, item: external_exports.coerce.string().min(1), disabled: boolArg.optional(), notes: external_exports.string().optional(), ...dryRunShape },
-    async handler({ client }, args) {
-      const c = client("jira");
-      const t = typeOf(args.type);
-      if (t.readOnlyReason) throw new UnsupportedError(`${t.label} changes are not offered: ${t.readOnlyReason}`);
-      const wanted = {};
-      if (args.disabled !== void 0) {
-        if (!t.writable.disabled) throw new ValidationError(`A ${t.label} has no enabled/disabled flag; only notes can change`);
-        wanted[t.writable.disabled] = args.disabled;
-      }
-      if (args.notes !== void 0) wanted[t.writable.notes] = args.notes;
-      if (!Object.keys(wanted).length) throw new ValidationError("Pass disabled and/or notes");
-      await requireScriptRunner(c);
-      const stored = pick3(t, await listRaw(c, t), args.item);
-      const canned = stored["canned-script"];
-      if (typeof canned !== "string" || !stored.id) throw new ValidationError(`The stored ${t.label} has no id or canned-script; refusing to save it`);
-      const change = Object.fromEntries(Object.entries(wanted).filter(([k2, v]) => stored[k2] !== v).map(([k2, v]) => [k2 === t.writable.disabled ? "disabled" : "notes", { from: stored[k2] ?? null, to: v }]));
-      const label = `${t.label} '${t.name(stored)}' (${stored.id})`;
-      if (!Object.keys(change).length) return alreadySatisfied(`Update ${label}`, "it already has these values");
-      const body = { ...stored, ...wanted };
-      const unexpected = changedKeys(stored, body, new Set(Object.keys(wanted)));
-      if (unexpected.length) throw new ValidationError(`Refusing to send changes to ${unexpected.join(", ")}`);
-      const path = `${t.base}/${encodeURIComponent(canned)}`;
-      const summary = `Update ${label}: ${Object.entries(change).map(([k2, v]) => `${k2} ${JSON.stringify(v.from)} \u2192 ${JSON.stringify(v.to)}`).join(", ")}`;
-      const request = { method: "POST", url: c.url(path), body: "(the stored item with only the keys above changed; not shown, it contains scripts)" };
-      if (args.dry_run !== false) {
-        return {
-          dry_run: true,
-          product: c.product,
-          summary,
-          request,
-          change,
-          identity: { op: "update-scriptrunner-item", type: args.type, item: args.item, ...wanted },
-          state: { version: stored.version, values: Object.fromEntries(Object.keys(wanted).map((k2) => [k2, stored[k2] ?? null])) },
-          note: "Nothing was changed. Confirm with the user, then re-run with dry_run=false."
-        };
-      }
-      await c.request("POST", path, { json: body });
-      const back = pick3(t, await listRaw(c, t), String(stored.id));
-      const drift = changedKeys(body, back, VOLATILE);
-      if (drift.length) {
-        throw new VerificationError(`${summary}: after saving, ScriptRunner stores other values for ${drift.join(", ")}`, { keys: drift });
-      }
-      return { dry_run: false, product: c.product, summary, request, result: redact(t.view(back)) };
-    }
-  }
-];
-
-// src/tools/jira/scriptRoot.ts
-import { createHash, randomBytes } from "crypto";
-import { copyFile, lstat, mkdir, readFile, realpath, rename, unlink, writeFile } from "fs/promises";
-import { constants } from "fs";
-import { basename as basename4, dirname as dirname2, join as join3, relative, resolve as resolve5, sep as sep2 } from "path";
-var SR2 = "/rest/scriptrunner/latest";
-var OPERATION = "script-root-read";
-var LABEL = "Reading ScriptRunner Script Root files";
-var DEFAULT_MAX_FILES2 = 500;
-var MAX_FILES_CAP = 5e3;
-var DEFAULT_MAX_BYTES2 = 20 * 1024 * 1024;
-var MAX_BYTES_CAP = 200 * 1024 * 1024;
-var MANIFEST_NAME = "scriptrunner-export-manifest.json";
-var SECRETS_NOTE = "Restored scripts may contain credentials, SQL and internal URLs: review them before committing or sharing.";
-var ScriptReadError = class extends Error {
-  constructor(message) {
-    super(message);
-    this.name = "ScriptReadError";
-  }
-};
-async function loadScriptRoots(client) {
-  const data = await client.get(`${SR2}/idea/scriptroots`, { showDirectories: true, groovyFilesOnly: false });
-  const roots = Array.isArray(data) ? data : Array.isArray(data?.result) ? data.result : [];
-  if (!roots.length) throw new ValidationError("ScriptRunner reported no Script Root");
-  return roots.map((r) => {
-    if (typeof r?.info?.rootPath !== "string" || typeof r?.files !== "object" || r.files === null) {
-      throw new ValidationError("ScriptRunner's Script Root tree has an unexpected shape; refusing to read files");
-    }
-    const entries = /* @__PURE__ */ new Map();
-    for (const [rel, meta3] of Object.entries(r.files)) entries.set(rel, Boolean(meta3?.isFile));
-    return { rootPath: r.info.rootPath, defaultRoot: Boolean(r.info.defaultRoot), entries };
-  });
-}
-async function readScriptFile(client, rootPath, relativePath) {
-  let data;
-  try {
-    data = await client.get(`${SR2}/idea/file`, { filePath: relativePath, rootPath });
-  } catch (e) {
-    if (isHttpStatusError(e)) throw new ScriptReadError(`HTTP ${e.status}`);
-    throw new ScriptReadError(e?.name || "read error");
-  }
-  const b64 = data?.content ?? data?.result?.content;
-  if (typeof b64 !== "string" || !/^[A-Za-z0-9+/\r\n]*={0,2}\s*$/.test(b64)) throw new ScriptReadError("unexpected response shape");
-  return Buffer.from(b64, "base64");
-}
-async function downloadFiles(client, rootPath, files, maxBytes, root2, verb) {
-  const downloaded = /* @__PURE__ */ new Map();
-  const readErrors = /* @__PURE__ */ new Map();
-  let total = 0;
-  for (const path of files) {
-    try {
-      const bytes = await readScriptFile(client, rootPath, path);
-      total += bytes.length;
-      if (total > maxBytes) {
-        throw new ValidationError(
-          `'${root2}' is larger than max_total_bytes=${maxBytes} (passed after ${downloaded.size + 1} of ${files.length} files); nothing was written. ${verb} a subfolder or raise max_total_bytes (max ${MAX_BYTES_CAP})`
-        );
-      }
-      downloaded.set(path, bytes);
-    } catch (e) {
-      if (!(e instanceof ScriptReadError)) throw e;
-      readErrors.set(path, e.message);
-    }
-  }
-  return { downloaded, readErrors, total };
-}
-function validateRelative(value, label) {
-  const v = String(value ?? "");
-  if (!v.trim()) throw new ValidationError(`${label} is empty`);
-  if (v.includes("\0")) throw new ValidationError(`${label} contains a NUL character`);
-  if (v.includes("\\")) throw new ValidationError(`${label} must use '/' separators`);
-  if (v.startsWith("/") || /^[A-Za-z]:/.test(v)) throw new ValidationError(`${label} must be relative to the Script Root, not absolute`);
-  const segments = v.replace(/\/+$/, "").split("/");
-  for (const s of segments) {
-    if (s === "..") throw new ValidationError(`${label} must not contain '..'`);
-    if (s === "." || s === "") throw new ValidationError(`${label} must not contain empty or '.' segments`);
-  }
-  return segments.join("/");
-}
-var isUnder = (child, parent) => child === parent || child.startsWith(parent.endsWith(sep2) ? parent : parent + sep2);
-var projectRelative = (path) => relative(process.cwd(), path).split(sep2).join("/") || ".";
-async function realAncestor(p) {
-  for (let cur = p; ; cur = dirname2(cur)) {
-    try {
-      return await realpath(cur);
-    } catch {
-      if (dirname2(cur) === cur) return cur;
-    }
-  }
-}
-async function localTarget(outputDir, relative3) {
-  const rel = validateRelative(relative3, "server path");
-  const base = resolve5(outputDir);
-  const target = resolve5(base, ...rel.split("/"));
-  if (!isUnder(target, base)) throw new ValidationError("server path leaves output_dir");
-  const realBase = await realpath(base);
-  if (!isUnder(await realAncestor(dirname2(target)), realBase)) throw new ValidationError("a symbolic link would redirect the write outside output_dir");
-  return target;
-}
-async function ensureLocalDirectory(outputDir, relative3) {
-  const target = await localTarget(outputDir, relative3);
-  let existing;
-  try {
-    existing = await lstat(target);
-  } catch {
-    existing = void 0;
-  }
-  if (existing && !existing.isDirectory()) throw new ValidationError("the local directory path exists and is not a directory");
-  const outcome = existing ? "ALREADY-SATISFIED" : "CREATED";
-  if (!existing) await mkdir(target, { recursive: true });
-  const realBase = await realpath(resolve5(outputDir));
-  if (!isUnder(await realpath(target), realBase)) throw new ValidationError("a symbolic link would redirect the directory outside output_dir");
-  return { target, outcome };
-}
-var sha256 = (b) => createHash("sha256").update(b).digest("hex");
-async function atomicWrite(target, bytes) {
-  await mkdir(dirname2(target), { recursive: true });
-  const tmp = join3(dirname2(target), `.${basename4(target)}.${process.pid}.${randomBytes(4).toString("hex")}.tmp`);
-  try {
-    await writeFile(tmp, bytes, { flag: "wx" });
-    await rename(tmp, target);
-  } catch (e) {
-    await unlink(tmp).catch(() => void 0);
-    throw e;
-  }
-}
-async function writeLocal(target, bytes, overwrite) {
-  let existing;
-  try {
-    existing = await lstat(target);
-  } catch {
-    existing = void 0;
-  }
-  if (!existing) {
-    await atomicWrite(target, bytes);
-    return { outcome: "WRITTEN" };
-  }
-  if (!existing.isFile()) throw new ValidationError("the local path exists and is not a regular file");
-  if (sha256(await readFile(target)) === sha256(bytes)) return { outcome: "ALREADY-SATISFIED" };
-  if (!overwrite) return { outcome: "CONFLICT" };
-  const backup = `${target}.bak-${(/* @__PURE__ */ new Date()).toISOString().replace(/[:.]/g, "-")}`;
-  await copyFile(target, backup, constants.COPYFILE_EXCL);
-  await atomicWrite(target, bytes);
-  return { outcome: "REPLACED", backup };
-}
-function pickRoots(roots, scriptRoot) {
-  if (scriptRoot === void 0) return roots;
-  const hit = roots.filter((r) => r.rootPath === scriptRoot);
-  if (!hit.length) throw new ValidationError(`No Script Root '${scriptRoot}'; roots: ${roots.map((r) => r.rootPath).join(", ")}`);
-  return hit;
-}
-var hasDescendants = (r, dir) => [...r.entries.keys()].some((k2) => k2.startsWith(`${dir}/`));
-function single(matches, what) {
-  if (matches.length > 1) {
-    throw new ValidationError(`${what} exists in several Script Roots (${matches.map((r) => r.rootPath).join(", ")}); pass script_root`);
-  }
-  return matches[0];
-}
-function findFile(roots, path, scriptRoot) {
-  const candidates = pickRoots(roots, scriptRoot);
-  const asFile = candidates.filter((r) => r.entries.get(path) === true);
-  if (asFile.length) return single(asFile, `'${path}'`);
-  if (candidates.some((r) => r.entries.get(path) === false || hasDescendants(r, path))) throw new ValidationError(`'${path}' is a directory, not a file`);
-  throw new ValidationError(`No file '${path}' in the Script Root`);
-}
-function selectFolder(roots, root2, scriptRoot) {
-  const candidates = pickRoots(roots, scriptRoot);
-  if (candidates.some((r) => r.entries.get(root2) === true)) throw new ValidationError(`'${root2}' is a file; use jira_get_scriptrunner_script`);
-  const withFolder = candidates.filter((r) => r.entries.get(root2) === false || hasDescendants(r, root2));
-  if (!withFolder.length) throw new ValidationError(`No folder '${root2}' in the Script Root`);
-  const tree = single(withFolder, `Folder '${root2}'`);
-  const files = [...tree.entries].filter(([k2, isFile]) => isFile && k2.startsWith(`${root2}/`)).map(([k2]) => k2).sort();
-  const directories = [...tree.entries].filter(([k2, isFile]) => !isFile && k2.startsWith(`${root2}/`)).map(([k2]) => k2).sort();
-  return { tree, files, directories };
-}
-var scriptRootArg = external_exports.string().min(1).optional().describe("Server Script Root path, when the path exists in several roots");
-var jiraScriptRootTools = [
-  {
-    name: "jira_get_scriptrunner_script",
-    product: "jira",
-    description: "Copy one ScriptRunner Script Root file (path relative to the Script Root) to the local file `out`, byte for byte. Returns only path, size, SHA-256 and outcome (WRITTEN, ALREADY-SATISFIED, CONFLICT); the content is never shown. Read-only toward Jira.",
-    inputShape: {
-      path: external_exports.string().min(1).describe("File path relative to the Script Root, e.g. project-a/jobs/close.groovy"),
-      out: external_exports.string().min(1).describe("Local file to write (required)"),
-      script_root: scriptRootArg
-    },
-    async handler({ client }, args) {
-      const path = validateRelative(args.path, "path");
-      const c = client("jira");
-      await requireScriptRunnerOperation(c, OPERATION, LABEL);
-      const tree = findFile(await loadScriptRoots(c), path, args.script_root);
-      const bytes = await readScriptFile(c, tree.rootPath, path).catch((e) => {
-        throw new ValidationError(`Reading '${path}' failed: ${e.message}`);
-      });
-      const out = resolve5(args.out);
-      const { outcome } = await writeLocal(out, bytes, false);
-      return {
-        path,
-        scriptRoot: tree.rootPath,
-        out,
-        size: bytes.length,
-        sha256: sha256(bytes),
-        outcome,
-        ...outcome === "CONFLICT" ? { hint: "The local file differs and was kept; use jira_export_scriptrunner_scripts overwrite=true to replace it with a backup" } : {},
-        note: SECRETS_NOTE
-      };
-    }
-  },
-  {
-    name: "jira_export_scriptrunner_scripts",
-    product: "jira",
-    description: "Restore a ScriptRunner Script Root folder to a local directory: every file under `root`, with its nested folders, including empty registry folders, byte for byte. Existing identical files \u2192 ALREADY-SATISFIED; different ones \u2192 CONFLICT (kept) unless overwrite=true, which backs them up first. Writes a manifest (path, size, SHA-256, outcome); content is never shown. Read-only toward Jira.",
-    inputShape: {
-      root: external_exports.string().min(1).describe("Folder relative to the Script Root, e.g. project-a"),
-      output_dir: external_exports.string().min(1).describe("Local directory; the folder's contents are recreated inside it"),
-      overwrite: boolArg.optional().describe("Default false. true replaces differing local files after a .bak-<timestamp> backup"),
-      manifest: external_exports.string().min(1).optional().describe(`Manifest file (default <output_dir>/${MANIFEST_NAME})`),
-      script_root: scriptRootArg,
-      max_files: external_exports.coerce.number().int().min(1).max(MAX_FILES_CAP).optional().describe(`Default ${DEFAULT_MAX_FILES2}, max ${MAX_FILES_CAP}`),
-      max_total_bytes: external_exports.coerce.number().int().min(1).max(MAX_BYTES_CAP).optional().describe(`Default ${DEFAULT_MAX_BYTES2}, max ${MAX_BYTES_CAP}. Over it, the export writes nothing`)
-    },
-    async handler({ client }, args) {
-      const root2 = validateRelative(args.root, "root");
-      const maxFiles = args.max_files ?? DEFAULT_MAX_FILES2;
-      const maxBytes = args.max_total_bytes ?? DEFAULT_MAX_BYTES2;
-      const c = client("jira");
-      await requireScriptRunnerOperation(c, OPERATION, LABEL);
-      const { tree, files, directories } = selectFolder(await loadScriptRoots(c), root2, args.script_root);
-      if (files.length > maxFiles) {
-        throw new ValidationError(`'${root2}' has ${files.length} files, more than max_files=${maxFiles}; export a subfolder or raise max_files (max ${MAX_FILES_CAP})`);
-      }
-      const outputDir = resolve5(args.output_dir);
-      const { downloaded, readErrors, total } = await downloadFiles(c, tree.rootPath, files, maxBytes, root2, "Export");
-      await mkdir(outputDir, { recursive: true });
-      const directoryEntries = [];
-      for (const path of directories) {
-        const entry = { path };
-        directoryEntries.push(entry);
-        try {
-          const { target, outcome } = await ensureLocalDirectory(outputDir, path.slice(root2.length + 1));
-          Object.assign(entry, { local: projectRelative(target), outcome });
-        } catch (e) {
-          const err = e;
-          Object.assign(entry, { outcome: "FAILED", error: e instanceof ValidationError ? err.message : err.code ?? err.name });
-        }
-      }
-      const entries = [];
-      for (const path of files) {
-        const entry = { path };
-        entries.push(entry);
-        const bytes = downloaded.get(path);
-        if (!bytes) {
-          Object.assign(entry, { outcome: "FAILED", error: readErrors.get(path) });
-          continue;
-        }
-        try {
-          const local = await localTarget(outputDir, path.slice(root2.length + 1));
-          entry.local = projectRelative(local);
-          const written = await writeLocal(local, bytes, Boolean(args.overwrite));
-          if (written.backup) written.backup = projectRelative(written.backup);
-          Object.assign(entry, { size: bytes.length, sha256: sha256(bytes), ...written });
-        } catch (e) {
-          const err = e;
-          Object.assign(entry, { outcome: "FAILED", error: e instanceof ValidationError ? err.message : err.code ?? err.name });
-        }
-      }
-      const counts = {};
-      for (const e of entries) counts[String(e.outcome)] = (counts[String(e.outcome)] ?? 0) + 1;
-      const directoryCounts = {};
-      for (const e of directoryEntries) directoryCounts[String(e.outcome)] = (directoryCounts[String(e.outcome)] ?? 0) + 1;
-      const manifestPath = resolve5(args.manifest ?? join3(outputDir, MANIFEST_NAME));
-      const manifest = {
-        exportedAt: (/* @__PURE__ */ new Date()).toISOString(),
-        scriptRoot: tree.rootPath,
-        root: root2,
-        outputDir: projectRelative(outputDir),
-        overwrite: Boolean(args.overwrite),
-        limits: { maxFiles, maxTotalBytes: maxBytes },
-        counts,
-        directoryCounts,
-        directories: directoryEntries,
-        files: entries
-      };
-      await atomicWrite(manifestPath, Buffer.from(JSON.stringify(manifest, null, 2) + "\n"));
-      const pick4 = (o) => entries.filter((e) => e.outcome === o).map((e) => o === "FAILED" ? `${e.path} (${e.error})` : String(e.path));
-      return {
-        root: root2,
-        scriptRoot: tree.rootPath,
-        outputDir,
-        manifest: manifestPath,
-        directories: directories.length,
-        directoryCounts,
-        files: files.length,
-        bytes: total,
-        counts,
-        conflicts: pick4("CONFLICT").slice(0, 20),
-        failed: pick4("FAILED").slice(0, 20),
-        note: SECRETS_NOTE
-      };
-    }
-  }
-];
-
 // src/tools/jira/scriptSync.ts
-import { lstat as lstat2, readdir, readFile as readFile2, stat } from "fs/promises";
-import { dirname as dirname3, join as join4, relative as relative2, resolve as resolve6, sep as sep3 } from "path";
+import { lstat as lstat3, readdir, readFile as readFile2, stat as stat2 } from "fs/promises";
+import { dirname as dirname3, join as join5, relative as relative2, resolve as resolve7, sep as sep3 } from "path";
 var SR3 = "/rest/scriptrunner/latest";
 var READ_OP = "script-root-read";
 var READ_LABEL = "Reading ScriptRunner Script Root files";
@@ -67514,14 +68007,14 @@ function classify(local, server, base) {
   throw new Error("classify needs a local or a server file");
 }
 async function walkLocal(localDir, manifestPath) {
-  const skip = resolve6(manifestPath);
+  const skip = resolve7(manifestPath);
   const files = /* @__PURE__ */ new Map();
   const failed = /* @__PURE__ */ new Map();
   const visit2 = async (dir, prefix) => {
     const entries = (await readdir(dir, { withFileTypes: true })).sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
     for (const e of entries) {
       if (e.name.startsWith(".") || BACKUP.test(e.name)) continue;
-      const abs = join4(dir, e.name);
+      const abs = join5(dir, e.name);
       const rel = prefix ? `${prefix}/${e.name}` : e.name;
       if (abs === skip) continue;
       if (e.isSymbolicLink()) failed.set(rel, "a symbolic link; not followed");
@@ -67536,7 +68029,7 @@ async function walkLocal(localDir, manifestPath) {
       }
     }
   };
-  await visit2(resolve6(localDir), "");
+  await visit2(resolve7(localDir), "");
   return { files, failed };
 }
 async function readManifest(manifestPath) {
@@ -67591,7 +68084,7 @@ async function tryRecord(manifestPath, scriptRoot, entry) {
 async function localSha(target) {
   let s;
   try {
-    s = await lstat2(target);
+    s = await lstat3(target);
   } catch {
     return void 0;
   }
@@ -67600,10 +68093,10 @@ async function localSha(target) {
   return { sha: sha256(bytes), bytes };
 }
 async function localFile(args) {
-  const target = resolve6(args.local);
-  const base = resolve6(args.local_dir ?? dirname3(target));
+  const target = resolve7(args.local);
+  const base = resolve7(args.local_dir ?? dirname3(target));
   try {
-    if (!(await stat(base)).isDirectory()) throw new Error();
+    if (!(await stat2(base)).isDirectory()) throw new Error();
   } catch {
     throw new ValidationError(`local_dir ${projectRelative(base)} is not an existing directory`);
   }
@@ -67654,7 +68147,7 @@ var scriptRootArg2 = external_exports.string().min(1).optional().describe("Serve
 var shaOrAbsent = (what) => external_exports.string().regex(/^([0-9a-f]{64}|absent)$/, "a lowercase hex SHA-256 or 'absent'").describe(`SHA-256 the ${what} must still have, or 'absent' when it must not exist`);
 var manifestArg = external_exports.string().min(1).optional().describe(`Baseline manifest to update (default <local_dir>/${MANIFEST_NAME} when local_dir is given)`);
 var localDirArg = external_exports.string().min(1).optional().describe("Synchronized local folder that must contain local (default: local's own folder)");
-var defaultManifest = (args) => args.manifest ? resolve6(args.manifest) : args.local_dir ? join4(resolve6(args.local_dir), MANIFEST_NAME) : void 0;
+var defaultManifest = (args) => args.manifest ? resolve7(args.manifest) : args.local_dir ? join5(resolve7(args.local_dir), MANIFEST_NAME) : void 0;
 async function push(ctx, args) {
   const path = validateRelative(args.path, "path");
   const c = ctx.client("jira");
@@ -67743,17 +68236,17 @@ async function pull(ctx, args) {
 }
 async function sync(ctx, args) {
   const root2 = validateRelative(args.root, "root");
-  const maxFiles = args.max_files ?? DEFAULT_MAX_FILES2;
-  const maxBytes = args.max_total_bytes ?? DEFAULT_MAX_BYTES2;
+  const maxFiles = args.max_files ?? DEFAULT_MAX_FILES;
+  const maxBytes = args.max_total_bytes ?? DEFAULT_MAX_BYTES;
   const c = ctx.client("jira");
   await requireScriptRunnerOperation(c, READ_OP, READ_LABEL);
-  const localDir = resolve6(args.local_dir);
+  const localDir = resolve7(args.local_dir);
   try {
-    if (!(await stat(localDir)).isDirectory()) throw new Error();
+    if (!(await stat2(localDir)).isDirectory()) throw new Error();
   } catch {
     throw new ValidationError(`local_dir ${projectRelative(localDir)} is not an existing directory`);
   }
-  const manifestPath = resolve6(args.manifest ?? join4(localDir, MANIFEST_NAME));
+  const manifestPath = resolve7(args.manifest ?? join5(localDir, MANIFEST_NAME));
   const { tree, files: serverFiles } = selectFolder(await loadScriptRoots(c), root2, args.script_root);
   const walked = await walkLocal(localDir, manifestPath);
   const toServer = (rel) => `${root2}/${rel}`;
@@ -67764,7 +68257,7 @@ async function sync(ctx, args) {
     throw new ValidationError(`'${root2}' has ${all.length} local and server files, more than max_files=${maxFiles}; sync a subfolder or raise max_files (max ${MAX_FILES_CAP})`);
   }
   let localTotal = 0;
-  for (const abs of localByPath.values()) localTotal += (await stat(abs)).size;
+  for (const abs of localByPath.values()) localTotal += (await stat2(abs)).size;
   if (localTotal > maxBytes) {
     throw new ValidationError(`${projectRelative(localDir)} is larger than max_total_bytes=${maxBytes}; sync a subfolder or raise max_total_bytes (max ${MAX_BYTES_CAP})`);
   }
@@ -67877,8 +68370,8 @@ var jiraScriptSyncTools = [
       local_dir: external_exports.string().min(1).describe("Local folder holding that folder's contents, e.g. ./project-a"),
       manifest: external_exports.string().min(1).optional().describe(`Baseline manifest (default <local_dir>/${MANIFEST_NAME})`),
       script_root: scriptRootArg2,
-      max_files: external_exports.coerce.number().int().min(1).max(MAX_FILES_CAP).optional().describe(`Default ${DEFAULT_MAX_FILES2}, max ${MAX_FILES_CAP}`),
-      max_total_bytes: external_exports.coerce.number().int().min(1).max(MAX_BYTES_CAP).optional().describe(`Default ${DEFAULT_MAX_BYTES2}, max ${MAX_BYTES_CAP}`),
+      max_files: external_exports.coerce.number().int().min(1).max(MAX_FILES_CAP).optional().describe(`Default ${DEFAULT_MAX_FILES}, max ${MAX_FILES_CAP}`),
+      max_total_bytes: external_exports.coerce.number().int().min(1).max(MAX_BYTES_CAP).optional().describe(`Default ${DEFAULT_MAX_BYTES}, max ${MAX_BYTES_CAP}`),
       ...dryRunShape
     },
     handler: sync
@@ -68056,9 +68549,9 @@ function usernameFromSearchResult(user) {
   const username = user?.username ?? user?.name;
   return typeof username === "string" && username.length > 0 ? username : void 0;
 }
-async function resolveConfluenceGrantUser(client, identity) {
-  const username = identity.username;
-  const email3 = identity.email;
+async function resolveConfluenceGrantUser(client, identity2) {
+  const username = identity2.username;
+  const email3 = identity2.email;
   if (!!username === !!email3) throw new ValidationError("provide exactly one username or email for user resolution");
   const query = username ?? email3;
   let direct;
@@ -68976,7 +69469,7 @@ var confluenceSpaceDiscoveryTools = [
 
 // src/tools/confluence/pages.ts
 import { existsSync as existsSync3, readFileSync as readFileSync5, statSync as statSync2 } from "fs";
-import { resolve as resolve7 } from "path";
+import { resolve as resolve8 } from "path";
 var API19 = "/rest/api";
 var StaleVersionError = class extends Error {
   constructor(message) {
@@ -69023,7 +69516,7 @@ function bodyFrom(args) {
   }
   let text = args.content;
   if (args.content_file !== void 0) {
-    const file2 = resolve7(args.content_file);
+    const file2 = resolve8(args.content_file);
     if (!existsSync3(file2) || !statSync2(file2).isFile()) throw new ValidationError(`File not found: ${args.content_file}`);
     text = readFileSync5(file2, "utf8");
   }
@@ -69213,7 +69706,7 @@ var confluencePageTools = [
       const offset = args.offset ?? 0;
       const limit = Math.min(args.limit ?? 25, 100);
       const c = client("confluence");
-      const call = (cql2) => c.get(`${API19}/search`, {
+      const call2 = (cql2) => c.get(`${API19}/search`, {
         cql: cql2,
         start: offset,
         limit,
@@ -69223,11 +69716,11 @@ var confluencePageTools = [
       let cql = buildCql(args.query, args.spaces ?? []);
       let data;
       try {
-        data = await call(cql);
+        data = await call2(cql);
       } catch (e) {
         if (cql.startsWith("siteSearch") || cql.startsWith("(siteSearch")) {
           cql = cql.replace("siteSearch ~", "text ~");
-          data = await call(cql);
+          data = await call2(cql);
         } else throw e;
       }
       const items = (data?.results ?? []).map((r) => ({
@@ -69926,7 +70419,7 @@ var confluenceLabelTools = [
 
 // src/tools/confluence/attachments.ts
 import { existsSync as existsSync4, mkdirSync as mkdirSync2, readFileSync as readFileSync6, writeFileSync as writeFileSync2 } from "fs";
-import { basename as basename5, join as join5, resolve as resolve8, sep as sep4 } from "path";
+import { basename as basename5, join as join6, resolve as resolve9, sep as sep4 } from "path";
 var API22 = "/rest/api";
 var MAX_ATTACHMENT_BYTES = 50 * 1024 * 1024;
 var IMAGE_MIME2 = /* @__PURE__ */ new Set(["image/png", "image/jpeg", "image/gif", "image/webp", "image/svg+xml", "image/bmp"]);
@@ -69958,8 +70451,8 @@ function safeFileName2(name, fallback) {
   return n.slice(0, 200);
 }
 function targetPath(outputDir, name, id2) {
-  const dir = resolve8(outputDir);
-  let file2 = join5(dir, safeFileName2(name, id2));
+  const dir = resolve9(outputDir);
+  let file2 = join6(dir, safeFileName2(name, id2));
   if (existsSync4(file2)) {
     const dot = file2.lastIndexOf(".");
     file2 = dot > dir.length ? `${file2.slice(0, dot)}-${id2}${file2.slice(dot)}` : `${file2}-${id2}`;
@@ -69971,11 +70464,11 @@ async function download(client, a, outputDir) {
   const size = Number(a?.extensions?.fileSize ?? 0);
   const base = compactAttachment(a);
   if (size > MAX_ATTACHMENT_BYTES) return { ...base, error: `larger than ${MAX_ATTACHMENT_BYTES} bytes, skipped` };
-  const link = a?._links?.download;
-  if (!link) return { ...base, error: "no download link" };
-  const { bytes, contentType } = await client.getBytes(link);
+  const link2 = a?._links?.download;
+  if (!link2) return { ...base, error: "no download link" };
+  const { bytes, contentType } = await client.getBytes(link2);
   if (bytes.length > MAX_ATTACHMENT_BYTES) return { ...base, error: `larger than ${MAX_ATTACHMENT_BYTES} bytes, skipped` };
-  mkdirSync2(resolve8(outputDir), { recursive: true });
+  mkdirSync2(resolve9(outputDir), { recursive: true });
   const path = targetPath(outputDir, a.title, String(a.id));
   writeFileSync2(path, bytes);
   return { id: a.id, title: a.title, mediaType: mediaType(a) ?? contentType ?? void 0, bytes: bytes.length, path };
@@ -70007,14 +70500,14 @@ async function downloadMany(client, contentId, outputDir, filter, max, serverMed
     }
   }
   const failed = results.filter((r) => r.error).length;
-  return { content_id: contentId, output_dir: resolve8(outputDir), total: selected.length, downloaded: results.length - failed, failed, items: results };
+  return { content_id: contentId, output_dir: resolve9(outputDir), total: selected.length, downloaded: results.length - failed, failed, items: results };
 }
 function uploadForm(path, comment, minorEdit) {
-  const form2 = new FormData();
-  form2.append("file", new Blob([readFileSync6(path)]), basename5(path));
-  if (comment) form2.append("comment", comment);
-  form2.append("minorEdit", String(minorEdit ?? false));
-  return form2;
+  const form3 = new FormData();
+  form3.append("file", new Blob([readFileSync6(path)]), basename5(path));
+  if (comment) form3.append("comment", comment);
+  form3.append("minorEdit", String(minorEdit ?? false));
+  return form3;
 }
 async function uploadOne(client, contentId, path, comment, minorEdit) {
   const base = `${API22}/content/${seg(contentId)}/child/attachment`;
@@ -70046,7 +70539,7 @@ async function guardedUpload(client, args, paths) {
   const failed = [];
   for (const p of paths) {
     try {
-      uploaded.push(await uploadOne(client, args.content_id, resolve8(p), args.comment, args.minor_edit));
+      uploaded.push(await uploadOne(client, args.content_id, resolve9(p), args.comment, args.minor_edit));
     } catch (e) {
       failed.push({ file: basename5(p), error: e?.message ?? String(e) });
     }
@@ -71496,6 +71989,7 @@ var TOOL_GROUPS = [
   ["Jira admin \u2014 schemes and workflows", jiraSchemeTools],
   ["Jira admin \u2014 workflow schemes", jiraWorkflowSchemeTools],
   ["Jira admin \u2014 workflows (designer, drafts)", jiraWorkflowTools],
+  ["Jira admin \u2014 workflow XML transfer", jiraWorkflowXmlTools],
   ["Jira admin \u2014 project scheme assignment", jiraProjectSchemeTools],
   ["Jira admin \u2014 scheme, version, screen and permission scheme lifecycle", jiraAdminLifecycleTools],
   ["Jira \u2014 filters and dashboards", jiraFilterTools],
@@ -71513,6 +72007,7 @@ var TOOL_GROUPS = [
   ["Jira \u2014 dates, SLA, development info, project analysis", jiraInsightTools],
   ["Jira Service Management", jiraServiceDeskTools],
   ["Jira Service Management \u2014 request types and forms", jiraRequestTypeTools],
+  ["Jira configuration \u2014 request-form snapshots", jiraConfigSnapshotTools],
   ["Jira Service Management \u2014 queues", jiraQueueTools],
   ["Jira Service Management \u2014 SLAs and calendars", jiraSlaTools],
   ["ScriptRunner for Jira (unofficial endpoints)", jiraScriptRunnerTools],
@@ -71720,7 +72215,7 @@ async function runTool(tool, rawArgs, ctx) {
       const note = `not verifiable (${tool.unverifiable}): a repeated apply sends it again`;
       return { ok: true, value: { ...value, warning: value.warning ? `${value.warning}; ${note}` : note }, tool, exitCode: 0 };
     }
-    return { ok: true, value, tool, exitCode: 0 };
+    return { ok: true, value, tool, exitCode: tool.exitCode?.(value) ?? 0 };
   } catch (e) {
     return fail(toToolError(e, tool), tool);
   } finally {
@@ -71753,13 +72248,13 @@ function digestOf(dry) {
   return createHash2("sha256").update(material).digest("hex").slice(0, 16);
 }
 function writePlan(file2, plan) {
-  const path = resolve9(file2);
+  const path = resolve10(file2);
   const tmp = `${path}.${process.pid}.tmp`;
   writeFileSync3(tmp, JSON.stringify(plan, null, 2));
   renameSync(tmp, path);
 }
 function readPlan(file2) {
-  const path = resolve9(file2);
+  const path = resolve10(file2);
   if (!existsSync5(path)) return { version: 1, items: [] };
   const data = JSON.parse(readFileSync7(path, "utf8"));
   if (!data || data.version !== 1 || !Array.isArray(data.items)) {
@@ -71900,7 +72395,7 @@ import {
   writeFileSync as writeFileSync4
 } from "fs";
 import { createHash as createHash3, randomUUID } from "crypto";
-import { resolve as resolve10 } from "path";
+import { resolve as resolve11 } from "path";
 var spaceSchema = external_exports.object({
   id: external_exports.union([external_exports.string(), external_exports.number()]),
   key: external_exports.string().min(1),
@@ -72093,11 +72588,11 @@ function validateWorkflowPlan(input2) {
   return plan;
 }
 function readSpaceWorkflowPlan(file2) {
-  const data = JSON.parse(readFileSync8(resolve10(file2), "utf8"));
+  const data = JSON.parse(readFileSync8(resolve11(file2), "utf8"));
   return validateWorkflowPlan(data);
 }
 function writeSpaceWorkflowPlan(file2, input2) {
-  const path = resolve10(file2);
+  const path = resolve11(file2);
   const plan = validateWorkflowPlan(input2);
   let fd;
   let created = false;
@@ -72198,7 +72693,7 @@ async function prepareSpaceUpdates(ctx, input2, outputFile) {
   if (!input2.group || !input2.category || !!input2.username === !!input2.email) {
     throw new ValidationError("Preparation requires group, category, and exactly one of username or email");
   }
-  if (existsSync6(resolve10(outputFile))) throw new ValidationError(`Refusing to overwrite existing plan file '${resolve10(outputFile)}'`);
+  if (existsSync6(resolve11(outputFile))) throw new ValidationError(`Refusing to overwrite existing plan file '${resolve11(outputFile)}'`);
   const discoveryResult = await runToolByName("confluence_find_spaces_by_group", {
     group: input2.group,
     type: input2.type,
@@ -72210,17 +72705,17 @@ async function prepareSpaceUpdates(ctx, input2, outputFile) {
     throw new ValidationError(`Group-space discovery is incomplete; no update plan was written: ${(discovery.issues ?? []).join("; ")}`);
   }
   const client = ctx.client("confluence");
-  const identity = await resolveConfluenceGrantUser(client, {
+  const identity2 = await resolveConfluenceGrantUser(client, {
     ...input2.username ? { username: input2.username } : {},
     ...input2.email ? { email: input2.email } : {}
   });
   let previousEvidence;
   if (input2.previousOutcomes) {
-    const outcomeFile = resolve10(input2.previousOutcomes);
+    const outcomeFile = resolve11(input2.previousOutcomes);
     const parsedOutcome = workflowOutcomeSchema.safeParse(JSON.parse(readFileSync8(outcomeFile, "utf8")));
     if (!parsedOutcome.success) throw new ValidationError("Previous workflow outcome file is malformed");
     const previous = parsedOutcome.data;
-    const previousPlanFile = resolve10(previous.planFile);
+    const previousPlanFile = resolve11(previous.planFile);
     if (outcomeFile !== outcomePath(previousPlanFile)) {
       throw new ValidationError("Previous outcome file does not match its recorded immutable plan path");
     }
@@ -72229,7 +72724,7 @@ async function prepareSpaceUpdates(ctx, input2, outputFile) {
     if (!verifiedPrevious || previous.target !== safeTarget(client.config.baseUrl)) {
       throw new ValidationError("Previous workflow outcome does not match this Confluence target or its original plan");
     }
-    if (previousPlan.selector.group !== input2.group || previousPlan.selector.type !== (input2.type ?? null) || previousPlan.selector.status !== (input2.status ?? null) || previousPlan.desired.category !== input2.category || previousPlan.identity.username !== identity.username || previousPlan.identity.userKey !== identity.userKey) {
+    if (previousPlan.selector.group !== input2.group || previousPlan.selector.type !== (input2.type ?? null) || previousPlan.selector.status !== (input2.status ?? null) || previousPlan.desired.category !== input2.category || previousPlan.identity.username !== identity2.username || previousPlan.identity.userKey !== identity2.userKey) {
       throw new ValidationError("Previous workflow evidence does not match the requested group, scope, category, or user");
     }
     previousEvidence = {
@@ -72247,7 +72742,7 @@ async function prepareSpaceUpdates(ctx, input2, outputFile) {
   for (const discovered2 of selected) {
     const [categories, userOperations] = await Promise.all([
       readCategories(ctx, discovered2.key),
-      readUserOperations(ctx, discovered2.key, identity.userKey, identity.username)
+      readUserOperations(ctx, discovered2.key, identity2.userKey, identity2.username)
     ]);
     const groupOperations = [...discovered2.groupOperations].sort();
     const baselineCategories = [...new Set(categories)].sort();
@@ -72273,7 +72768,7 @@ async function prepareSpaceUpdates(ctx, input2, outputFile) {
       await addItem(items, "grant", "confluence_grant_space_permissions", {
         space_key: discovered2.key,
         subject_type: "user",
-        subject: identity.userKey,
+        subject: identity2.userKey,
         operations: missingOperations
       }, ctx);
     }
@@ -72284,7 +72779,7 @@ async function prepareSpaceUpdates(ctx, input2, outputFile) {
     preparedAt: (/* @__PURE__ */ new Date()).toISOString(),
     target: safeTarget(client.config.baseUrl),
     selector: { group: input2.group, type: input2.type ?? null, status: input2.status ?? null },
-    identity: { username: identity.username, userKey: identity.userKey },
+    identity: { username: identity2.username, userKey: identity2.userKey },
     desired: { category: input2.category, userOperations: ["read:space", "administer:space"] },
     completeness: {
       enumerationComplete: discovery.enumerationComplete,
@@ -72302,7 +72797,7 @@ async function prepareSpaceUpdates(ctx, input2, outputFile) {
   return {
     plan,
     summary: {
-      file: resolve10(outputFile),
+      file: resolve11(outputFile),
       target: plan.target,
       group: plan.selector.group,
       identity: plan.identity,
@@ -72322,10 +72817,10 @@ function workflowPlanDigest(plan) {
   return createHash3("sha256").update(JSON.stringify(plan)).digest("hex");
 }
 function outcomePath(planFile) {
-  return `${resolve10(planFile)}.outcomes.json`;
+  return `${resolve11(planFile)}.outcomes.json`;
 }
 function verificationPath(planFile) {
-  return `${resolve10(planFile)}.verification.json`;
+  return `${resolve11(planFile)}.verification.json`;
 }
 function readWorkflowOutcome(planFile, plan) {
   const path = outcomePath(planFile);
@@ -72336,7 +72831,7 @@ function readWorkflowOutcome(planFile, plan) {
   if (outcome.planDigest !== workflowPlanDigest(plan) || outcome.target !== plan.target) {
     throw new ValidationError("Workflow outcome file does not match this immutable plan");
   }
-  if (resolve10(outcome.planFile) !== resolve10(planFile)) {
+  if (resolve11(outcome.planFile) !== resolve11(planFile)) {
     throw new ValidationError("Workflow outcome file references a different plan path");
   }
   const numbers = outcome.items.map((item) => item.n).sort((a, b) => a - b);
@@ -72369,7 +72864,7 @@ function writeWorkflowOutcome(planFile, plan, items, verification) {
   const value = {
     version: 1,
     workflow: "confluence-space-updates-outcomes",
-    planFile: resolve10(planFile),
+    planFile: resolve11(planFile),
     target: plan.target,
     planDigest: workflowPlanDigest(plan),
     updatedAt: (/* @__PURE__ */ new Date()).toISOString(),
@@ -72430,8 +72925,8 @@ async function prepareSpaceWorkflowApply(ctx, plan, planFile, only) {
   if (existsSync6(outcomePath(planFile))) {
     throw new ValidationError("This workflow plan already has execution outcomes; prepare a fresh plan to retry safely");
   }
-  const identity = await resolveConfluenceGrantUser(ctx.client("confluence"), { username: plan.identity.username });
-  if (identity.userKey !== plan.identity.userKey) {
+  const identity2 = await resolveConfluenceGrantUser(ctx.client("confluence"), { username: plan.identity.username });
+  if (identity2.userKey !== plan.identity.userKey) {
     throw new ValidationError("Resolved active user key differs from the immutable workflow plan");
   }
   const allowed = only?.length ? new Set(only) : new Set(plan.items.map((item) => item.n));
@@ -72504,7 +72999,7 @@ async function prepareSpaceWorkflowApply(ctx, plan, planFile, only) {
       digest: digestOf(dry)
     });
   }
-  return { plan, planFile: resolve10(planFile), statuses, activeItems };
+  return { plan, planFile: resolve11(planFile), statuses, activeItems };
 }
 function workflowConfirmationItems(preview) {
   return preview.activeItems.map(({ item, request }) => ({
@@ -72523,8 +73018,8 @@ async function verifySpaceWorkflow(ctx, plan, planFile) {
   }
   let identityError;
   try {
-    const identity = await resolveConfluenceGrantUser(ctx.client("confluence"), { username: plan.identity.username });
-    if (identity.userKey !== plan.identity.userKey) {
+    const identity2 = await resolveConfluenceGrantUser(ctx.client("confluence"), { username: plan.identity.username });
+    if (identity2.userKey !== plan.identity.userKey) {
       identityError = "Resolved active user key differs from the immutable workflow plan";
     }
   } catch (error62) {
@@ -72612,22 +73107,22 @@ async function applySpaceWorkflow(ctx, preview, selected) {
     if (existsSync6(outcomePath(planFile))) {
       throw new ValidationError("This workflow plan already has execution outcomes; prepare a fresh plan to retry safely");
     }
-    const approved = new Set(selected);
+    const approved2 = new Set(selected);
     const activeByNumber = new Map(preview.activeItems.map((active) => [active.item.n, active]));
     const statuses = preview.statuses.map((item) => ({ ...item }));
     for (const active of preview.activeItems) {
-      if (!approved.has(active.item.n)) statuses[active.item.n - 1] = outcomeItem(active.item.n, "unselected");
+      if (!approved2.has(active.item.n)) statuses[active.item.n - 1] = outcomeItem(active.item.n, "unselected");
       else statuses[active.item.n - 1] = outcomeItem(active.item.n, "unattempted");
     }
     writeWorkflowOutcome(planFile, plan, statuses);
-    for (const number4 of [...approved].sort((a, b) => a - b)) {
+    for (const number4 of [...approved2].sort((a, b) => a - b)) {
       const active = activeByNumber.get(number4);
       if (!active) continue;
       const item = active.item;
       const space = spaceByKey(plan, String(item.args.space_key));
       try {
-        const identity = await resolveConfluenceGrantUser(ctx.client("confluence"), { username: plan.identity.username });
-        if (identity.userKey !== plan.identity.userKey) {
+        const identity2 = await resolveConfluenceGrantUser(ctx.client("confluence"), { username: plan.identity.username });
+        if (identity2.userKey !== plan.identity.userKey) {
           statuses[number4 - 1] = outcomeItem(number4, "drifted", "active user key changed after confirmation");
           writeWorkflowOutcome(planFile, plan, statuses);
           continue;
@@ -72845,7 +73340,7 @@ function countOf(value) {
 function output2(res, options) {
   if (!res.ok) return renderError(res.error, options.format);
   if (options.out) {
-    const file2 = resolve11(options.out);
+    const file2 = resolve12(options.out);
     mkdirSync3(dirname4(file2), { recursive: true });
     const json2 = JSON.stringify(res.value ?? null, null, 2);
     writeFileSync5(file2, json2);
@@ -73023,7 +73518,7 @@ hint: <write tool> ... --plan=FILE`);
     let plan;
     let spacePlan;
     try {
-      const filePath = resolve11(file2);
+      const filePath = resolve12(file2);
       if (existsSync7(filePath)) {
         const candidate = JSON.parse(readFileSync9(filePath, "utf8"));
         if (candidate?.version === 2) spacePlan = readSpaceWorkflowPlan(file2);
@@ -73085,15 +73580,15 @@ hint: <write tool> ... --plan=FILE`);
 nothing left to apply`);
         return EXIT.OK;
       }
-      let approved;
+      let approved2;
       try {
-        approved = confirmChanges(candidates.map((i) => ({ n: i.n, summary: i.summary, detail: `${i.request.method} ${i.request.url}` })));
+        approved2 = confirmChanges(candidates.map((i) => ({ n: i.n, summary: i.summary, detail: `${i.request.method} ${i.request.url}` })));
       } catch (e) {
         if (e instanceof ConfirmationError && e.name === "ConfirmationDeclined") recordDeclined(file2, candidates.map((i) => i.n));
         return printConfirmError(e);
       }
-      recordDeclined(file2, candidates.filter((i) => !approved.includes(i.n)).map((i) => i.n));
-      const outcomes = await applyPlan(ctx2, genericPlan, approved, file2);
+      recordDeclined(file2, candidates.filter((i) => !approved2.includes(i.n)).map((i) => i.n));
+      const outcomes = await applyPlan(ctx2, genericPlan, approved2, file2);
       print(renderOutcomes(outcomes));
       return applyExitCode(outcomes);
     } finally {
@@ -73122,10 +73617,10 @@ nothing left to apply`);
         print([
           `verified:${verification.overallVerified} spaces:${verification.verifiedSpaces}/${verification.checkedSpaces}`,
           `item states: ${Object.entries(verification.itemCounts).map(([key, value]) => `${key}:${value}`).join(" ")}`,
-          `verification report: ${resolve11(`${file2}.verification.json`)}`
+          `verification report: ${resolve12(`${file2}.verification.json`)}`
         ].join("\n"));
       } else {
-        print(JSON.stringify({ ...verification, reportFile: resolve11(`${file2}.verification.json`) }, null, options.format === "full" ? 2 : 0));
+        print(JSON.stringify({ ...verification, reportFile: resolve12(`${file2}.verification.json`) }, null, options.format === "full" ? 2 : 0));
       }
       return verification.overallVerified ? EXIT.OK : EXIT.GENERIC;
     } catch (error62) {
@@ -73170,16 +73665,16 @@ nothing left to apply`);
         return EXIT.OK;
       }
       if (Array.isArray(d?.batch)) {
-        let approved;
+        let approved2;
         try {
-          approved = confirmChanges(d.batch.map((b, i) => ({ n: i + 1, summary: b.value.summary, detail: `${b.value.request?.method} ${b.value.request?.url}` })));
+          approved2 = confirmChanges(d.batch.map((b, i) => ({ n: i + 1, summary: b.value.summary, detail: `${b.value.request?.method} ${b.value.request?.url}` })));
         } catch (e) {
           return printConfirmError(e);
         }
         const lines = [];
         let failed = false;
         for (const [i, b] of d.batch.entries()) {
-          if (!approved.includes(i + 1)) {
+          if (!approved2.includes(i + 1)) {
             lines.push(`${i + 1}. DECLINED | ${b.value.summary}`);
             continue;
           }

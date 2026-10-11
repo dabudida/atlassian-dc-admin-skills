@@ -7,6 +7,7 @@ import { jiraProjectTools } from "./jira/projects.js";
 import { jiraSchemeTools } from "./jira/schemes.js";
 import { jiraWorkflowSchemeTools } from "./jira/workflowSchemes.js";
 import { jiraWorkflowTools } from "./jira/workflows.js";
+import { jiraWorkflowXmlTools } from "./jira/workflowXml.js";
 import { jiraProjectSchemeTools } from "./jira/projectSchemes.js";
 import { jiraAdminLifecycleTools } from "./jira/adminLifecycle.js";
 import { jiraFilterTools } from "./jira/filters.js";
@@ -26,6 +27,7 @@ import { jiraCollabTools } from "./jira/collab.js";
 import { jiraInsightTools } from "./jira/insights.js";
 import { jiraServiceDeskTools } from "./jira/servicedesk.js";
 import { jiraRequestTypeTools } from "./jira/requestTypes.js";
+import { jiraConfigSnapshotTools } from "./jira/configSnapshot.js";
 import { jiraSlaTools } from "./jira/sla.js";
 import { jiraQueueTools } from "./jira/queues.js";
 import { jiraScriptRunnerTools } from "./jira/scriptrunner.js";
@@ -52,6 +54,7 @@ export const TOOL_GROUPS: Array<[string, ToolDef[]]> = [
   ["Jira admin — schemes and workflows", jiraSchemeTools],
   ["Jira admin — workflow schemes", jiraWorkflowSchemeTools],
   ["Jira admin — workflows (designer, drafts)", jiraWorkflowTools],
+  ["Jira admin — workflow XML transfer", jiraWorkflowXmlTools],
   ["Jira admin — project scheme assignment", jiraProjectSchemeTools],
   ["Jira admin — scheme, version, screen and permission scheme lifecycle", jiraAdminLifecycleTools],
   ["Jira — filters and dashboards", jiraFilterTools],
@@ -69,6 +72,7 @@ export const TOOL_GROUPS: Array<[string, ToolDef[]]> = [
   ["Jira — dates, SLA, development info, project analysis", jiraInsightTools],
   ["Jira Service Management", jiraServiceDeskTools],
   ["Jira Service Management — request types and forms", jiraRequestTypeTools],
+  ["Jira configuration — request-form snapshots", jiraConfigSnapshotTools],
   ["Jira Service Management — queues", jiraQueueTools],
   ["Jira Service Management — SLAs and calendars", jiraSlaTools],
   ["ScriptRunner for Jira (unofficial endpoints)", jiraScriptRunnerTools],

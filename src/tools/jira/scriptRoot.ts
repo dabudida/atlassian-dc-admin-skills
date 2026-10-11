@@ -12,7 +12,7 @@
  */
 
 import { createHash, randomBytes } from "node:crypto";
-import { copyFile, lstat, mkdir, readFile, realpath, rename, unlink, writeFile } from "node:fs/promises";
+import { copyFile, lstat, mkdir, readFile, realpath, rename, stat, unlink, writeFile } from "node:fs/promises";
 import { constants } from "node:fs";
 import { basename, dirname, join, relative, resolve, sep } from "node:path";
 import { z } from "zod";
@@ -146,6 +146,8 @@ export async function localTarget(outputDir: string, relative: string): Promise<
   const base = resolve(outputDir);
   const target = resolve(base, ...rel.split("/"));
   if (!isUnder(target, base)) throw new ValidationError("server path leaves output_dir");
+  const baseStat = await stat(base).catch(() => undefined);
+  if (!baseStat?.isDirectory()) throw new ValidationError(`output_dir does not exist or is not a directory: ${outputDir}`);
   const realBase = await realpath(base);
   if (!isUnder(await realAncestor(dirname(target)), realBase)) throw new ValidationError("a symbolic link would redirect the write outside output_dir");
   return target;

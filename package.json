@@ -10,7 +10,7 @@
   },
   "packageManager": "pnpm@12.9.1",
   "scripts": {
-    "build": "tsup && mkdir -p atlassian-dc-admin/hooks && cp hooks/guard-confirmation.mjs atlassian-dc-admin/hooks/ && tsx scripts/gen-reference.ts",
+    "build": "tsup && cp -R adapters/workflow-xml atlassian-dc-admin/scripts/ && mkdir -p atlassian-dc-admin/hooks && cp hooks/guard-confirmation.mjs atlassian-dc-admin/hooks/ && tsx scripts/gen-reference.ts",
     "typecheck": "tsc --noEmit",
     "test": "node --import tsx --test \"test/unit/**/*.test.ts\"",
     "cli": "tsx src/cli.ts",

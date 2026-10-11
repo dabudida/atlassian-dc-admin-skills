@@ -14,7 +14,7 @@ import { invalidateScans } from "./scanCache.js";
 import type { ToolContext, ToolDef } from "./tools/types.js";
 
 export type RunResult =
-  | { ok: true; value: unknown; tool: ToolDef; exitCode: 0 }
+  | { ok: true; value: unknown; tool: ToolDef; exitCode: number }
   | { ok: false; error: ToolError; tool?: ToolDef; exitCode: number };
 
 /** Lazily creates one client per product; reused across tools of one run. */
@@ -232,7 +232,7 @@ export async function runTool(tool: ToolDef, rawArgs: Record<string, unknown>, c
       const note = `not verifiable (${tool.unverifiable}): a repeated apply sends it again`;
       return { ok: true, value: { ...value, warning: value.warning ? `${value.warning}; ${note}` : note }, tool, exitCode: 0 };
     }
-    return { ok: true, value, tool, exitCode: 0 };
+    return { ok: true, value, tool, exitCode: tool.exitCode?.(value) ?? 0 };
   } catch (e) {
     return fail(toToolError(e, tool), tool);
   } finally {
