@@ -20,6 +20,7 @@ import { jiraIssueTools } from "./jira/issues.js";
 import { jiraProjectMetaTools } from "./jira/projectMeta.js";
 import { jiraAgileTools } from "./jira/agile.js";
 import { jiraBoardConfigTools } from "./jira/boardConfig.js";
+import { jiraBoardManagementTools } from "./jira/boardManagement.js";
 import { jiraLinkTools } from "./jira/links.js";
 import { jiraWorklogTools } from "./jira/worklog.js";
 import { jiraAttachmentTools } from "./jira/attachments.js";
@@ -28,6 +29,16 @@ import { jiraInsightTools } from "./jira/insights.js";
 import { jiraServiceDeskTools } from "./jira/servicedesk.js";
 import { jiraRequestTypeTools } from "./jira/requestTypes.js";
 import { jiraConfigSnapshotTools } from "./jira/configSnapshot.js";
+import { jiraConfigDiffTools } from "./jira/configDiff.js";
+import { jiraPermissionDiagnosticTools } from "./jira/permissionDiagnostics.js";
+import { jiraSchemeWriteTools } from "./jira/schemeWrites.js";
+import { jiraPriorityTools } from "./jira/priorities.js";
+import { jiraProjectLifecycleTools } from "./jira/projectLifecycle.js";
+import { jiraWebhookTools } from "./jira/webhooks.js";
+import { jiraHygieneTools } from "./jira/hygiene.js";
+import { jiraIssueArchiveTools } from "./jira/issueArchive.js";
+import { jiraJsmCustomerTools } from "./jira/jsmCustomers.js";
+import { jiraJsmRequestTools } from "./jira/jsmRequests.js";
 import { jiraSlaTools } from "./jira/sla.js";
 import { jiraQueueTools } from "./jira/queues.js";
 import { jiraScriptRunnerTools } from "./jira/scriptrunner.js";
@@ -56,6 +67,12 @@ export const TOOL_GROUPS: Array<[string, ToolDef[]]> = [
   ["Jira admin — workflows (designer, drafts)", jiraWorkflowTools],
   ["Jira admin — workflow XML transfer", jiraWorkflowXmlTools],
   ["Jira admin — project scheme assignment", jiraProjectSchemeTools],
+  ["Jira admin — project lifecycle, categories and components", jiraProjectLifecycleTools],
+  ["Jira admin — notification and issue security scheme changes", jiraSchemeWriteTools],
+  ["Jira admin — priorities, priority schemes and resolutions", jiraPriorityTools],
+  ["Jira admin — permission diagnostics", jiraPermissionDiagnosticTools],
+  ["Jira admin — webhooks", jiraWebhookTools],
+  ["Jira admin — instance hygiene reports", jiraHygieneTools],
   ["Jira admin — scheme, version, screen and permission scheme lifecycle", jiraAdminLifecycleTools],
   ["Jira — filters and dashboards", jiraFilterTools],
   ["Jira admin — custom fields", [...jiraFieldTools, ...jiraCustomFieldTools, ...jiraFieldOptionTools]],
@@ -65,14 +82,18 @@ export const TOOL_GROUPS: Array<[string, ToolDef[]]> = [
   ["Jira — project metadata and versions", jiraProjectMetaTools],
   ["Jira — boards and sprints", jiraAgileTools],
   ["Jira — board configuration", jiraBoardConfigTools],
+  ["Jira — board management (columns, swimlanes, quick filters, card colors)", jiraBoardManagementTools],
   ["Jira — links and epics", jiraLinkTools],
   ["Jira — worklog", jiraWorklogTools],
   ["Jira — attachments", jiraAttachmentTools],
+  ["Jira — issue archiving", jiraIssueArchiveTools],
   ["Jira — assignable users and watchers", jiraCollabTools],
   ["Jira — dates, SLA, development info, project analysis", jiraInsightTools],
   ["Jira Service Management", jiraServiceDeskTools],
   ["Jira Service Management — request types and forms", jiraRequestTypeTools],
-  ["Jira configuration — request-form snapshots", jiraConfigSnapshotTools],
+  ["Jira Service Management — customers and organizations", jiraJsmCustomerTools],
+  ["Jira Service Management — requests (agent view)", jiraJsmRequestTools],
+  ["Jira configuration — snapshots and diff", [...jiraConfigSnapshotTools, ...jiraConfigDiffTools]],
   ["Jira Service Management — queues", jiraQueueTools],
   ["Jira Service Management — SLAs and calendars", jiraSlaTools],
   ["ScriptRunner for Jira (unofficial endpoints)", jiraScriptRunnerTools],

@@ -69,5 +69,5 @@ Errors print `ERROR <type> | message` and a `hint:` line; exit 12 = declined, 13
 
 Jira Assets (objects, schemas, attributes, AQL): read [ASSETS.md](ASSETS.md) before the first `assets_*` call (`list assets`).
 Confluence audits/categories/batches: [SPACE_WORKFLOWS.md](SPACE_WORKFLOWS.md). Honor batch choice and native confirmation.
-Configuration: [REFERENCE.md](REFERENCE.md); form snapshots: [CONFIG_SNAPSHOTS.md](CONFIG_SNAPSHOTS.md).
+Configuration: [REFERENCE.md](REFERENCE.md); snapshots/diff: [CONFIG_SNAPSHOTS.md](CONFIG_SNAPSHOTS.md).
 Portal form/validator checks without submission: [PORTAL_TESTING.md](PORTAL_TESTING.md).
