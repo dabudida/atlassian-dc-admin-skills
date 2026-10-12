@@ -14,6 +14,7 @@
 import { createHash, randomBytes } from "node:crypto";
 import { copyFile, lstat, mkdir, readFile, realpath, rename, stat, unlink, writeFile } from "node:fs/promises";
 import { constants } from "node:fs";
+import { homedir } from "node:os";
 import { basename, dirname, join, relative, resolve, sep } from "node:path";
 import { z } from "zod";
 import type { AtlassianClient } from "../../client.js";
@@ -255,7 +256,68 @@ export function selectFolder(
 
 const scriptRootArg = z.string().min(1).optional().describe("Server Script Root path, when the path exists in several roots");
 
+const DEFAULT_ENDPOINT_TIMEOUT_S = 600;
+const DEFAULT_ENDPOINT_MAX_BYTES = 200 * 1024 * 1024;
+
+/** Local file for a custom endpoint response: `out`, else Content-Disposition name (or <name>-<timestamp>.<ext>) in `outputDir`. */
+function endpointTarget(name: string, contentType: string | null, disposition: string | null, out?: string, outputDir?: string): string {
+  if (out) return resolve(out);
+  const fromHeader = /filename="?([^";]+)"?/i.exec(disposition ?? "")?.[1];
+  const stamp = new Date().toISOString().replace(/[-:]/g, "").replace("T", "-").slice(0, 15);
+  const extension = /zip/.test(contentType ?? "") ? ".zip" : /json/.test(contentType ?? "") ? ".json" : ".txt";
+  // basename() drops any directory part a server-sent file name might carry
+  return resolve(outputDir ?? join(homedir(), "Downloads"), basename(fromHeader || `${name}-${stamp}${extension}`));
+}
+
 export const jiraScriptRootTools: ToolDef[] = [
+  {
+    name: "jira_download_scriptrunner_endpoint",
+    product: "jira",
+    description:
+      "Download the response of a ScriptRunner custom REST endpoint (GET /rest/scriptrunner/latest/custom/<name>) to a local file, " +
+      "e.g. name=jiraConfigSnapshot for the jira-config snapshot zip (adapters/config-snapshot). GET only; returns path, size, " +
+      "SHA-256 and content type, never the content. Read-only toward Jira as long as the endpoint itself is read-only.",
+    inputShape: {
+      name: z.string().regex(/^[A-Za-z0-9_-]+$/, "endpoint name: letters, digits, _ and - only").describe("Custom endpoint name, e.g. jiraConfigSnapshot"),
+      query: z.string().optional().describe("Query string without '?', e.g. skip=jsm,assets"),
+      output_dir: z.string().min(1).optional().describe("Directory for the file (default ~/Downloads); the name comes from Content-Disposition"),
+      out: z.string().min(1).optional().describe("Exact local file instead of output_dir"),
+      timeout_s: z.coerce.number().int().min(10).max(1800).optional().describe(`Request timeout in seconds (default ${DEFAULT_ENDPOINT_TIMEOUT_S}): snapshots take minutes`),
+      max_bytes: z.coerce.number().int().min(1).max(MAX_BYTES_CAP).optional().describe(`Default ${DEFAULT_ENDPOINT_MAX_BYTES}, max ${MAX_BYTES_CAP}. A larger response writes nothing`),
+    },
+    async handler({ client }, args) {
+      const c = client("jira");
+      const path = `${SR}/custom/${args.name}`;
+      const params = Object.fromEntries(new URLSearchParams(args.query ?? ""));
+      // a snapshot outlives the default request timeout; raise it for this call only
+      const savedTimeout = c.config.timeoutMs;
+      c.config.timeoutMs = Math.max(savedTimeout, (args.timeout_s ?? DEFAULT_ENDPOINT_TIMEOUT_S) * 1000);
+      let download;
+      try {
+        download = await c.getBytes(path, params);
+      } finally {
+        c.config.timeoutMs = savedTimeout;
+      }
+      const maxBytes = args.max_bytes ?? DEFAULT_ENDPOINT_MAX_BYTES;
+      if (download.bytes.length > maxBytes) {
+        throw new ValidationError(`The response has ${download.bytes.length} bytes, more than max_bytes=${maxBytes}; nothing was written`);
+      }
+      const out = endpointTarget(args.name, download.contentType, download.contentDisposition, args.out, args.output_dir);
+      await mkdir(dirname(out), { recursive: true });
+      const { outcome } = await writeLocal(out, download.bytes, false);
+      return {
+        endpoint: path,
+        query: args.query ?? "",
+        out,
+        size: download.bytes.length,
+        sha256: sha256(download.bytes),
+        contentType: download.contentType,
+        outcome,
+        ...(outcome === "CONFLICT" ? { hint: "A different file with this name exists and was kept; pass out=<new path>" } : {}),
+        note: "Snapshots and reports hold script code and internal URLs: keep them local.",
+      };
+    },
+  },
   {
     name: "jira_get_scriptrunner_script",
     product: "jira",

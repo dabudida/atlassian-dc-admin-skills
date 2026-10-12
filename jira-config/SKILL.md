@@ -23,10 +23,14 @@ the ScriptRunner report and the Automation export.
 
 ## Refresh the snapshot
 
-1. The user opens, as a Jira administrator: `<baseUrl>/rest/scriptrunner/latest/custom/jiraConfigSnapshot`.
-   `jira-config-<timestamp>.zip` is downloaded.
-   - `?exclude=Category1,Category2` leaves out projects of those categories.
-   - `?skip=jsm,assets,scriptrunner,automation,drafts,options` leaves out slow sections.
+1. Download the zip yourself when the `atlassian-dc-admin` skill is configured for this instance with an administrator token
+   (read-only; the file lands in `~/Downloads` as `jira-config-<timestamp>.zip`):
+   ```
+   node "<atlassian-dc-admin>/scripts/atlassian-admin.mjs" jira_download_scriptrunner_endpoint name=jiraConfigSnapshot
+   ```
+   Otherwise the user opens, as a Jira administrator, `<baseUrl>/rest/scriptrunner/latest/custom/jiraConfigSnapshot`.
+   - `exclude=Category1,Category2` leaves out projects of those categories (`query="exclude=..."` for the CLI).
+   - `skip=jsm,assets,scriptrunner,automation,drafts,options` leaves out slow sections.
 2. Unpack (the instance is resolved from `baseUrl` inside the zip; without `--zip` the newest zip in Downloads/Desktop is used):
    ```
    python ".claude/skills/jira-config/scripts/unpack.py"
