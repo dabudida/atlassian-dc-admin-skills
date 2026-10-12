@@ -28,7 +28,7 @@ import { checkAvailableServices, findProjectConfig, loadDotenv, PROJECT_CONFIG_F
 import { EXIT, exitCodeFor, largestParts, OUTPUT_FORMATS, render, renderError, type OutputFormat } from "./format.js";
 import { exceedsResponseLimit, maxResponseChars } from "./json.js";
 import { ConfirmationError, confirmChanges } from "./confirm.js";
-import { addResultToPlan, applyExitCode, applyPlan, pendingItems, readPlan, recordDeclined, renderOutcomes, renderPlan } from "./plan.js";
+import { addResultToPlan, applyExitCode, assertPlannable, applyPlan, pendingItems, readPlan, recordDeclined, renderOutcomes, renderPlan } from "./plan.js";
 import {
   applySpaceWorkflowWithConfirmation,
   prepareSpaceUpdates,
@@ -481,6 +481,13 @@ async function main(argv: string[]): Promise<number> {
     }
     if (parsed.args.dry_run === false) {
       print("ERROR UsageError | --plan records a dry run; leave out dry_run=false and run apply after approval");
+      return EXIT.VALIDATION;
+    }
+    try {
+      // secrets would land in the plan file in plain text: refuse before any request
+      assertPlannable(command, parsed.args);
+    } catch (e) {
+      print(renderError({ type: "ValidationError", message: (e as Error).message }, "compact"));
       return EXIT.VALIDATION;
     }
   }

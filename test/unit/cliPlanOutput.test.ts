@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { mkdtempSync } from "node:fs";
+import { existsSync, mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
@@ -36,5 +36,20 @@ describe("CLI plan-save output", () => {
     assert.equal(result.status, 0, result.stderr);
     assert.match(result.stdout, /DRY-RUN/);
     assert.match(result.stdout, /planned #1/);
+  });
+});
+
+describe("CLI plan refusal for secret arguments", () => {
+  it("refuses --plan with a webhook secret as a validation error before any request, writing no plan", () => {
+    const dir = mkdtempSync(join(tmpdir(), "cli-plan-secret-"));
+    const plan = join(dir, "plan.json");
+    const result = spawnSync(process.execPath, [
+      "--import", "tsx", "src/cli.ts", "jira_create_webhook",
+      "name=hook", "url=https://receiver.example.com/in", "events=jira:issue_created", "secret=sample-secret", `--plan=${plan}`,
+    ], { encoding: "utf8", env: { ...process.env, ...TEST_ENV } });
+    assert.equal(result.status, 7, result.stdout + result.stderr);
+    assert.match(result.stdout, /ValidationError/);
+    assert.ok(!result.stdout.includes("sample-secret"));
+    assert.equal(existsSync(plan), false);
   });
 });

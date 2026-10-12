@@ -127,6 +127,7 @@ export const jiraUserTools: ToolDef[] = [
     name: "jira_create_user",
     product: "jira",
     write: true,
+    sensitiveArgs: ["password"],
     description:
       "Create a user in the internal directory. Without password and with notify=true Jira e-mails a set-password link. " +
       "The same username with the same e-mail and display name → already-satisfied; with other details → error.",
