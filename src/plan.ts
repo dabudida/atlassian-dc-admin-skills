@@ -22,6 +22,8 @@ import { resolve } from "node:path";
 import { runToolByName, type RunResult } from "./runner.js";
 import type { ToolContext } from "./tools/types.js";
 import { EXIT } from "./format.js";
+import { ValidationError } from "./errors.js";
+import { findTool } from "./tools/index.js";
 
 export type OutcomeStatus = "done" | "already-satisfied" | "failed" | "drifted" | "declined";
 
@@ -87,7 +89,28 @@ export function readPlan(file: string): Plan {
   return data as Plan;
 }
 
+/** The supplied arguments of `tool` whose values are secrets (see ToolDef.sensitiveArgs). */
+export function sensitiveArgsIn(tool: string, args: Record<string, unknown>): string[] {
+  const def = findTool(tool);
+  return (def?.sensitiveArgs ?? []).filter((k) => {
+    const v = args[k];
+    if (v === undefined || v === null || v === "") return false;
+    return def?.isSensitive ? def.isSensitive(k, v) : true;
+  });
+}
+
+/** Plans store arguments in plain text: refuse a change that carries a secret. */
+export function assertPlannable(tool: string, args: Record<string, unknown>): void {
+  const hits = sensitiveArgsIn(tool, args);
+  if (!hits.length) return;
+  throw new ValidationError(
+    `${tool} cannot be planned with ${hits.join(", ")}: a plan file stores arguments in plain text and these carry secrets. ` +
+      `Run ${tool} directly with dry_run=false instead (it shows the change and asks for confirmation), without --plan`,
+  );
+}
+
 export function addToPlan(file: string, tool: string, args: Record<string, unknown>, dry: any): PlanItem {
+  assertPlannable(tool, args);
   const plan = readPlan(file);
   const { dry_run: _ignored, ...rest } = args;
   const item: PlanItem = {
@@ -115,6 +138,7 @@ export function isFinished(item: PlanItem): boolean {
  * becomes one item per change; already-satisfied results and entries are not planned.
  */
 export function addResultToPlan(file: string, tool: string, args: Record<string, unknown>, value: any): PlanItem[] {
+  assertPlannable(tool, args);
   if (value?.already_satisfied) return [];
   if (Array.isArray(value?.batch)) {
     return value.batch.filter((b: any) => !b.value?.already_satisfied).map((b: any) => addToPlan(file, b.tool, b.args, b.value));
@@ -172,12 +196,13 @@ export function createdInPlan(plan: Plan, type: string): CreatedObject[] {
   return plan.items.map((i) => i.outcome?.created).filter((c): c is CreatedObject => !!c && c.type === type).reverse();
 }
 
-/** `tool key=value … --plan=<file>`, shell-quoted, without dry_run. */
+/** `tool key=value … --plan=<file>`, shell-quoted, without dry_run; sensitive values print as `<redacted>`. */
 export function replanCommand(tool: string, args: Record<string, unknown>): string {
   const quote = (v: string) => (/^[\w.,:@\/-]+$/.test(v) ? v : `'${v.replace(/'/g, "'\\''")}'`);
+  const hidden = new Set(sensitiveArgsIn(tool, args));
   const parts = Object.entries(args)
     .filter(([k]) => k !== "dry_run")
-    .map(([k, v]) => `${k}=${quote(typeof v === "string" ? v : JSON.stringify(v))}`);
+    .map(([k, v]) => `${k}=${quote(hidden.has(k) ? "<redacted>" : typeof v === "string" ? v : JSON.stringify(v))}`);
   return [tool, ...parts, "--plan=<file>"].join(" ");
 }
 

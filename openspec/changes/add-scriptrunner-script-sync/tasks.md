@@ -2,7 +2,7 @@
 
 ## 1. Verify the write endpoint on the user-selected instance, under temp
 
-- [x] 1.1 Through the CLI, dry-run and confirm a new byte-preservation probe in `temp`; verify PUT with base64 text and `application/octet-stream` using independent file read-back. Record sanitized metadata, BOM/CRLF preservation and exact-pair evidence in `test/fixtures/scriptrunner/write-live-triniti.json` and design.md. Raw successful HTTP status/body are not captured by the CLI and are not claimed.
+- [x] 1.1 Through the CLI, dry-run and confirm a new byte-preservation probe in `temp`; verify PUT with base64 text and `application/octet-stream` using independent file read-back. Record sanitized metadata, BOM/CRLF preservation and exact-pair evidence in `test/fixtures/scriptrunner/write-live-probe.json` and design.md. Raw successful HTTP status/body are not captured by the CLI and are not claimed.
 - [x] 1.2 Verify creation of missing parent folders and storage of a file with invalid Groovy syntax; independently read both probes back and compare bytes. Record that script execution was not requested and compilation-on-save remains unknown.
 
 ## 2. Server write helper and gate

@@ -33,6 +33,18 @@ export interface ToolDef {
    * starts, new comments...). `describe` shows it and dry runs warn that a repeated apply sends it again.
    */
   unverifiable?: string;
+  /**
+   * Arguments whose values are secrets (signing secrets, passwords, URLs with credentials). Change plans store
+   * arguments in plain text, so `--plan` is refused when any of them is supplied (run the tool directly with
+   * dry_run=false, which goes through the interactive confirmation instead), and printed commands such as the
+   * re-plan hint of a drifted item show `<redacted>` in place of the value.
+   */
+  sensitiveArgs?: string[];
+  /**
+   * Narrows `sensitiveArgs`: a listed argument counts as sensitive only when this returns true for its value
+   * (e.g. a webhook URL only when it carries user info or a token). Without it, every supplied value counts.
+   */
+  isSensitive?: (arg: string, value: unknown) => boolean;
   /** Old argument names still accepted: alias → canonical name. Resolved before validation. */
   aliases?: Record<string, string>;
   /** Arguments that read less of a large result (section, max_chars...); cut markers and ResponseTooLarge name them. */

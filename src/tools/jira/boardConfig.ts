@@ -15,6 +15,7 @@ import { isHttpStatusError, PermissionError, ValidationError, VerificationError 
 import { requireJiraVersion } from "../../jiraVersion.js";
 import type { ToolDef } from "../types.js";
 import { alreadySatisfied, dryRunShape, listArg } from "../util.js";
+import { plannedMoves } from "./boardManagement.js";
 
 const GH = "/rest/greenhopper/1.0";
 
@@ -69,19 +70,6 @@ function resolveDetailFields(view: DetailView, given: string[]): string[] {
 
 const rowUrl = (client: AtlassianClient, board: number, id: number) => client.url(`${GH}/detailviewfield/${board}/field/${id}`);
 
-/** Moves that turn `current` into `target` (both field id lists with the same members). */
-function plannedMoves(current: string[], target: string[]): Array<{ fieldId: string; after: string | null }> {
-  const sim = [...current];
-  const moves: Array<{ fieldId: string; after: string | null }> = [];
-  target.forEach((fieldId, i) => {
-    if (sim[i] === fieldId) return;
-    sim.splice(sim.indexOf(fieldId), 1);
-    sim.splice(i, 0, fieldId);
-    moves.push({ fieldId, after: i === 0 ? null : target[i - 1] });
-  });
-  return moves;
-}
-
 async function changeDetailView(
   client: AtlassianClient,
   board: number,
@@ -106,7 +94,7 @@ async function changeDetailView(
   const steps = [
     ...removed.map((r) => ({ method: "DELETE", url: rowUrl(client, board, r.id), label: `remove ${r.name}` })),
     ...added.map((id) => ({ method: "POST", url: client.url(`${GH}/detailviewfield/${board}/field`), body: { fieldId: id }, label: `add ${nameOf(id)}` })),
-    ...moves.map((m) => ({ method: "POST", url: `${client.url(`${GH}/detailviewfield/${board}/field`)}/{${m.fieldId}}/move`, body: m.after ? { after: `{${m.after}}` } : { position: "First" }, label: `move ${nameOf(m.fieldId)} ${m.after ? `after ${nameOf(m.after)}` : "first"}` })),
+    ...moves.map((m) => ({ method: "POST", url: `${client.url(`${GH}/detailviewfield/${board}/field`)}/{${m.id}}/move`, body: m.after ? { after: `{${m.after}}` } : { position: "First" }, label: `move ${nameOf(m.id)} ${m.after ? `after ${nameOf(m.after)}` : "first"}` })),
   ];
   if (dryRun) {
     return {
@@ -128,7 +116,7 @@ async function changeDetailView(
   // new rows get their ids only now: compute the moves from a fresh read
   let rows = (await readDetailView(client, board)).rows;
   for (const m of plannedMoves(rows.map((r) => r.fieldId), target)) {
-    const row = rows.find((r) => r.fieldId === m.fieldId);
+    const row = rows.find((r) => r.fieldId === m.id);
     const after = m.after ? rows.find((r) => r.fieldId === m.after) : undefined;
     if (!row || (m.after && !after)) break;
     await client.request("POST", `${GH}/detailviewfield/${board}/field/${row.id}/move`, { json: after ? { after: rowUrl(client, board, after.id) } : { position: "First" } });

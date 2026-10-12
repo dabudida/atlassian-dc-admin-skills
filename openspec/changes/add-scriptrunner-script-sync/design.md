@@ -74,7 +74,7 @@ On 2026-10-07 the user requested verification in `temp` and unblocking the opera
 - a 7-byte Groovy file with invalid syntax was stored and read back unchanged;
 - no script execution, validation or DELETE endpoint was called.
 
-Sanitized metadata is in `test/fixtures/scriptrunner/write-live-triniti.json`. The CLI does not expose the exact successful HTTP status or response body, so neither is claimed as captured. Whether saving triggers compilation remains unknown. Both probe files remain in the requested `temp` folder.
+Sanitized metadata is in `test/fixtures/scriptrunner/write-live-probe.json`. The CLI does not expose the exact successful HTTP status or response body, so neither is claimed as captured. Whether saving triggers compilation remains unknown. Both probe files remain in the requested `temp` folder.
 
 `script-root-write` is allowed on every Jira 10.x/11.x + ScriptRunner 9.x/10.x combination, per user instruction. Only the exact checked pair receives a verification date. Other ranges remain policy allowances without live evidence. Dry-run, interactive confirmation, expected server SHA-256 checks and post-upload byte verification remain required.
 

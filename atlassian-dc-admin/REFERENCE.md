@@ -81,7 +81,7 @@ Compact cells and long text carry cut markers; JSON retains columns but respects
 Assets search defaults to 20 objects and previews 20 attributes; name `attributes` to select them. Custom field options without `context` return counts; with `context`, page via `limit`/`offset`. Audit `raw=true` requires `limit<=50`. Request forms show addable fields only with `include_addable=true`; space discovery audit rows require `include_audit=true`. Comments use storage Markdown and `max_body_chars` (default 2,000). Markdown page writes reject code cut markers: read full storage or a smaller section first. Expanded JSON reads can require `--out`.
 
 <!-- tools:start -->
-304 tools, 164 of them write tools (✎; they also take `dry_run`, default true). Arguments and descriptions: run `describe <tool>`; search by concept with `list <text>`.
+382 tools, 215 of them write tools (✎; they also take `dry_run`, default true). Arguments and descriptions: run `describe <tool>`; search by concept with `list <text>`.
 
 ### Jira admin — system
 
@@ -114,6 +114,30 @@ Assets search defaults to 20 objects and previews 20 attributes; name `attribute
 ### Jira admin — project scheme assignment
 
 `jira_assign_project_scheme` ✎
+
+### Jira admin — project lifecycle, categories and components
+
+`jira_create_project` ✎, `jira_update_project` ✎, `jira_list_project_categories`, `jira_create_project_category` ✎, `jira_update_project_category` ✎, `jira_delete_project_category` ✎, `jira_create_component` ✎, `jira_update_component` ✎, `jira_delete_component` ✎, `jira_create_project_shared` ✎
+
+### Jira admin — notification and issue security scheme changes
+
+`jira_create_notification_scheme` ✎, `jira_add_notification` ✎, `jira_remove_notification` ✎, `jira_create_issue_security_scheme` ✎, `jira_add_issue_security_level` ✎, `jira_add_issue_security_level_member` ✎, `jira_assign_issue_security_scheme` ✎
+
+### Jira admin — priorities, priority schemes and resolutions
+
+`jira_list_priorities`, `jira_list_resolutions`, `jira_list_priority_schemes`, `jira_get_priority_scheme`, `jira_create_priority_scheme` ✎, `jira_update_priority_scheme` ✎, `jira_delete_priority_scheme` ✎, `jira_assign_priority_scheme` ✎, `jira_create_priority` ✎, `jira_create_resolution` ✎
+
+### Jira admin — permission diagnostics
+
+`jira_explain_permission`, `jira_user_access_summary`
+
+### Jira admin — webhooks
+
+`jira_list_webhooks`, `jira_get_webhook`, `jira_create_webhook` ✎, `jira_update_webhook` ✎, `jira_set_webhook_enabled` ✎, `jira_delete_webhook` ✎
+
+### Jira admin — instance hygiene reports
+
+`jira_report_unused_custom_fields`, `jira_report_unused_schemes`, `jira_report_license_usage`, `jira_instance_health`
 
 ### Jira admin — scheme, version, screen and permission scheme lifecycle
 
@@ -151,6 +175,10 @@ Assets search defaults to 20 objects and previews 20 attributes; name `attribute
 
 `jira_get_board_configuration`, `jira_set_board_detail_fields` ✎, `jira_add_board_detail_field` ✎, `jira_remove_board_detail_field` ✎
 
+### Jira — board management (columns, swimlanes, quick filters, card colors)
+
+`jira_create_board` ✎, `jira_delete_board` ✎, `jira_set_board_filter` ✎, `jira_get_board_columns`, `jira_set_board_columns` ✎, `jira_get_board_swimlanes`, `jira_set_board_swimlanes` ✎, `jira_get_board_quick_filters`, `jira_create_board_quick_filter` ✎, `jira_update_board_quick_filter` ✎, `jira_delete_board_quick_filter` ✎, `jira_get_board_card_colors`, `jira_set_board_card_colors` ✎
+
 ### Jira — links and epics
 
 `jira_get_link_types`, `jira_link_to_epic` ✎, `jira_create_issue_link` ✎, `jira_create_remote_issue_link` ✎, `jira_remove_issue_link` ✎, `jira_get_issue_links`
@@ -162,6 +190,10 @@ Assets search defaults to 20 objects and previews 20 attributes; name `attribute
 ### Jira — attachments
 
 `jira_get_attachments`, `jira_download_attachments`, `jira_get_issue_images`, `jira_upload_attachments` ✎, `jira_delete_attachment` ✎
+
+### Jira — issue archiving
+
+`jira_archive_issue` ✎, `jira_restore_issue` ✎, `jira_archive_issues` ✎
 
 ### Jira — assignable users and watchers
 
@@ -179,9 +211,17 @@ Assets search defaults to 20 objects and previews 20 attributes; name `attribute
 
 `jira_create_request_type` ✎, `jira_update_request_type` ✎, `jira_delete_request_type` ✎, `jira_set_request_type_hidden` ✎, `jira_add_request_type_to_group` ✎, `jira_remove_request_type_from_group` ✎, `jira_move_request_type_in_group` ✎, `jira_get_request_type_form`, `jira_add_request_type_field` ✎, `jira_remove_request_type_field` ✎, `jira_move_request_type_field` ✎, `jira_update_request_type_field` ✎, `jira_hide_request_type_field` ✎, `jira_show_request_type_field` ✎
 
-### Jira configuration — request-form snapshots
+### Jira Service Management — customers and organizations
 
-`jira_export_config`
+`jira_list_organizations`, `jira_get_organization`, `jira_list_service_desk_organizations`, `jira_create_organization` ✎, `jira_delete_organization` ✎, `jira_add_organization_users` ✎, `jira_remove_organization_users` ✎, `jira_add_service_desk_organizations` ✎, `jira_remove_service_desk_organization` ✎, `jira_add_service_desk_customers` ✎, `jira_remove_service_desk_customers` ✎, `jira_create_customer` ✎
+
+### Jira Service Management — requests (agent view)
+
+`jira_get_request`, `jira_get_request_comments`, `jira_get_request_participants`, `jira_get_request_approvals`, `jira_get_request_status_history`, `jira_get_request_feedback`, `jira_add_request_comment` ✎, `jira_add_request_participants` ✎, `jira_remove_request_participants` ✎, `jira_answer_request_approval` ✎
+
+### Jira configuration — snapshots and diff
+
+`jira_export_config`, `jira_diff_config`
 
 ### Jira Service Management — queues
 

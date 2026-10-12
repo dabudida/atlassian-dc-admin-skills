@@ -271,6 +271,7 @@ export const confluenceUserTools: ToolDef[] = [
     name: "confluence_create_user",
     product: "confluence",
     write: true,
+    sensitiveArgs: ["password"],
     description: "Create a user in the internal directory.",
     inputShape: {
       username: z.string(),
