@@ -39,6 +39,12 @@ atlassian-dc-admin/          the skill (copy or symlink this folder)
   REFERENCE.md               all tools with arguments (generated) and endpoint sources
   .env.example               configuration template
   scripts/atlassian-admin.mjs  bundled CLI (build output, committed)
+jira-config/                 configuration snapshot skill (copy or symlink this folder)
+  SKILL.md                   where to look for each configuration question
+  instances.example.json     host -> local instance folder
+  scripts/unpack.py          unpacks a snapshot zip and rebuilds the indexes
+  scripts/build_indexes.py   ScriptRunner and Automation indexes
+adapters/config-snapshot/    ScriptRunner REST endpoint that builds the snapshot, and a URL probe
 .claude/skills/devsecops/    reusable DevSecOps skill for Claude Code projects
 .agents/skills/devsecops/    matching skill for Codex projects
 src/
@@ -49,6 +55,36 @@ src/
 test/unit/*.test.ts          node:test suites with a fake fetch (no network)
 scripts/gen-reference.ts     regenerates the tool table in REFERENCE.md
 ```
+
+## Configuration snapshot skill
+
+`jira-config` answers "how is Jira configured" questions from a local, grep-friendly copy instead of
+hundreds of REST calls: workflows with their XML (conditions, validators, post-functions), screens,
+field contexts and options, required/hidden fields, permission, notification and security schemes,
+role members, JSM request type forms, queues and SLAs, the Assets structure, and indexes of
+ScriptRunner features and Automation rules. It complements `atlassian-dc-admin`, which reads the live
+instance and cannot see workflow functions, behaviours or Automation rules.
+
+The snapshot is one zip from a read-only ScriptRunner REST endpoint:
+
+1. Deploy `adapters/config-snapshot/JiraConfigSnapshotEndpoint.groovy` as a file endpoint in the
+   Script Root (for example `common/rest/JiraConfigSnapshotEndpoint.groovy`), set the `groups` of the
+   endpoint to your administrator group, and press **Update** on the endpoint so ScriptRunner compiles it.
+2. As an administrator open `<baseUrl>/rest/scriptrunner/latest/custom/jiraConfigSnapshot`
+   (`?exclude=<categories>`, `?skip=jsm,assets,scriptrunner,automation,drafts,options`).
+3. Copy `jira-config/instances.example.json` to `instances.json`, map your host to a folder name and run
+   `python .claude/skills/jira-config/scripts/unpack.py`.
+
+What the zip holds: the Java API part (projects, schemes, workflows and drafts as XML, screens, fields,
+options, permission/notification/security schemes, global permissions, lookups) and, read over REST
+from inside the server under the caller's session, JSM forms/queues/SLAs, the Assets structure, the
+ScriptRunner report (`GET /rest/scriptrunner/latest/script/export/`) and all Automation rules
+(`GET /rest/cb-automation/latest/project/GLOBAL/rule/export`). A failing section is listed in
+`errors.json`; the rest of the snapshot stays complete. If a plugin upgrade moves the export URLs,
+`adapters/config-snapshot/ProbeExportEndpoints.groovy` (Script Console, read-only) lists them.
+
+Verified on Jira DC 11.3.8 with ScriptRunner 10.17.0, JSM and Assets: 80 projects, 0 errors. The
+snapshot contains script code, internal URLs and role members, so keep it out of version control.
 
 ## DevSecOps skill
 

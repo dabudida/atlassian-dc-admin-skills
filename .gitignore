@@ -9,3 +9,5 @@ dist/
 
 .scratch/
 .atlassian-dc-admin.env
+jira-config/instances.json
+__pycache__/

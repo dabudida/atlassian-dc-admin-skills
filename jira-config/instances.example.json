@@ -1,0 +1,4 @@
+{
+  "jira.example.com": "prod",
+  "jira-test.example.com": "test"
+}
