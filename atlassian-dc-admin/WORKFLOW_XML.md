@@ -4,13 +4,15 @@
 
 ## Separate adapter installation
 
-The tools require a repository-owned ScriptRunner custom endpoint. They do not install it automatically. Initial allowed policy: Jira 11.3.x / ScriptRunner 10.x, Jakarta endpoints. Local compilation evidence uses Jira 11.3.6 / ScriptRunner 10.11.1; no exact deployed pair, production draft write or target-instance administration URL has been verified.
+The tools require a repository-owned ScriptRunner custom endpoint. They do not install it automatically. Initial allowed policy: Jira 11.3.x / ScriptRunner 10.x, Jakarta endpoints. Local compilation evidence uses Jira 11.3.6 / ScriptRunner 10.11.1. Deployed and verified on Jira 11.3.7 / ScriptRunner 10.14.0: export, validation, draft write and publish of one active workflow.
 
 Only after selecting a target instance and reviewing a concrete deployment change:
 
-1. Compile the trusted files under `scripts/workflow-xml/` against that instance's jars. Keep `WorkflowXmlSupport.groovy`, `WorkflowXmlService.groovy`, `WorkflowUsage.groovy` and `ImportedDraft.groovy` under the `workflowxml/` package directory of its Script Root.
-2. Set `adminGroup` in `WorkflowXmlEndpoints.groovy` to an existing administrator group. The empty default refuses registration. Register that file as a ScriptRunner REST endpoint. Registration groups restrict access; each operation also checks the authenticated user's Jira ADMINISTER permission.
+1. Compile the trusted files under `scripts/workflow-xml/` against that instance's jars. Keep every file except `WorkflowXmlEndpoints.groovy` under the `workflowxml/` package directory of its Script Root, one class per file: ScriptRunner resolves Script Root classes by file name, so a class declared inside another file fails with `unable to resolve class workflowxml.…`. `jira_push_scriptrunner_script` (expect `absent`) uploads them.
+2. Set `adminGroup` in `WorkflowXmlEndpoints.groovy` to an existing administrator group. The empty default refuses registration. Register that file as a ScriptRunner REST endpoint in the Jira UI (the CLI cannot create registrations): Custom endpoint, Script = File with the path relative to the Script Root including folders, e.g. `common/rest/WorkflowXmlEndpoints.groovy`. A bare file name compiles but every call returns HTTP 500 `Cannot open URL: bundle://…`. Registration groups restrict access; each operation also checks the authenticated user's Jira ADMINISTER permission.
 3. Verify authenticated GET metadata/export first. Installation and draft mutation require separate administrator authorization; fixture success does not grant it.
+
+The adapter parses XML with the JDK parser (`DocumentBuilderFactory.newDefaultInstance()`): `newInstance()` returns the Apache Xerces bundled with Jira, which rejects the JAXP `accessExternalDTD`/`accessExternalSchema` properties. An empty `jira.fieldscreen.id` (a transition without a screen, as Jira exports it) is accepted; a non-empty one must name an existing screen.
 
 Protocol v1 routes under `/rest/scriptrunner/latest/custom/`:
 
