@@ -21,7 +21,8 @@ class WorkflowXmlSupport {
             throw new XmlInputRejected('Workflow XML exceeds byte limit')
         }
         try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance()
+            // JDK parser: Jira's bundled Xerces does not support the JAXP access properties below
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newDefaultInstance()
             factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true)
             factory.setFeature('http://apache.org/xml/features/disallow-doctype-decl', true)
             factory.setFeature('http://xml.org/sax/features/external-general-entities', false)
@@ -47,7 +48,8 @@ class WorkflowXmlSupport {
                 String key = meta.getAttribute('name')
                 String id = meta.textContent.trim()
                 if (key == 'jira.status.id' && !statusExists.call(id)) throw new XmlInputRejected('Unknown workflow status reference')
-                if (key == 'jira.fieldscreen.id' && (!id.matches('[0-9]+') || !screenExists.call(id))) throw new XmlInputRejected('Unknown workflow screen reference')
+                // Jira writes an empty screen id for transitions without a screen
+                if (key == 'jira.fieldscreen.id' && id && (!id.matches('[0-9]+') || !screenExists.call(id))) throw new XmlInputRejected('Unknown workflow screen reference')
             }
             WorkflowDescriptor descriptor = new WorkflowDescriptor(root)
             descriptor.validate()
@@ -73,7 +75,7 @@ class WorkflowXmlSupport {
         def stream = WorkflowDescriptor.getResourceAsStream('/META-INF/workflow_2_8.dtd')
         if (stream == null) throw new XmlInputRejected('Bundled workflow grammar unavailable')
         try { trustedDtd = stream.bytes } finally { stream.close() }
-        def factory = DocumentBuilderFactory.newInstance()
+        def factory = DocumentBuilderFactory.newDefaultInstance()
         factory.setValidating(true)
         factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true)
         factory.setFeature('http://xml.org/sax/features/external-general-entities', false)
@@ -120,19 +122,4 @@ class WorkflowXmlSupport {
         [JiraWorkflow.JIRA_META_UPDATE_AUTHOR_NAME, JiraWorkflow.JIRA_META_UPDATE_AUTHOR_KEY, JiraWorkflow.JIRA_META_UPDATED_DATE].each { copy.metaAttributes.remove(it) }
         return sha(xml(copy))
     }
-}
-
-/** A rejection whose message is a fixed, content-free reason that the endpoint may return to the caller. */
-class AdapterRejection extends IllegalArgumentException {
-    AdapterRejection(String message) { super(message) }
-}
-
-/** Rejected workflow XML input; the message never quotes the input. */
-class XmlInputRejected extends AdapterRejection {
-    XmlInputRejected(String message) { super(message) }
-}
-
-/** A state conflict whose message is a fixed reason that the endpoint may return to the caller. */
-class AdapterConflict extends IllegalStateException {
-    AdapterConflict(String message) { super(message) }
 }

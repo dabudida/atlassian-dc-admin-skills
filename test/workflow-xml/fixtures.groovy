@@ -17,6 +17,8 @@ for (String invalid : [
     try { WorkflowXmlSupport.parse(invalid, knownStatus, knownScreen) } catch (IllegalArgumentException ignored) { rejected = true }
     assert rejected
 }
+// Jira writes an empty screen id for transitions without a screen
+assert WorkflowXmlSupport.parse(xml.replace('<action id="2" name="Loop">', '<action id="2" name="Loop"><meta name="jira.fieldscreen.id"></meta>'), knownStatus, knownScreen) != null
 def audit = WorkflowXmlSupport.parse(xml.replace('<workflow>', '<workflow><meta name="jira.updated.date">today</meta>'), knownStatus, knownScreen)
 assert WorkflowXmlSupport.hash(parsed, true) == WorkflowXmlSupport.hash(audit, true)
 def changed = WorkflowXmlSupport.parse(xml.replace('DO-NOT-EXECUTE', 'DIFFERENT'), knownStatus, knownScreen)
