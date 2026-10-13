@@ -56247,7 +56247,7 @@ var AtlassianClient = class _AtlassianClient {
     }
     const res = await this.send("GET", url2, { accept: "*/*" });
     const buf = res.arrayBuffer ? Buffer.from(await res.arrayBuffer()) : Buffer.from(await res.text());
-    return { bytes: buf, contentType: res.headers.get("content-type") };
+    return { bytes: buf, contentType: res.headers.get("content-type"), contentDisposition: res.headers.get("content-disposition") };
   }
   get(path, params, accept, headers) {
     return this.request("GET", path, { params, accept, headers });
@@ -59331,6 +59331,7 @@ import { join as join3, resolve as resolve4 } from "path";
 import { createHash, randomBytes } from "crypto";
 import { copyFile, lstat, mkdir, readFile, realpath, rename, stat, unlink, writeFile } from "fs/promises";
 import { constants } from "fs";
+import { homedir as homedir2 } from "os";
 import { basename as basename2, dirname as dirname2, join as join2, relative, resolve as resolve3, sep } from "path";
 
 // src/tools/jira/scriptrunner.ts
@@ -59746,7 +59747,60 @@ function selectFolder(roots, root2, scriptRoot) {
   return { tree, files, directories };
 }
 var scriptRootArg = external_exports.string().min(1).optional().describe("Server Script Root path, when the path exists in several roots");
+var DEFAULT_ENDPOINT_TIMEOUT_S = 600;
+var DEFAULT_ENDPOINT_MAX_BYTES = 200 * 1024 * 1024;
+function endpointTarget(name, contentType, disposition, out, outputDir) {
+  if (out) return resolve3(out);
+  const fromHeader = /filename="?([^";]+)"?/i.exec(disposition ?? "")?.[1];
+  const stamp = (/* @__PURE__ */ new Date()).toISOString().replace(/[-:]/g, "").replace("T", "-").slice(0, 15);
+  const extension = /zip/.test(contentType ?? "") ? ".zip" : /json/.test(contentType ?? "") ? ".json" : ".txt";
+  return resolve3(outputDir ?? join2(homedir2(), "Downloads"), basename2(fromHeader || `${name}-${stamp}${extension}`));
+}
 var jiraScriptRootTools = [
+  {
+    name: "jira_download_scriptrunner_endpoint",
+    product: "jira",
+    description: "Download the response of a ScriptRunner custom REST endpoint (GET /rest/scriptrunner/latest/custom/<name>) to a local file, e.g. name=jiraConfigSnapshot for the jira-config snapshot zip (adapters/config-snapshot). GET only; returns path, size, SHA-256 and content type, never the content. Read-only toward Jira as long as the endpoint itself is read-only.",
+    inputShape: {
+      name: external_exports.string().regex(/^[A-Za-z0-9_-]+$/, "endpoint name: letters, digits, _ and - only").describe("Custom endpoint name, e.g. jiraConfigSnapshot"),
+      query: external_exports.string().optional().describe("Query string without '?', e.g. skip=jsm,assets"),
+      output_dir: external_exports.string().min(1).optional().describe("Directory for the file (default ~/Downloads); the name comes from Content-Disposition"),
+      out: external_exports.string().min(1).optional().describe("Exact local file instead of output_dir"),
+      timeout_s: external_exports.coerce.number().int().min(10).max(1800).optional().describe(`Request timeout in seconds (default ${DEFAULT_ENDPOINT_TIMEOUT_S}): snapshots take minutes`),
+      max_bytes: external_exports.coerce.number().int().min(1).max(MAX_BYTES_CAP).optional().describe(`Default ${DEFAULT_ENDPOINT_MAX_BYTES}, max ${MAX_BYTES_CAP}. A larger response writes nothing`)
+    },
+    async handler({ client }, args) {
+      const c = client("jira");
+      const path = `${SR2}/custom/${args.name}`;
+      const params = Object.fromEntries(new URLSearchParams(args.query ?? ""));
+      const savedTimeout = c.config.timeoutMs;
+      c.config.timeoutMs = Math.max(savedTimeout, (args.timeout_s ?? DEFAULT_ENDPOINT_TIMEOUT_S) * 1e3);
+      let download2;
+      try {
+        download2 = await c.getBytes(path, params);
+      } finally {
+        c.config.timeoutMs = savedTimeout;
+      }
+      const maxBytes = args.max_bytes ?? DEFAULT_ENDPOINT_MAX_BYTES;
+      if (download2.bytes.length > maxBytes) {
+        throw new ValidationError(`The response has ${download2.bytes.length} bytes, more than max_bytes=${maxBytes}; nothing was written`);
+      }
+      const out = endpointTarget(args.name, download2.contentType, download2.contentDisposition, args.out, args.output_dir);
+      await mkdir(dirname2(out), { recursive: true });
+      const { outcome } = await writeLocal(out, download2.bytes, false);
+      return {
+        endpoint: path,
+        query: args.query ?? "",
+        out,
+        size: download2.bytes.length,
+        sha256: sha256(download2.bytes),
+        contentType: download2.contentType,
+        outcome,
+        ...outcome === "CONFLICT" ? { hint: "A different file with this name exists and was kept; pass out=<new path>" } : {},
+        note: "Snapshots and reports hold script code and internal URLs: keep them local."
+      };
+    }
+  },
   {
     name: "jira_get_scriptrunner_script",
     product: "jira",

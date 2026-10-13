@@ -132,6 +132,7 @@ export type FetchLike = (url: string, init: Record<string, any>) => Promise<Fetc
 export interface Download {
   bytes: Buffer;
   contentType: string | null;
+  contentDisposition: string | null;
 }
 
 export function buildQuery(params?: Params): string {
@@ -379,7 +380,7 @@ export class AtlassianClient {
     }
     const res = await this.send("GET", url, { accept: "*/*" });
     const buf = res.arrayBuffer ? Buffer.from(await res.arrayBuffer()) : Buffer.from(await res.text());
-    return { bytes: buf, contentType: res.headers.get("content-type") };
+    return { bytes: buf, contentType: res.headers.get("content-type"), contentDisposition: res.headers.get("content-disposition") };
   }
 
   get(path: string, params?: Params, accept?: string, headers?: Record<string, string>): Promise<Json> {

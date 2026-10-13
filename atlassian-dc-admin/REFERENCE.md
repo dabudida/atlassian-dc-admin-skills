@@ -81,7 +81,7 @@ Compact cells and long text carry cut markers; JSON retains columns but respects
 Assets search defaults to 20 objects and previews 20 attributes; name `attributes` to select them. Custom field options without `context` return counts; with `context`, page via `limit`/`offset`. Audit `raw=true` requires `limit<=50`. Request forms show addable fields only with `include_addable=true`; space discovery audit rows require `include_audit=true`. Comments use storage Markdown and `max_body_chars` (default 2,000). Markdown page writes reject code cut markers: read full storage or a smaller section first. Expanded JSON reads can require `--out`.
 
 <!-- tools:start -->
-382 tools, 215 of them write tools (✎; they also take `dry_run`, default true). Arguments and descriptions: run `describe <tool>`; search by concept with `list <text>`.
+383 tools, 215 of them write tools (✎; they also take `dry_run`, default true). Arguments and descriptions: run `describe <tool>`; search by concept with `list <text>`.
 
 ### Jira admin — system
 
@@ -237,7 +237,7 @@ Assets search defaults to 20 objects and previews 20 attributes; name `attribute
 
 ### ScriptRunner for Jira — Script Root files to local disk
 
-`jira_get_scriptrunner_script`, `jira_export_scriptrunner_scripts`
+`jira_download_scriptrunner_endpoint`, `jira_get_scriptrunner_script`, `jira_export_scriptrunner_scripts`
 
 ### ScriptRunner for Jira — Script Root ↔ local folder sync
 
